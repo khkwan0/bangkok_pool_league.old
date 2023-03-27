@@ -45,10 +45,18 @@ export const useNetwork = (): any => {
 }
 
 export const useAccount = (): any => {
-  const {Post} = useNetwork()
+  const {Get, Post} = useNetwork()
   const LoadUser = async (): Promise<void> => {
     try {
       const user = await AsyncStorage.getItem('user')
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const FetchUser = async (userId: number): Promise<void> => {
+    try {
+      const userData = await Get('/user/' + userId)
     } catch (e) {
       console.log(e)
     }
