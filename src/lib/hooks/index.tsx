@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import config from '~/config'
+import {useAppDispatch} from '~/lib/hooks/redux'
+import {ClearUser} from '~/redux/userSlice'
 
 export const useNetwork = (): any => {
   const Get = async function (endpoint: string): Promise<Object> {
@@ -10,7 +12,8 @@ export const useNetwork = (): any => {
           : endpoint
       const domain = config.domain ?? 'localhost'
       const res = await fetch('https://' + domain + '/' + _endpoint)
-      return res.json()
+      const json = await res.json()
+      return json
     } catch (e) {
       console.log(e)
       return {}
@@ -32,6 +35,7 @@ export const useNetwork = (): any => {
         body: JSON.stringify(payload),
         headers: {
           'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
         },
       })
       const json = await res.json()
@@ -45,6 +49,7 @@ export const useNetwork = (): any => {
 }
 
 export const useAccount = (): any => {
+  const dispatch = useAppDispatch()
   const {Get, Post} = useNetwork()
   const LoadUser = async (): Promise<void> => {
     try {
@@ -62,11 +67,24 @@ export const useAccount = (): any => {
     }
   }
 
+  const UpdateUser = async (userId: number, user: object): Promise<void> => {
+    try {
+
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   async function Login(email: string, password: string) {
     return await Post('/login', {email, password})
   }
 
-  return {LoadUser, Login}
+  async function Logout() {
+    dispatch(ClearUser())
+    await AsyncStorage.removeItem('user')
+  }
+
+  return {FetchUser, LoadUser, Login, Logout, UpdateUser}
 }
 
 export const useLeague = (): any => {

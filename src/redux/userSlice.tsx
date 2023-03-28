@@ -3,15 +3,13 @@ import type {PayloadAction} from '@reduxjs/toolkit'
 
 export interface UserState {
   user: {
-    id: number
-    email: string
+    data: {}
   }
 }
 
 const initialState: UserState = {
   user: {
-    id: 0,
-    email: '',
+    data: {},
   },
 }
 
@@ -20,12 +18,15 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     SetUser: (state, action: PayloadAction<object>) => {
-      state.user = action.payload
+      state.user.data = action.payload
+    },
+    ClearUser: state => {
+      state.user.data = {}
     },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const {SetUser} = userSlice.actions
+export const {SetUser, ClearUser} = userSlice.actions
 
 export default userSlice.reducer
