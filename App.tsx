@@ -27,6 +27,12 @@ import {
 import {store} from './src/redux/store'
 import {Provider} from 'react-redux'
 import {NavigationContainer} from '@react-navigation/native'
+import {
+  MD3LightTheme,
+  Provider as PaperProvider,
+  adaptNavigationTheme,
+  DefaultTheme,
+} from 'react-native-paper'
 
 import Main from './src/Main'
 
@@ -67,11 +73,17 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   }
 
+  const {LightTheme} = adaptNavigationTheme({
+    reactNavigationLight: DefaultTheme,
+  })
+
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Main />
-      </NavigationContainer>
+      <PaperProvider theme={MD3LightTheme}>
+        <NavigationContainer theme={LightTheme}>
+          <Main />
+        </NavigationContainer>
+      </PaperProvider>
     </Provider>
   )
 /*

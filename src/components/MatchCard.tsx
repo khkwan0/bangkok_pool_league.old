@@ -1,11 +1,13 @@
 import React from 'react'
 import {View, Text} from 'react-native'
+import {Button} from 'react-native-paper'
 
 const MatchCard = (props: any) => {
-  console.log('matchcard', props)
   return (
     <View>
-      <Text>{props.match.homeId} vs {props.match.awayId}</Text>
+      <Button onPress={() => props.setMatchIdx(props.idx)}>
+        {props.match.homeId} vs {props.match.awayId}
+      </Button>
     </View>
   )
 }

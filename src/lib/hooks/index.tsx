@@ -1,17 +1,24 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import config from '~/config'
-import {useAppDispatch} from '~/lib/hooks/redux'
-import {ClearUser} from '~/redux/userSlice'
+import {useAppDispatch, useAppSelector} from '~/lib/hooks/redux'
+import {ClearUser, SetUser} from '~/redux/userSlice'
 
 export const useNetwork = (): any => {
-  const Get = async function (endpoint: string): Promise<Object> {
+  const Get = async function (
+    endpoint: string,
+    token: string = '',
+  ): Promise<Object> {
     try {
       const _endpoint =
         typeof endpoint !== 'undefined' && endpoint[0] === '/'
           ? endpoint.substring(1)
           : endpoint
       const domain = config.domain ?? 'localhost'
-      const res = await fetch('https://' + domain + '/' + _endpoint)
+      const res = await fetch('https://' + domain + '/' + _endpoint, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        }
+      })
       const json = await res.json()
       return json
     } catch (e) {
@@ -23,6 +30,7 @@ export const useNetwork = (): any => {
   const Post = async function (
     endpoint: string,
     payload: object,
+    token: string = '',
   ): Promise<Object> {
     try {
       const _endpoint =
@@ -50,7 +58,9 @@ export const useNetwork = (): any => {
 
 export const useAccount = (): any => {
   const dispatch = useAppDispatch()
+  const {user} = useAppSelector(_state => _state.user)
   const {Get, Post} = useNetwork()
+
   const LoadUser = async (): Promise<void> => {
     try {
       const user = await AsyncStorage.getItem('user')
@@ -59,9 +69,14 @@ export const useAccount = (): any => {
     }
   }
 
-  const FetchUser = async (userId: number): Promise<void> => {
+  const FetchUser = async (): Promise<void> => {
     try {
-      const userData = await Get('/user/' + userId)
+      const token = user?.data?.token ?? ''
+      const userId = user?.data?.token ?? ''
+      // const userData = await Get('/user/' + userId, token)
+      const userData = {
+        gamesPlayed: 5,
+      }
     } catch (e) {
       console.log(e)
     }
@@ -76,7 +91,19 @@ export const useAccount = (): any => {
   }
 
   async function Login(email: string, password: string) {
-    return await Post('/login', {email, password})
+    try {
+      // const res = await Post('/login', {email, password}, false)
+      const res = {
+        email: 'khkwan0@gmail.com',
+        id: 1,
+        token: 'asd',
+        firstName: 'Kenneth',
+        lastName: 'K',
+      }
+      dispatch(SetUser(res))
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   async function Logout() {

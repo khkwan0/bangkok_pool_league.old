@@ -3,7 +3,7 @@ import type {PayloadAction} from '@reduxjs/toolkit'
 
 export interface UserState {
   user: {
-    data: {}
+    data: any
   }
 }
 

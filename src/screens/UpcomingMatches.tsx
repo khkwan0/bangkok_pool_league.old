@@ -1,9 +1,13 @@
 import React from 'react'
-import {View, Text, FlatList} from 'react-native'
+import {Text, FlatList} from 'react-native'
 import MatchCard from '@components/MatchCard'
+import {SafeAreaView} from 'react-native-safe-area-context'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import MatchScreen from '@screens/MatchScreen'
 
 const UpcomingMatches = (props: any) => {
-  const seasonData = [
+  const [matchIdx, setMatchIdx] = React.useState(null)
+  const fixturesData = [
     {
       id: 1,
       timestamp: 1679918400000,
@@ -33,15 +37,28 @@ const UpcomingMatches = (props: any) => {
     3: '8/9 ball',
   }
 
-  return (
-    <View style={{flex: 1, backgroundColor: '#000'}}>
-      <Text>Upcoming matches</Text>
-      <FlatList
-        data={seasonData}
-        renderItem={({item}) => <MatchCard match={item} />}
+  console.log(matchIdx)
+  if (matchIdx !== null) {
+    return (
+      <MatchScreen
+        matchInfo={fixturesData[matchIdx]}
+        setMatchIdx={setMatchIdx}
       />
-    </View>
-  )
+    )
+  } else {
+    return (
+      <SafeAreaView style={{flex: 1}}>
+        <Text>Upcoming matches</Text>
+        <MaterialCommunityIcons name="circle-outline" />
+        <FlatList
+          data={fixturesData}
+          renderItem={({item, index}) => (
+            <MatchCard match={item} setMatchIdx={setMatchIdx} idx={index} />
+          )}
+        />
+      </SafeAreaView>
+    )
+  }
 }
 
 export default UpcomingMatches
