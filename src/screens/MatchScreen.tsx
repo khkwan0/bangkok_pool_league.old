@@ -13,6 +13,10 @@ const MatchScreen = (props: any) => {
       winner: null,
       homePlayerIds: [],
       awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
     },
     {
       type: 'singles',
@@ -20,6 +24,10 @@ const MatchScreen = (props: any) => {
       winner: null,
       homePlayerIds: [],
       awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
     },
     {
       type: 'doubles',
@@ -27,6 +35,10 @@ const MatchScreen = (props: any) => {
       winner: null,
       homePlayerIds: [],
       awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
     },
   ])
   const [showRoster, setShowRoster] = React.useState({
@@ -88,6 +100,9 @@ const MatchScreen = (props: any) => {
   function SetWinner(teamId: number, frameIdx: number) {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
+    _frames[frameIdx].timestamp > 0
+      ? (_frames[frameIdx].lastUpdate = Date.now())
+      : (_frames[frameIdx].timestamp = Date.now())
     setFrames(_frames)
   }
 
