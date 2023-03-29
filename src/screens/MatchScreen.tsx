@@ -10,21 +10,21 @@ const MatchScreen = (props: any) => {
     {
       type: 'singles',
       gameType: 1,
-      winner: '',
+      winner: null,
       homePlayerIds: [],
       awayPlayerIds: [],
     },
     {
       type: 'singles',
       gameType: 1,
-      winner: '',
+      winner: null,
       homePlayerIds: [],
       awayPlayerIds: [],
     },
     {
       type: 'doubles',
       gameType: 1,
-      winner: '',
+      winner: null,
       homePlayerIds: [],
       awayPlayerIds: [],
     },
@@ -85,19 +85,19 @@ const MatchScreen = (props: any) => {
     setShowRoster({teamId: -1, frameIdx: -1, playerIdx: -1})
   }
 
-  function SetWinner(side: string, frameIdx: number) {
+  function SetWinner(teamId: number, frameIdx: number) {
     const _frames = [...frames]
-    _frames[frameIdx].winner = side
-    setFrames([..._frames])
+    _frames[frameIdx].winner = teamId
+    setFrames(_frames)
   }
 
   let awayScore = 0
   let homeScore = 0
   frames.forEach(frame => {
-    if (frame.winner === 'home') {
+    if (frame.winner === props.matchInfo.homeTeamId) {
       homeScore++
     }
-    if (frame.winner === 'away') {
+    if (frame.winner === props.matchInfo.awayTeamId) {
       awayScore++
     }
   })

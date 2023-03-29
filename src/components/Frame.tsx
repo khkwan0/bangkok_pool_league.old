@@ -56,11 +56,11 @@ const Frame = (props: any) => {
           justifyContent: 'center',
           paddingVertical: 10,
         }}>
-        {props.frame.winner === 'away' && (
+        {props.frame.winner === props.awayTeamId && (
           <MaterialCommunityIcons name="check" color="green" size={30} />
         )}
-        {props.frame.winner !== 'away' && (
-          <Button onPress={() => props.setWinner('away', props.frameIdx)}>
+        {props.frame.winner !== props.awayTeamId && (
+          <Button onPress={() => props.setWinner(props.awayTeamId, props.frameIdx)}>
             win
           </Button>
         )}
@@ -73,11 +73,11 @@ const Frame = (props: any) => {
           borderLeftWidth: 1,
           paddingVertical: 10,
         }}>
-        {props.frame.winner === 'home' && (
+        {props.frame.winner === props.homeTeamId && (
           <MaterialCommunityIcons name="check" color="green" size={30} />
         )}
-        {props.frame.winner !== 'home' && (
-          <Button onPress={() => props.setWinner('home', props.frameIdx)}>
+        {props.frame.winner !== props.homeTeamId && (
+          <Button onPress={() => props.setWinner(props.homeTeamId, props.frameIdx)}>
             win
           </Button>
         )}
