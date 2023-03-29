@@ -6,7 +6,7 @@ const MatchCard = (props: any) => {
   return (
     <View>
       <Button onPress={() => props.setMatchIdx(props.idx)}>
-        {props.match.homeId} vs {props.match.awayId}
+        {props.match.homeTeamId} vs {props.match.awayTeamId}
       </Button>
     </View>
   )

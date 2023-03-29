@@ -11,22 +11,22 @@ const UpcomingMatches = (props: any) => {
     {
       id: 1,
       timestamp: 1679918400000,
-      homeId: 1,
-      awayId: 2,
+      homeTeamId: 1,
+      awayTeamId: 2,
       gameType: 1,
     },
     {
       id: 2,
       timestamp: 1679918400000,
-      homeId: 3,
-      awayId: 4,
+      homeTeamId: 3,
+      awayTeamId: 4,
       gameType: 2,
     },
     {
       id: 3,
       timestamp: 1680177600000,
-      homeId: 1,
-      awayId: 3,
+      homeTeamId: 1,
+      awayTeamId: 3,
       gameType: 2,
     },
   ]
@@ -37,7 +37,6 @@ const UpcomingMatches = (props: any) => {
     3: '8/9 ball',
   }
 
-  console.log(matchIdx)
   if (matchIdx !== null) {
     return (
       <MatchScreen
