@@ -6,16 +6,22 @@ import Frame from '@components/Frame'
 import Roster from '@components/Roster'
 import {io} from 'socket.io-client'
 import config from '~/config'
+import {useFocusEffect} from '@react-navigation/native'
 
 const MatchScreen = (props: any) => {
-  React.useEffect(() => {
-    console.log('here', config.domain)
-    const socket = io('https://' + config.domain)
-    socket.on('connect', () => {
-      console.log('connected')
-    })
-    return () => socket.disconnect()
-  }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      const socket = io('https://' + config.domain)
+      socket.on('connect', () => {
+        console.log('connected', socket.id)
+      })
+
+      socket.on('disconnect', () => {
+        console.log('disconnected')
+      })
+      return () => socket.disconnect()
+    }, []),
+  )
 
   const [frames, setFrames] = React.useState([
     {
