@@ -4,8 +4,19 @@ import {FlatList, View} from 'react-native'
 import {Divider, Text} from 'react-native-paper'
 import Frame from '@components/Frame'
 import Roster from '@components/Roster'
+import {io} from 'socket.io-client'
+import config from '~/config'
 
 const MatchScreen = (props: any) => {
+  React.useEffect(() => {
+    console.log('here', config.domain)
+    const socket = io('https://' + config.domain)
+    socket.on('connect', () => {
+      console.log('connected')
+    })
+    return () => socket.disconnect()
+  }, [])
+
   const [frames, setFrames] = React.useState([
     {
       type: 'singles',
