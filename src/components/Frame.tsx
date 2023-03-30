@@ -1,6 +1,6 @@
 import React from 'react'
 import {View} from 'react-native'
-import {Button, Text} from 'react-native-paper'
+import {Button} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const Frame = (props: any) => {
@@ -36,62 +36,8 @@ const Frame = (props: any) => {
 
   return (
     <View style={{flex: 1, flexDirection: 'row', paddingHorizontal: 10}}>
-      <View style={{flex: 2, paddingVertical: 10}}>
-        <Button
-          icon="plus-circle"
-          onPress={() =>
-            props.choosePlayer(props.awayTeamId, 0, props.frameIdx)
-          }>
-          {awayPlayerA ? awayPlayerA : 'Player'}
-        </Button>
-        {props.frame.type === 'doubles' && (
-          <View style={{marginTop: 5}}>
-            <Button
-              icon="plus-circle"
-              onPress={() =>
-                props.choosePlayer(props.awayTeamId, 1, props.frameIdx)
-              }>
-              {awayPlayerB ? awayPlayerB : 'Player'}
-            </Button>
-          </View>
-        )}
-      </View>
       <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingVertical: 10,
-        }}>
-        {props.frame.winner === props.awayTeamId && (
-          <MaterialCommunityIcons name="check" color="green" size={30} />
-        )}
-        {props.frame.winner !== props.awayTeamId && (
-          <Button
-            onPress={() => props.setWinner(props.awayTeamId, props.frameIdx)}>
-            win
-          </Button>
-        )}
-      </View>
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderLeftWidth: 1,
-          paddingVertical: 10,
-        }}>
-        {props.frame.winner === props.homeTeamId && (
-          <MaterialCommunityIcons name="check" color="green" size={30} />
-        )}
-        {props.frame.winner !== props.homeTeamId && (
-          <Button
-            onPress={() => props.setWinner(props.homeTeamId, props.frameIdx)}>
-            win
-          </Button>
-        )}
-      </View>
-      <View style={{flex: 2, paddingVertical: 10}}>
+        style={{flex: 2, paddingVertical: 10, backgroundColor: '#ff000050'}}>
         <Button
           icon="plus-circle"
           onPress={() =>
@@ -107,6 +53,62 @@ const Frame = (props: any) => {
                 props.choosePlayer(props.homeTeamId, 1, props.frameIdx)
               }>
               {homePlayerB ? homePlayerB : 'Player'}
+            </Button>
+          </View>
+        )}
+      </View>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingVertical: 10,
+        }}>
+        {props.frame.winner === props.homeTeamId && (
+          <MaterialCommunityIcons name="check" color="green" size={30} />
+        )}
+        {props.frame.winner !== props.homeTeamId && (
+          <Button
+            onPress={() => props.setWinner(props.homeTeamId, props.frameIdx)}>
+            win
+          </Button>
+        )}
+      </View>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderLeftWidth: 1,
+          paddingVertical: 10,
+        }}>
+        {props.frame.winner === props.awayTeamId && (
+          <MaterialCommunityIcons name="check" color="green" size={30} />
+        )}
+        {props.frame.winner !== props.awayTeamId && (
+          <Button
+            onPress={() => props.setWinner(props.awayTeamId, props.frameIdx)}>
+            win
+          </Button>
+        )}
+      </View>
+      <View
+        style={{flex: 2, paddingVertical: 10, backgroundColor: '#0000ff22'}}>
+        <Button
+          icon="plus-circle"
+          onPress={() =>
+            props.choosePlayer(props.awayTeamId, 0, props.frameIdx)
+          }>
+          {awayPlayerA ? awayPlayerA : 'Player'}
+        </Button>
+        {props.frame.type === 'doubles' && (
+          <View style={{marginTop: 5}}>
+            <Button
+              icon="plus-circle"
+              onPress={() =>
+                props.choosePlayer(props.awayTeamId, 1, props.frameIdx)
+              }>
+              {awayPlayerB ? awayPlayerB : 'Player'}
             </Button>
           </View>
         )}

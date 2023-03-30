@@ -7,19 +7,29 @@ import Roster from '@components/Roster'
 import {io} from 'socket.io-client'
 import config from '~/config'
 import {useFocusEffect} from '@react-navigation/native'
+import Notes from '@components/Notes'
+import {useAppSelector} from '~/lib/hooks/redux'
 
 const MatchScreen = (props: any) => {
+  const socket = React.useRef(null)
+  const user = useAppSelector(_state => _state.user)
   useFocusEffect(
     React.useCallback(() => {
-      const socket = io('https://' + config.domain)
-      socket.on('connect', () => {
-        console.log('connected', socket.id)
+      const roomId = 'asd'
+      socket.current = io('https://' + config.domain)
+      const engine = socket.current.io.engine
+      engine.once('upgrade', () => {
+        console.log(engine.transport.name)
+      })
+      socket.current.on('connect', () => {
+        console.log('connected', socket.current.id)
+        socket.current.emit('join', roomId)
       })
 
-      socket.on('disconnect', () => {
+      socket.current.on('disconnect', () => {
         console.log('disconnected')
       })
-      return () => socket.disconnect()
+      return () => socket.current.disconnect()
     }, []),
   )
 
@@ -126,6 +136,11 @@ const MatchScreen = (props: any) => {
     playerIdx: -1,
     frameIdx: -1,
   })
+  const [team, setTeam] = React.useState('')
+
+  React.useEffect(() => {
+
+  }, [teams, user])
 
   const teams: any = {}
   teams[props.matchInfo.awayTeamId] = {
@@ -262,11 +277,13 @@ const MatchScreen = (props: any) => {
         ListHeaderComponent={
           <View style={{backgroundColor: '#fff'}}>
             <View style={{flexDirection: 'row', padding: 5}}>
-              <Button onPress={() => props.setMatchIdx(null)} mode="contained">Back</Button>
+              <Button onPress={() => props.setMatchIdx(null)} mode="contained">
+                Back
+              </Button>
             </View>
             <View style={{alignItems: 'center'}}>
               <Text>
-                {props.matchInfo.awayTeamId} vs {props.matchInfo.homeTeamId}
+                {props.matchInfo.homeTeamId} vs {props.matchInfo.awayTeamId}
               </Text>
             </View>
             <View style={{flexDirection: 'row'}}>
@@ -291,8 +308,25 @@ const MatchScreen = (props: any) => {
         }
         ListFooterComponent={
           <View>
-            <Button onPress={() => AddSinglesFrame()}>Add an extra Singles Frame</Button>
-            <Button onPress={() => AddDoublesFrame()}>Add an extra Doubles Frame</Button>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flex: 1}}>
+                <Button mode="elevated">Finalize Home</Button>
+              </View>
+              <View style={{flex: 1}}>
+                <Button>Finalize Away</Button>
+              </View>
+            </View>
+            <View>
+              <Button onPress={() => AddSinglesFrame()}>
+                Add an extra Singles Frame
+              </Button>
+              <Button onPress={() => AddDoublesFrame()}>
+                Add an extra Doubles Frame
+              </Button>
+            </View>
+            <View>
+              <Notes matchInfo={props.matchInfo} />
+            </View>
           </View>
         }
         data={frames}
@@ -302,6 +336,7 @@ const MatchScreen = (props: any) => {
           </View>
         }
         stickyHeaderIndices={[0]}
+        stickyFoot
         renderItem={({item, index}) => (
           <Frame
             removeFrame={RemoveFrame}

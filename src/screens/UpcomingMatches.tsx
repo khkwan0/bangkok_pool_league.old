@@ -14,6 +14,14 @@ const UpcomingMatches = (props: any) => {
       homeTeamId: 1,
       awayTeamId: 2,
       gameType: 1,
+      homeFinalized: {
+        userId: '',
+        timestamp: 0,
+      },
+      awayFinalized: {
+        userId: '',
+        timestamp: 0,
+      },
     },
     {
       id: 2,
@@ -21,6 +29,14 @@ const UpcomingMatches = (props: any) => {
       homeTeamId: 3,
       awayTeamId: 4,
       gameType: 2,
+      homeFinalized: {
+        userId: '',
+        timestamp: 0,
+      },
+      awayFinalized: {
+        userId: '',
+        timestamp: 0,
+      },
     },
     {
       id: 3,
@@ -28,6 +44,14 @@ const UpcomingMatches = (props: any) => {
       homeTeamId: 1,
       awayTeamId: 3,
       gameType: 2,
+      homeFinalized: {
+        userId: '',
+        timestamp: 0,
+      },
+      awayFinalized: {
+        userId: '',
+        timestamp: 0,
+      },
     },
   ]
 
