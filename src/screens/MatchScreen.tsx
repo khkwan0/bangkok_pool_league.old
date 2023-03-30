@@ -1,7 +1,7 @@
 import React from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {FlatList, View} from 'react-native'
-import {Divider, Text} from 'react-native-paper'
+import {Button, Divider, Text} from 'react-native-paper'
 import Frame from '@components/Frame'
 import Roster from '@components/Roster'
 
@@ -17,6 +17,7 @@ const MatchScreen = (props: any) => {
       lastUpdate: 0,
       changedBy: 0,
       lastChangedBy: 0,
+      addOn: false,
     },
     {
       type: 'singles',
@@ -28,6 +29,31 @@ const MatchScreen = (props: any) => {
       lastUpdate: 0,
       changedBy: 0,
       lastChangedBy: 0,
+      addOn: false,
+    },
+    {
+      type: 'singles',
+      gameType: 1,
+      winner: null,
+      homePlayerIds: [],
+      awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
+      addOn: false,
+    },
+    {
+      type: 'singles',
+      gameType: 1,
+      winner: null,
+      homePlayerIds: [],
+      awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
+      addOn: false,
     },
     {
       type: 'doubles',
@@ -39,6 +65,43 @@ const MatchScreen = (props: any) => {
       lastUpdate: 0,
       changedBy: 0,
       lastChangedBy: 0,
+      addOn: false,
+    },
+    {
+      type: 'doubles',
+      gameType: 1,
+      winner: null,
+      homePlayerIds: [],
+      awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
+      addOn: false,
+    },
+    {
+      type: 'doubles',
+      gameType: 1,
+      winner: null,
+      homePlayerIds: [],
+      awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
+      addOn: false,
+    },
+    {
+      type: 'doubles',
+      gameType: 1,
+      winner: null,
+      homePlayerIds: [],
+      awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
+      addOn: false,
     },
   ])
   const [showRoster, setShowRoster] = React.useState({
@@ -81,12 +144,51 @@ const MatchScreen = (props: any) => {
     ],
   }
 
+  function AddSinglesFrame() {
+    const _frames = [...frames]
+    _frames.push({
+      type: 'singles',
+      gameType: 1,
+      winner: null,
+      homePlayerIds: [],
+      awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
+      addOn: true,
+    })
+    setFrames(_frames)
+  }
+
+  function AddDoublesFrame() {
+    const _frames = [...frames]
+    _frames.push({
+      type: 'doubles',
+      gameType: 1,
+      winner: null,
+      homePlayerIds: [],
+      awayPlayerIds: [],
+      timestamp: 0,
+      lastUpdate: 0,
+      changedBy: 0,
+      lastChangedBy: 0,
+      addOn: true,
+    })
+    setFrames(_frames)
+  }
+
+  function RemoveFrame(idx: number) {
+    const _frames = [...frames]
+    _frames.splice(idx, 1)
+    setFrames(_frames)
+  }
+
   function ChoosePlayer(teamId: number, playerIdx: number, frameIdx: number) {
     setShowRoster({teamId, playerIdx, frameIdx})
   }
 
   function HandleSelect(frameInfo: any, playerId: number) {
-    console.log('frameinfo', frameInfo, props.matchInfo.awayTeamId, props.matchInfo)
     const _frames = [...frames]
     if (frameInfo.teamId === props.matchInfo.awayTeamId) {
       _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
@@ -104,6 +206,10 @@ const MatchScreen = (props: any) => {
       ? (_frames[frameIdx].lastUpdate = Date.now())
       : (_frames[frameIdx].timestamp = Date.now())
     setFrames(_frames)
+  }
+
+  function CancelPlayerSelect() {
+    setShowRoster({teamId: -1, frameIdx: -1, playerIdx: -1})
   }
 
   let awayScore = 0
@@ -125,6 +231,7 @@ const MatchScreen = (props: any) => {
     return (
       <SafeAreaView>
         <Roster
+          cancel={CancelPlayerSelect}
           team={teams[showRoster.teamId]}
           frameInfo={showRoster}
           handleSelect={HandleSelect}
@@ -134,22 +241,53 @@ const MatchScreen = (props: any) => {
   }
   return (
     <SafeAreaView>
-      <View style={{alignItems: 'center'}}>
-        <Text>{props.matchInfo.awayTeamId} vs {props.matchInfo.homeTeamId}</Text>
-      </View>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text variant="displayMedium">{awayScore}</Text>
-        </View>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text variant="displayMedium">{homeScore}</Text>
-        </View>
-      </View>
       <FlatList
+        ListHeaderComponent={
+          <View style={{backgroundColor: '#fff'}}>
+            <View style={{flexDirection: 'row', padding: 5}}>
+              <Button onPress={() => props.setMatchIdx(null)} mode="contained">Back</Button>
+            </View>
+            <View style={{alignItems: 'center'}}>
+              <Text>
+                {props.matchInfo.awayTeamId} vs {props.matchInfo.homeTeamId}
+              </Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text variant="displayMedium">{awayScore}</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text variant="displayMedium">{homeScore}</Text>
+              </View>
+            </View>
+          </View>
+        }
+        ListFooterComponent={
+          <View>
+            <Button onPress={() => AddSinglesFrame()}>Add an extra Singles Frame</Button>
+            <Button onPress={() => AddDoublesFrame()}>Add an extra Doubles Frame</Button>
+          </View>
+        }
         data={frames}
-        ItemSeparatorComponent={<Divider bold/>}
+        ItemSeparatorComponent={
+          <View style={{marginVertical: 5}}>
+            <Divider bold />
+          </View>
+        }
+        stickyHeaderIndices={[0]}
         renderItem={({item, index}) => (
           <Frame
+            removeFrame={RemoveFrame}
             awayTeamId={props.matchInfo.awayTeamId}
             homeTeamId={props.matchInfo.homeTeamId}
             teams={teams}
