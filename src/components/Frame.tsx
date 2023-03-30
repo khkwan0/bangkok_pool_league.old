@@ -8,10 +8,14 @@ const Frame = (props: any) => {
   let awayPlayerA = ''
   let awayPlayerB = ''
   if (props.frame.awayPlayerIds.length > 0) {
-    let _player = props.teams[props.awayTeamId].players.find((player: any) => player.playerId === props.frame.awayPlayerIds[0])
+    let _player = props.teams[props.awayTeamId].players.find(
+      (player: any) => player.playerId === props.frame.awayPlayerIds[0],
+    )
     awayPlayerA = _player.firstName + ' ' + _player.lastName
     if (props.frame.awayPlayerIds.length > 1) {
-      _player = props.teams[props.awayTeamId].players.find((player: any) => player.playerId === props.frame.awayPlayerIds[1])
+      _player = props.teams[props.awayTeamId].players.find(
+        (player: any) => player.playerId === props.frame.awayPlayerIds[1],
+      )
       awayPlayerB = _player.firstName + ' ' + _player.lastName
     }
   }
@@ -19,10 +23,14 @@ const Frame = (props: any) => {
   let homePlayerA = ''
   let homePlayerB = ''
   if (props.frame.homePlayerIds.length > 0) {
-    let _player = props.teams[props.homeTeamId].players.find((player: any) => player.playerId === props.frame.homePlayerIds[0])
+    let _player = props.teams[props.homeTeamId].players.find(
+      (player: any) => player.playerId === props.frame.homePlayerIds[0],
+    )
     homePlayerA = _player.firstName + ' ' + _player.lastName
     if (props.frame.homePlayerIds.length > 1) {
-      _player = props.teams[props.homeTeamId].players.find((player: any) => player.playerId === props.frame.homePlayerIds[1])
+      _player = props.teams[props.homeTeamId].players.find(
+        (player: any) => player.playerId === props.frame.homePlayerIds[1],
+      )
       homePlayerB = _player.firstName + ' ' + _player.lastName
     }
   }
@@ -60,7 +68,8 @@ const Frame = (props: any) => {
           <MaterialCommunityIcons name="check" color="green" size={30} />
         )}
         {props.frame.winner !== props.awayTeamId && (
-          <Button onPress={() => props.setWinner(props.awayTeamId, props.frameIdx)}>
+          <Button
+            onPress={() => props.setWinner(props.awayTeamId, props.frameIdx)}>
             win
           </Button>
         )}
@@ -77,7 +86,8 @@ const Frame = (props: any) => {
           <MaterialCommunityIcons name="check" color="green" size={30} />
         )}
         {props.frame.winner !== props.homeTeamId && (
-          <Button onPress={() => props.setWinner(props.homeTeamId, props.frameIdx)}>
+          <Button
+            onPress={() => props.setWinner(props.homeTeamId, props.frameIdx)}>
             win
           </Button>
         )}
