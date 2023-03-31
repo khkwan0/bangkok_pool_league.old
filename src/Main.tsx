@@ -2,7 +2,7 @@
 import React from 'react'
 import {useAccount, useLeague} from '~/lib/hooks'
 import {useAppSelector} from '~/lib/hooks/redux'
-import UpcomingMatches from '@screens/UpcomingMatches'
+import Matches from '~/screens/Matches'
 import Teams from '@screens/Teams'
 import Account from '@screens/Account'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
@@ -36,7 +36,7 @@ function Main(): JSX.Element {
       }}>
       <Tab.Screen
         name="UpcomingMatches"
-        component={UpcomingMatches}
+        component={Matches}
         options={{
           tabBarLabel: 'Matches',
           tabBarIcon: ({color, size}) => {

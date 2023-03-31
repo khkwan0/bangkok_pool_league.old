@@ -11,8 +11,10 @@ import Notes from '@components/Notes'
 import {useAppSelector} from '~/lib/hooks/redux'
 
 const MatchScreen = (props: any) => {
+  const matchInfo = props.route.params.matchInfo
   const socket = React.useRef(null)
   const user = useAppSelector(_state => _state.user)
+
   useFocusEffect(
     React.useCallback(() => {
       const roomId = 'asd'
@@ -138,8 +140,8 @@ const MatchScreen = (props: any) => {
   })
 
   const teams: any = {}
-  teams[props.matchInfo.away_team_id] = {
-    teamId: props.matchInfo.away_team_id,
+  teams[matchInfo.away_team_id] = {
+    teamId: matchInfo.away_team_id,
     name: 'Blue Boar',
     players: [
       {
@@ -154,8 +156,8 @@ const MatchScreen = (props: any) => {
       },
     ],
   }
-  teams[props.matchInfo.home_team_id] = {
-    teamId: props.matchInfo.home_team_id,
+  teams[matchInfo.home_team_id] = {
+    teamId: matchInfo.home_team_id,
     name: 'Sportman',
     players: [
       {
@@ -217,7 +219,7 @@ const MatchScreen = (props: any) => {
 
   function HandleSelect(frameInfo: any, playerId: number) {
     const _frames = [...frames]
-    if (frameInfo.teamId === props.matchInfo.away_team_id) {
+    if (frameInfo.teamId === matchInfo.away_team_id) {
       _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
     } else {
       _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] = playerId
@@ -242,10 +244,10 @@ const MatchScreen = (props: any) => {
   let awayScore = 0
   let homeScore = 0
   frames.forEach(frame => {
-    if (frame.winner === props.matchInfo.home_team_id) {
+    if (frame.winner === matchInfo.home_team_id) {
       homeScore++
     }
-    if (frame.winner === props.matchInfo.away_team_id) {
+    if (frame.winner === matchInfo.away_team_id) {
       awayScore++
     }
   })
@@ -266,15 +268,15 @@ const MatchScreen = (props: any) => {
       </SafeAreaView>
     )
   }
-
-  console.log('matchinfo', props.matchInfo)
   return (
     <SafeAreaView>
       <FlatList
         ListHeaderComponent={
           <View style={{backgroundColor: '#fff'}}>
             <View style={{flexDirection: 'row', padding: 5}}>
-              <Button onPress={() => props.setMatchIdx(null)} mode="contained">
+              <Button
+                mode="contained"
+                onPress={() => props.navigation.goBack()}>
                 Back
               </Button>
             </View>
@@ -292,7 +294,7 @@ const MatchScreen = (props: any) => {
                   alignItems: 'center',
                 }}>
                 <Text variant="headlineMedium" style={{textAlign: 'center'}}>
-                  {props.matchInfo.home_team_short_name}
+                  {matchInfo.home_team_short_name}
                 </Text>
               </View>
               <View style={{flex: 1, alignItems: 'center'}}>
@@ -300,7 +302,7 @@ const MatchScreen = (props: any) => {
               </View>
               <View style={{flex: 1, alignItems: 'center'}}>
                 <Text variant="headlineMedium" style={{textAlign: 'center'}}>
-                  {props.matchInfo.away_team_short_name}
+                  {matchInfo.away_team_short_name}
                 </Text>
               </View>
             </View>
@@ -343,7 +345,7 @@ const MatchScreen = (props: any) => {
               </Button>
             </View>
             <View>
-              <Notes matchInfo={props.matchInfo} />
+              <Notes matchInfo={matchInfo} />
             </View>
           </View>
         }
@@ -358,7 +360,7 @@ const MatchScreen = (props: any) => {
         renderItem={({item, index}) => (
           <Frame
             removeFrame={RemoveFrame}
-            matchInfo={props.matchInfo}
+            matchInfo={matchInfo}
             teams={teams}
             frame={item}
             choosePlayer={ChoosePlayer}

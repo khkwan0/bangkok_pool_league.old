@@ -1,14 +1,12 @@
 import React from 'react'
-import {Text, FlatList} from 'react-native'
-import MatchCard from '@components/MatchCard'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import MatchScreen from '@screens/MatchScreen'
+import {Text, FlatList} from 'react-native'
+import MatchCard from '@components/MatchCard'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useSeason} from '~/lib/hooks'
 
 const UpcomingMatches = (props: any) => {
-  const [matchIdx, setMatchIdx] = React.useState(null)
   const [fixtures, setFixtures] = React.useState([])
   const user = useAppSelector(_state => _state.user)
   const season = useSeason()
@@ -29,24 +27,22 @@ const UpcomingMatches = (props: any) => {
     })()
   }, [])
 
-  if (matchIdx !== null) {
-    return (
-      <MatchScreen matchInfo={fixtures[matchIdx]} setMatchIdx={setMatchIdx} />
-    )
-  } else {
-    return (
-      <SafeAreaView style={{flex: 1}}>
-        <Text>Upcoming matches</Text>
-        <MaterialCommunityIcons name="circle-outline" />
-        <FlatList
-          data={fixtures}
-          renderItem={({item, index}) => (
-            <MatchCard match={item} setMatchIdx={setMatchIdx} idx={index} />
-          )}
-        />
-      </SafeAreaView>
-    )
+  function HandlePress(idx: number) {
+    props.navigation.navigate('Match Screen', {matchInfo: fixtures[idx]})
   }
+
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      <Text>Upcoming matches</Text>
+      <MaterialCommunityIcons name="circle-outline" />
+      <FlatList
+        data={fixtures}
+        renderItem={({item, index}) => (
+          <MatchCard match={item} idx={index} handlePress={HandlePress} />
+        )}
+      />
+    </SafeAreaView>
+  )
 }
 
 export default UpcomingMatches
