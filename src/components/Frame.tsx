@@ -7,12 +7,12 @@ const Frame = (props: any) => {
   let awayPlayerA = ''
   let awayPlayerB = ''
   if (props.frame.awayPlayerIds.length > 0) {
-    let _player = props.teams[props.awayTeamId].players.find(
+    let _player = props.teams[props.matchInfo.away_team_id].players.find(
       (player: any) => player.playerId === props.frame.awayPlayerIds[0],
     )
     awayPlayerA = _player.firstName + ' ' + _player.lastName
     if (props.frame.awayPlayerIds.length > 1) {
-      _player = props.teams[props.awayTeamId].players.find(
+      _player = props.teams[props.matchInfo.away_team_id].players.find(
         (player: any) => player.playerId === props.frame.awayPlayerIds[1],
       )
       awayPlayerB = _player.firstName + ' ' + _player.lastName
@@ -22,12 +22,12 @@ const Frame = (props: any) => {
   let homePlayerA = ''
   let homePlayerB = ''
   if (props.frame.homePlayerIds.length > 0) {
-    let _player = props.teams[props.homeTeamId].players.find(
+    let _player = props.teams[props.matchInfo.home_team_id].players.find(
       (player: any) => player.playerId === props.frame.homePlayerIds[0],
     )
     homePlayerA = _player.firstName + ' ' + _player.lastName
     if (props.frame.homePlayerIds.length > 1) {
-      _player = props.teams[props.homeTeamId].players.find(
+      _player = props.teams[props.matchInfo.home_team_id].players.find(
         (player: any) => player.playerId === props.frame.homePlayerIds[1],
       )
       homePlayerB = _player.firstName + ' ' + _player.lastName
@@ -41,7 +41,7 @@ const Frame = (props: any) => {
         <Button
           icon="plus-circle"
           onPress={() =>
-            props.choosePlayer(props.homeTeamId, 0, props.frameIdx)
+            props.choosePlayer(props.matchInfo.home_team_id, 0, props.frameIdx)
           }>
           {homePlayerA ? homePlayerA : 'Player'}
         </Button>
@@ -50,7 +50,7 @@ const Frame = (props: any) => {
             <Button
               icon="plus-circle"
               onPress={() =>
-                props.choosePlayer(props.homeTeamId, 1, props.frameIdx)
+                props.choosePlayer(props.matchInfo.home_team_id, 1, props.frameIdx)
               }>
               {homePlayerB ? homePlayerB : 'Player'}
             </Button>
@@ -64,12 +64,12 @@ const Frame = (props: any) => {
           justifyContent: 'center',
           paddingVertical: 10,
         }}>
-        {props.frame.winner === props.homeTeamId && (
+        {props.frame.winner === props.matchInfo.home_team_id && (
           <MaterialCommunityIcons name="check" color="green" size={30} />
         )}
-        {props.frame.winner !== props.homeTeamId && (
+        {props.frame.winner !== props.matchInfo.home_team_id && (
           <Button
-            onPress={() => props.setWinner(props.homeTeamId, props.frameIdx)}>
+            onPress={() => props.setWinner(props.matchInfo.home_team_id, props.frameIdx)}>
             win
           </Button>
         )}
@@ -82,12 +82,12 @@ const Frame = (props: any) => {
           borderLeftWidth: 1,
           paddingVertical: 10,
         }}>
-        {props.frame.winner === props.awayTeamId && (
+        {props.frame.winner === props.matchInfo.away_team_id && (
           <MaterialCommunityIcons name="check" color="green" size={30} />
         )}
-        {props.frame.winner !== props.awayTeamId && (
+        {props.frame.winner !== props.matchInfo.away_team_id && (
           <Button
-            onPress={() => props.setWinner(props.awayTeamId, props.frameIdx)}>
+            onPress={() => props.setWinner(props.matchInfo.away_team_id, props.frameIdx)}>
             win
           </Button>
         )}
@@ -97,7 +97,7 @@ const Frame = (props: any) => {
         <Button
           icon="plus-circle"
           onPress={() =>
-            props.choosePlayer(props.awayTeamId, 0, props.frameIdx)
+            props.choosePlayer(props.matchInfo.away_team_id, 0, props.frameIdx)
           }>
           {awayPlayerA ? awayPlayerA : 'Player'}
         </Button>
@@ -106,7 +106,7 @@ const Frame = (props: any) => {
             <Button
               icon="plus-circle"
               onPress={() =>
-                props.choosePlayer(props.awayTeamId, 1, props.frameIdx)
+                props.choosePlayer(props.matchInfo.away_team_id, 1, props.frameIdx)
               }>
               {awayPlayerB ? awayPlayerB : 'Player'}
             </Button>

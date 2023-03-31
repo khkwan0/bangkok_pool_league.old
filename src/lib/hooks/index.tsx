@@ -126,5 +126,31 @@ export const useLeague = (): any => {
       return localSeason
     }
   }
+
   return {GetSeason}
+}
+
+export const useSeason = (): any => {
+  const {Get} = useNetwork()
+
+  const GetMatches = async (userId: number = 0): Promise<Object> => {
+    let query = ''
+    if (typeof userId && userId) {
+      query = '?userid=' + userId
+    }
+    const matches = await Get('/matches' + query)
+    return matches
+  }
+
+  const GetTeams = async (): Promise<Object> => {
+    try {
+      const teams = await Get('/teams')
+      return teams
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
+  return {GetMatches, GetTeams}
 }

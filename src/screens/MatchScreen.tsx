@@ -136,15 +136,10 @@ const MatchScreen = (props: any) => {
     playerIdx: -1,
     frameIdx: -1,
   })
-  const [team, setTeam] = React.useState('')
-
-  React.useEffect(() => {
-
-  }, [teams, user])
 
   const teams: any = {}
-  teams[props.matchInfo.awayTeamId] = {
-    teamId: props.matchInfo.awayTeamId,
+  teams[props.matchInfo.away_team_id] = {
+    teamId: props.matchInfo.away_team_id,
     name: 'Blue Boar',
     players: [
       {
@@ -159,8 +154,8 @@ const MatchScreen = (props: any) => {
       },
     ],
   }
-  teams[props.matchInfo.homeTeamId] = {
-    teamId: props.matchInfo.homeTeamId,
+  teams[props.matchInfo.home_team_id] = {
+    teamId: props.matchInfo.home_team_id,
     name: 'Sportman',
     players: [
       {
@@ -222,7 +217,7 @@ const MatchScreen = (props: any) => {
 
   function HandleSelect(frameInfo: any, playerId: number) {
     const _frames = [...frames]
-    if (frameInfo.teamId === props.matchInfo.awayTeamId) {
+    if (frameInfo.teamId === props.matchInfo.away_team_id) {
       _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
     } else {
       _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] = playerId
@@ -247,10 +242,10 @@ const MatchScreen = (props: any) => {
   let awayScore = 0
   let homeScore = 0
   frames.forEach(frame => {
-    if (frame.winner === props.matchInfo.homeTeamId) {
+    if (frame.winner === props.matchInfo.home_team_id) {
       homeScore++
     }
-    if (frame.winner === props.matchInfo.awayTeamId) {
+    if (frame.winner === props.matchInfo.away_team_id) {
       awayScore++
     }
   })
@@ -271,6 +266,8 @@ const MatchScreen = (props: any) => {
       </SafeAreaView>
     )
   }
+
+  console.log('matchinfo', props.matchInfo)
   return (
     <SafeAreaView>
       <FlatList
@@ -281,10 +278,31 @@ const MatchScreen = (props: any) => {
                 Back
               </Button>
             </View>
-            <View style={{alignItems: 'center'}}>
-              <Text>
-                {props.matchInfo.homeTeamId} vs {props.matchInfo.awayTeamId}
-              </Text>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+                  {props.matchInfo.home_team_short_name}
+                </Text>
+              </View>
+              <View style={{flex: 1, alignItems: 'center'}}>
+                <Text>VS</Text>
+              </View>
+              <View style={{flex: 1, alignItems: 'center'}}>
+                <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+                  {props.matchInfo.away_team_short_name}
+                </Text>
+              </View>
             </View>
             <View style={{flexDirection: 'row'}}>
               <View
@@ -340,8 +358,7 @@ const MatchScreen = (props: any) => {
         renderItem={({item, index}) => (
           <Frame
             removeFrame={RemoveFrame}
-            awayTeamId={props.matchInfo.awayTeamId}
-            homeTeamId={props.matchInfo.homeTeamId}
+            matchInfo={props.matchInfo}
             teams={teams}
             frame={item}
             choosePlayer={ChoosePlayer}
