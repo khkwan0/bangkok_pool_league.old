@@ -29,60 +29,6 @@ const UpcomingMatches = (props: any) => {
     })()
   }, [])
 
-  const fixturesData = [
-    {
-      id: 1,
-      timestamp: 1679918400000,
-      homeTeamId: 1,
-      awayTeamId: 2,
-      gameType: 1,
-      homeFinalized: {
-        userId: '',
-        timestamp: 0,
-      },
-      awayFinalized: {
-        userId: '',
-        timestamp: 0,
-      },
-    },
-    {
-      id: 2,
-      timestamp: 1679918400000,
-      homeTeamId: 3,
-      awayTeamId: 4,
-      gameType: 2,
-      homeFinalized: {
-        userId: '',
-        timestamp: 0,
-      },
-      awayFinalized: {
-        userId: '',
-        timestamp: 0,
-      },
-    },
-    {
-      id: 3,
-      timestamp: 1680177600000,
-      homeTeamId: 1,
-      awayTeamId: 3,
-      gameType: 2,
-      homeFinalized: {
-        userId: '',
-        timestamp: 0,
-      },
-      awayFinalized: {
-        userId: '',
-        timestamp: 0,
-      },
-    },
-  ]
-
-  const gameTypeData = {
-    1: '8 ball',
-    2: '9 ball',
-    3: '8/9 ball',
-  }
-
   if (matchIdx !== null) {
     return (
       <MatchScreen matchInfo={fixtures[matchIdx]} setMatchIdx={setMatchIdx} />
