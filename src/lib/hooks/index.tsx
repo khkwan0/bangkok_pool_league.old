@@ -133,12 +133,9 @@ export const useLeague = (): any => {
 export const useSeason = (): any => {
   const {Get} = useNetwork()
 
-  const GetMatches = async (userId: number = 0): Promise<Object> => {
-    let query = ''
-    if (typeof userId && userId) {
-      query = '?userid=' + userId
-    }
-    const matches = await Get('/matches' + query)
+  const GetMatches = async (options: Array<string> = []): Promise<Object> => {
+    const query = options.join('&')
+    const matches = await Get('/matches?' + query)
     return matches
   }
 

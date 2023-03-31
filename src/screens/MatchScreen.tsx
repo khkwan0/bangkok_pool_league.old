@@ -21,15 +21,12 @@ const MatchScreen = (props: any) => {
       socket.current = io('https://' + config.domain)
       const engine = socket.current.io.engine
       engine.once('upgrade', () => {
-        console.log(engine.transport.name)
       })
       socket.current.on('connect', () => {
-        console.log('connected', socket.current.id)
         socket.current.emit('join', roomId)
       })
 
       socket.current.on('disconnect', () => {
-        console.log('disconnected')
       })
       return () => socket.current.disconnect()
     }, []),

@@ -8,15 +8,19 @@ import {useSeason} from '~/lib/hooks'
 
 const UpcomingMatches = (props: any) => {
   const [fixtures, setFixtures] = React.useState([])
-  const user = useAppSelector(_state => _state.user)
+//  const user = useAppSelector(_state => _state.user)
+  const user = {
+    id: 1933,
+  }
   const season = useSeason()
 
   React.useEffect(() => {
     ;(async () => {
       try {
         let matches = []
+        console.log(user.id)
         if (typeof user.id !== 'undefined') {
-          matches = await season.GetMatches(user.id)
+          matches = await season.GetMatches(['userid=' + user.id, 'newonly=1'])
         } else {
           matches = await season.GetMatches()
         }
@@ -36,6 +40,9 @@ const UpcomingMatches = (props: any) => {
       <Text>Upcoming matches</Text>
       <MaterialCommunityIcons name="circle-outline" />
       <FlatList
+        keyExtractor={(item, index) =>
+          item.home_team_id + item.away_team_id + item.date + index
+        }
         data={fixtures}
         renderItem={({item, index}) => (
           <MatchCard match={item} idx={index} handlePress={HandlePress} />
