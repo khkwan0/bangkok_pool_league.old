@@ -9,12 +9,10 @@ import {Button} from 'react-native-paper'
 const Account = (props: any) => {
   const account = useAccount()
   const {user} = useAppSelector(_state => _state.user)
-  console.log(user)
 
   React.useEffect(() => {
     ;(async () => {
       if (typeof user.data.token !== 'undefined' && user.data.token) {
-        console.log('ffetch user')
         await account.FetchUser(user.data.id, user.data.token)
       }
     })()

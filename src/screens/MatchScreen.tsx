@@ -1,7 +1,7 @@
 import React from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {FlatList, View} from 'react-native'
-import {Button, Divider, Modal, Portal, Text} from 'react-native-paper'
+import {Button, Divider, Modal, Portal, RadioButton, Text} from 'react-native-paper'
 import Frame from '@components/Frame'
 import Roster from '@components/Roster'
 import {io} from 'socket.io-client'
@@ -10,6 +10,7 @@ import {useFocusEffect} from '@react-navigation/native'
 import Notes from '@components/Notes'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useTeams} from '~/lib/hooks'
+import RadioButtonGroup from 'react-native-paper/lib/typescript/src/components/RadioButton/RadioButtonGroup'
 
 const MatchScreen = (props: any) => {
   const matchInfo = props.route.params.matchInfo
@@ -17,6 +18,7 @@ const MatchScreen = (props: any) => {
   const user = useAppSelector(_state => _state.user)
   const team = useTeams()
   const [teams, setTeams] = React.useState({})
+  const [firstBreak, setFirstBreak] = React.useState(null)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -325,32 +327,44 @@ const MatchScreen = (props: any) => {
                 Back
               </Button>
             </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
+            <RadioButton.Group
+              onValueChange={newValue => setFirstBreak(newValue)}
+              value={firstBreak}>
               <View
                 style={{
                   flex: 1,
-                  justifyContent: 'center',
+                  flexDirection: 'row',
                   alignItems: 'center',
+                  justifyContent: 'center',
                 }}>
-                <Text variant="headlineMedium" style={{textAlign: 'center'}}>
-                  {matchInfo.home_team_short_name}
-                </Text>
-              </View>
-              <View style={{flex: 1, alignItems: 'center'}}>
-                <Text>VS</Text>
-              </View>
-              <View style={{flex: 1, alignItems: 'center'}}>
-                <Text variant="headlineMedium" style={{textAlign: 'center'}}>
-                  {matchInfo.away_team_short_name}
-                </Text>
-              </View>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+                    {matchInfo.home_team_short_name}
+                  </Text>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <RadioButton value={matchInfo.home_team_id} />
+                    <Text>First Break</Text>
+                  </View>
+                </View>
+                <View style={{flex: 1, alignItems: 'center'}}>
+                  <Text>VS</Text>
+                </View>
+                <View style={{flex: 1, alignItems: 'center'}}>
+                  <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+                    {matchInfo.away_team_short_name}
+                  </Text>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <RadioButton value={matchInfo.away_team_id} />
+                    <Text>First Break</Text>
+                  </View>
+                </View>
             </View>
+            </RadioButton.Group>
             <View style={{flexDirection: 'row'}}>
               <View
                 style={{
@@ -403,6 +417,7 @@ const MatchScreen = (props: any) => {
         stickyHeaderIndices={[0]}
         renderItem={({item, index}) => (
           <Frame
+            firstBreak={firstBreak}
             removeFrame={RemoveFrame}
             matchInfo={matchInfo}
             teams={teams}

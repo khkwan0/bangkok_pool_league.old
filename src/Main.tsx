@@ -15,7 +15,6 @@ function Main(): JSX.Element {
   const league = useLeague()
 
   const {user} = useAppSelector(_state => _state.user)
-  console.log('user', user)
 
   React.useEffect(() => {
     account.LoadUser()
@@ -24,7 +23,6 @@ function Main(): JSX.Element {
   React.useEffect(() => {
     ;(async () => {
       const season = await league.GetSeason()
-      console.log('season', season)
     })()
   }, [league])
 

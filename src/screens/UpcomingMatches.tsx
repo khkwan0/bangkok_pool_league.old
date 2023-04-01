@@ -18,7 +18,6 @@ const UpcomingMatches = (props: any) => {
     ;(async () => {
       try {
         let matches = []
-        console.log(user.id)
         if (typeof user.id !== 'undefined') {
           matches = await season.GetMatches(['userid=' + user.id, 'newonly=1'])
         } else {

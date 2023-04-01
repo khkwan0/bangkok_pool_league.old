@@ -1,6 +1,6 @@
 import React from 'react'
 import {View} from 'react-native'
-import {Button} from 'react-native-paper'
+import {Button, Text} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const Frame = (props: any) => {
@@ -34,6 +34,7 @@ const Frame = (props: any) => {
     }
   }
 
+  console.log(props.firstBreak, props.matchInfo.home_team_id)
   return (
     <View style={{flex: 1, flexDirection: 'row', paddingHorizontal: 10}}>
       <View
@@ -60,6 +61,10 @@ const Frame = (props: any) => {
             </Button>
           </View>
         )}
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          {props.firstBreak === props.matchInfo.home_team_id && props.frameIdx % 2 === 0 && <Text>Break</Text>}
+          {props.firstBreak === props.matchInfo.away_team_id && props.frameIdx % 2 === 1 && <Text>Break</Text>}
+        </View>
       </View>
       <View
         style={{
@@ -142,6 +147,10 @@ const Frame = (props: any) => {
             </Button>
           </View>
         )}
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          {props.firstBreak === props.matchInfo.away_team_id && props.frameIdx % 2 === 0 && <Text>Break</Text>}
+          {props.firstBreak === props.matchInfo.home_team_id && props.frameIdx % 2 === 1 && <Text>Break</Text>}
+        </View>
       </View>
     </View>
   )
