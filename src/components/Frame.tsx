@@ -39,7 +39,7 @@ const Frame = (props: any) => {
       <View
         style={{flex: 2, paddingVertical: 10, backgroundColor: '#ff000050'}}>
         <Button
-          icon="plus-circle"
+          icon={!homePlayerA ? 'plus-circle' : ''}
           onPress={() =>
             props.choosePlayer(props.matchInfo.home_team_id, 0, props.frameIdx)
           }>
@@ -48,9 +48,13 @@ const Frame = (props: any) => {
         {props.frame.type === 'doubles' && (
           <View style={{marginTop: 5}}>
             <Button
-              icon="plus-circle"
+              icon={!homePlayerB ? 'plus-circle' : ''}
               onPress={() =>
-                props.choosePlayer(props.matchInfo.home_team_id, 1, props.frameIdx)
+                props.choosePlayer(
+                  props.matchInfo.home_team_id,
+                  1,
+                  props.frameIdx,
+                )
               }>
               {homePlayerB ? homePlayerB : 'Player'}
             </Button>
@@ -69,7 +73,18 @@ const Frame = (props: any) => {
         )}
         {props.frame.winner !== props.matchInfo.home_team_id && (
           <Button
-            onPress={() => props.setWinner(props.matchInfo.home_team_id, props.frameIdx)}>
+            disabled={
+              props.gameType === 'doubles'
+                ? homePlayerA && homePlayerB && awayPlayerA && awayPlayerB
+                  ? false
+                  : true
+                : homePlayerA && awayPlayerA
+                ? false
+                : true
+            }
+            onPress={() =>
+              props.setWinner(props.matchInfo.home_team_id, props.frameIdx)
+            }>
             win
           </Button>
         )}
@@ -87,7 +102,18 @@ const Frame = (props: any) => {
         )}
         {props.frame.winner !== props.matchInfo.away_team_id && (
           <Button
-            onPress={() => props.setWinner(props.matchInfo.away_team_id, props.frameIdx)}>
+            disabled={
+              props.gameType === 'doubles'
+                ? homePlayerA && homePlayerB && awayPlayerA && awayPlayerB
+                  ? false
+                  : true
+                : homePlayerA && awayPlayerA
+                ? false
+                : true
+            }
+            onPress={() =>
+              props.setWinner(props.matchInfo.away_team_id, props.frameIdx)
+            }>
             win
           </Button>
         )}
@@ -95,7 +121,7 @@ const Frame = (props: any) => {
       <View
         style={{flex: 2, paddingVertical: 10, backgroundColor: '#0000ff22'}}>
         <Button
-          icon="plus-circle"
+          icon={!awayPlayerA ? 'plus-circle' : ''}
           onPress={() =>
             props.choosePlayer(props.matchInfo.away_team_id, 0, props.frameIdx)
           }>
@@ -104,9 +130,13 @@ const Frame = (props: any) => {
         {props.frame.type === 'doubles' && (
           <View style={{marginTop: 5}}>
             <Button
-              icon="plus-circle"
+              icon={!awayPlayerB ? 'plus-circle' : ''}
               onPress={() =>
-                props.choosePlayer(props.matchInfo.away_team_id, 1, props.frameIdx)
+                props.choosePlayer(
+                  props.matchInfo.away_team_id,
+                  1,
+                  props.frameIdx,
+                )
               }>
               {awayPlayerB ? awayPlayerB : 'Player'}
             </Button>
