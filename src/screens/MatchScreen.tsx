@@ -1,7 +1,7 @@
 import React from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {FlatList, View} from 'react-native'
-import {Button, Divider, Text} from 'react-native-paper'
+import {Button, Divider, Modal, Portal, Text} from 'react-native-paper'
 import Frame from '@components/Frame'
 import Roster from '@components/Roster'
 import {io} from 'socket.io-client'
@@ -9,11 +9,14 @@ import config from '~/config'
 import {useFocusEffect} from '@react-navigation/native'
 import Notes from '@components/Notes'
 import {useAppSelector} from '~/lib/hooks/redux'
+import {useTeams} from '~/lib/hooks'
 
 const MatchScreen = (props: any) => {
   const matchInfo = props.route.params.matchInfo
   const socket = React.useRef(null)
   const user = useAppSelector(_state => _state.user)
+  const team = useTeams()
+  const [teams, setTeams] = React.useState({})
 
   useFocusEffect(
     React.useCallback(() => {
@@ -29,6 +32,23 @@ const MatchScreen = (props: any) => {
       socket.current.on('disconnect', () => {
       })
       return () => socket.current.disconnect()
+    }, []),
+  )
+
+  useFocusEffect(
+    React.useCallback(() => {
+      ;(async () => {
+        const _teams: any = {}
+        if (typeof matchInfo.home_team_id !== 'undefined') {
+          const homePlayers = await team.GetPlayers(matchInfo.home_team_id)
+          _teams[matchInfo.home_team_id] = homePlayers
+        }
+        if (typeof matchInfo.away_team_id !== 'undefined') {
+          const awayPlayers = await team.GetPlayers(matchInfo.away_team_id)
+          _teams[matchInfo.away_team_id] = awayPlayers
+        }
+        setTeams(_teams)
+      })()
     }, []),
   )
 
@@ -135,7 +155,7 @@ const MatchScreen = (props: any) => {
     playerIdx: -1,
     frameIdx: -1,
   })
-
+/*
   const teams: any = {}
   teams[matchInfo.away_team_id] = {
     teamId: matchInfo.away_team_id,
@@ -169,6 +189,7 @@ const MatchScreen = (props: any) => {
       },
     ],
   }
+  */
 
   function AddSinglesFrame() {
     const _frames = [...frames]
@@ -254,6 +275,7 @@ const MatchScreen = (props: any) => {
     showRoster.frameIdx >= 0 &&
     showRoster.playerIdx >= 0
   ) {
+    /*
     return (
       <SafeAreaView>
         <Roster
@@ -264,9 +286,35 @@ const MatchScreen = (props: any) => {
         />
       </SafeAreaView>
     )
+    */
   }
+
   return (
     <SafeAreaView>
+      <Portal>
+        <Modal
+          visible={
+            showRoster.teamId >= 0 &&
+            showRoster.frameIdx >= 0 &&
+            showRoster.playerIdx >= 0
+          }
+          contentContainerStyle={{
+            backgroundColor: 'white',
+            padding: 20,
+            margin: 10,
+            maxHeight: '80%',
+          }}
+          onDismiss={() =>
+            setShowRoster({frameIdx: -1, teamId: -1, playerIdx: -1})
+          }>
+          <Roster
+            players={teams[showRoster.teamId]}
+            frameInfo={showRoster}
+            handleSelect={HandleSelect}
+            cancel={CancelPlayerSelect}
+          />
+        </Modal>
+      </Portal>
       <FlatList
         ListHeaderComponent={
           <View style={{backgroundColor: '#fff'}}>
@@ -353,7 +401,6 @@ const MatchScreen = (props: any) => {
           </View>
         }
         stickyHeaderIndices={[0]}
-        stickyFoot
         renderItem={({item, index}) => (
           <Frame
             removeFrame={RemoveFrame}

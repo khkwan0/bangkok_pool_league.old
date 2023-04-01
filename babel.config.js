@@ -8,11 +8,11 @@ module.exports = {
         alias: {
           '~': './src',
           '@components': './src/components',
-          '@screens': './src/screens'
+          '@screens': './src/screens',
         },
       },
     ],
-//    'react-native-reanimated/plugin',
     'react-native-paper/babel',
+//    'react-native-reanimated/plugin',
   ],
 }

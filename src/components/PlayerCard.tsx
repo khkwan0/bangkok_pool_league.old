@@ -8,11 +8,21 @@ const PlayerCard = (props: any) => {
   }
 
   return (
-    <View>
-      <Text>{props.player.firstName}</Text>
-      <Button onPress={() => HandleSelect(props.player.playerId)}>
-        Select
-      </Button>
+    <View
+      style={[
+        {flexDirection: 'row', alignItems: 'center', padding: 10},
+        props.idx % 2 !== 0 ? {backgroundColor: '#0000ff22'} : {},
+      ]}>
+      <View style={{flex: 1.5}}>
+        <Text variant="bodyLarge">{props.player.nickname}</Text>
+      </View>
+      <View style={{flex: 1}}>
+        <Button
+          mode="outlined"
+          onPress={() => HandleSelect(props.player.playerId)}>
+          Select
+        </Button>
+      </View>
     </View>
   )
 }

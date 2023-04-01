@@ -151,3 +151,21 @@ export const useSeason = (): any => {
 
   return {GetMatches, GetTeams}
 }
+
+export const useTeams = (): any => {
+  const {Get} = useNetwork()
+
+  const GetPlayers = async (teamid: number = -1): Promise<Object> => {
+    try {
+      if (teamid && Number.isInteger(teamid) && teamid >= 0) {
+        const players = await Get('/players?teamid=' + teamid)
+        return players
+      }
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
+  return {GetPlayers}
+}

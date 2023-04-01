@@ -7,30 +7,30 @@ const Frame = (props: any) => {
   let awayPlayerA = ''
   let awayPlayerB = ''
   if (props.frame.awayPlayerIds.length > 0) {
-    let _player = props.teams[props.matchInfo.away_team_id].players.find(
+    let _player = props.teams[props.matchInfo.away_team_id].find(
       (player: any) => player.playerId === props.frame.awayPlayerIds[0],
     )
-    awayPlayerA = _player.firstName + ' ' + _player.lastName
+    awayPlayerA = _player.nickname
     if (props.frame.awayPlayerIds.length > 1) {
-      _player = props.teams[props.matchInfo.away_team_id].players.find(
+      _player = props.teams[props.matchInfo.away_team_id].find(
         (player: any) => player.playerId === props.frame.awayPlayerIds[1],
       )
-      awayPlayerB = _player.firstName + ' ' + _player.lastName
+      awayPlayerB = _player.nickname
     }
   }
 
   let homePlayerA = ''
   let homePlayerB = ''
   if (props.frame.homePlayerIds.length > 0) {
-    let _player = props.teams[props.matchInfo.home_team_id].players.find(
+    let _player = props.teams[props.matchInfo.home_team_id].find(
       (player: any) => player.playerId === props.frame.homePlayerIds[0],
     )
-    homePlayerA = _player.firstName + ' ' + _player.lastName
+    homePlayerA = _player.nickname
     if (props.frame.homePlayerIds.length > 1) {
-      _player = props.teams[props.matchInfo.home_team_id].players.find(
+      _player = props.teams[props.matchInfo.home_team_id].find(
         (player: any) => player.playerId === props.frame.homePlayerIds[1],
       )
-      homePlayerB = _player.firstName + ' ' + _player.lastName
+      homePlayerB = _player.nickname
     }
   }
 

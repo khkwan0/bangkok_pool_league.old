@@ -1,7 +1,7 @@
 import React from 'react'
-import {SafeAreaView} from 'react-native-safe-area-context'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import {Text, FlatList} from 'react-native'
+import {View, FlatList} from 'react-native'
+import {Text} from 'react-native-paper'
 import MatchCard from '@components/MatchCard'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useSeason} from '~/lib/hooks'
@@ -36,10 +36,11 @@ const UpcomingMatches = (props: any) => {
   }
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <Text>Upcoming matches</Text>
-      <MaterialCommunityIcons name="circle-outline" />
+    <View style={{flex: 1}}>
       <FlatList
+        ListHeaderComponent={
+          <Text variant="titleMedium">Upcoming Matches</Text>
+        }
         keyExtractor={(item, index) =>
           item.home_team_id + item.away_team_id + item.date + index
         }
@@ -48,7 +49,7 @@ const UpcomingMatches = (props: any) => {
           <MatchCard match={item} idx={index} handlePress={HandlePress} />
         )}
       />
-    </SafeAreaView>
+    </View>
   )
 }
 
