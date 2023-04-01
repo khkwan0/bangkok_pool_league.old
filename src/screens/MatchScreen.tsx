@@ -9,20 +9,23 @@ import config from '~/config'
 import {useFocusEffect} from '@react-navigation/native'
 import Notes from '@components/Notes'
 import {useAppSelector} from '~/lib/hooks/redux'
-import {useTeams} from '~/lib/hooks'
-import RadioButtonGroup from 'react-native-paper/lib/typescript/src/components/RadioButton/RadioButtonGroup'
+import {useTeams, useSeason} from '~/lib/hooks'
 
 const MatchScreen = (props: any) => {
   const matchInfo = props.route.params.matchInfo
   const socket = React.useRef(null)
   const user = useAppSelector(_state => _state.user)
   const team = useTeams()
+  const season = useSeason()
+  const [gameTypes, setGameTypes] = React.useState({})
   const [teams, setTeams] = React.useState({})
   const [firstBreak, setFirstBreak] = React.useState(null)
+  const [frames, setFrames] = React.useState([])
+  const [isMounted, setIsMounted] = React.useState(false)
 
   useFocusEffect(
     React.useCallback(() => {
-      const roomId = 'asd'
+      const roomId = matchInfo.home_team_id + 'vs' + matchInfo.away_team_id + matchInfo.date
       socket.current = io('https://' + config.domain)
       const engine = socket.current.io.engine
       engine.once('upgrade', () => {
@@ -54,184 +57,46 @@ const MatchScreen = (props: any) => {
     }, []),
   )
 
-  const [frames, setFrames] = React.useState([
-    {
-      type: 'singles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: false,
-    },
-    {
-      type: 'singles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: false,
-    },
-    {
-      type: 'singles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: false,
-    },
-    {
-      type: 'singles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: false,
-    },
-    {
-      type: 'doubles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: false,
-    },
-    {
-      type: 'doubles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: false,
-    },
-    {
-      type: 'doubles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: false,
-    },
-    {
-      type: 'doubles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: false,
-    },
-  ])
+  React.useEffect(() => {
+    ;(async () => {
+      const _gameTypes = await season.GetGameTypes()
+      setGameTypes(_gameTypes)
+      setIsMounted(true)
+    })()
+  }, [])
+
+  React.useEffect(() => {
+    const _format = JSON.parse(matchInfo.format)
+    const sections = _format[0].subsections
+    const _frames: Array<any> = []
+    let frame_number = 1
+    let section_count = 1
+    sections.forEach((section: any) => {
+      for (let i = 0; i < section.frames; i++) {
+        _frames.push({
+          frameNumber: frame_number,
+          type: section.type,
+          winner: 0,
+          homePlayerIds: [],
+          awayPlayerIds: [],
+        })
+        frame_number++
+      }
+      _frames.push({
+        frameNumber: -1,
+        type: 'section',
+        section: section_count,
+      })
+      section_count++
+    })
+    setFrames(_frames)
+  }, [matchInfo])
+
   const [showRoster, setShowRoster] = React.useState({
     teamId: -1,
     playerIdx: -1,
     frameIdx: -1,
   })
-/*
-  const teams: any = {}
-  teams[matchInfo.away_team_id] = {
-    teamId: matchInfo.away_team_id,
-    name: 'Blue Boar',
-    players: [
-      {
-        playerId: 1,
-        firstName: 'Kenneth',
-        lastName: 'K',
-      },
-      {
-        playerId: 2,
-        firstName: 'Su',
-        lastName: 'M',
-      },
-    ],
-  }
-  teams[matchInfo.home_team_id] = {
-    teamId: matchInfo.home_team_id,
-    name: 'Sportman',
-    players: [
-      {
-        playerId: 3,
-        firstName: 'Rico',
-        lastName: 'T',
-      },
-      {
-        playerId: 4,
-        firstName: 'John',
-        lastName: 'W',
-      },
-    ],
-  }
-  */
-
-  function AddSinglesFrame() {
-    const _frames = [...frames]
-    _frames.push({
-      type: 'singles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: true,
-    })
-    setFrames(_frames)
-  }
-
-  function AddDoublesFrame() {
-    const _frames = [...frames]
-    _frames.push({
-      type: 'doubles',
-      gameType: 1,
-      winner: null,
-      homePlayerIds: [],
-      awayPlayerIds: [],
-      timestamp: 0,
-      lastUpdate: 0,
-      changedBy: 0,
-      lastChangedBy: 0,
-      addOn: true,
-    })
-    setFrames(_frames)
-  }
-
-  function RemoveFrame(idx: number) {
-    const _frames = [...frames]
-    _frames.splice(idx, 1)
-    setFrames(_frames)
-  }
 
   function ChoosePlayer(teamId: number, playerIdx: number, frameIdx: number) {
     setShowRoster({teamId, playerIdx, frameIdx})
@@ -291,145 +156,141 @@ const MatchScreen = (props: any) => {
     */
   }
 
-  return (
-    <SafeAreaView>
-      <Portal>
-        <Modal
-          visible={
-            showRoster.teamId >= 0 &&
-            showRoster.frameIdx >= 0 &&
-            showRoster.playerIdx >= 0
-          }
-          contentContainerStyle={{
-            backgroundColor: 'white',
-            padding: 20,
-            margin: 10,
-            maxHeight: '80%',
-          }}
-          onDismiss={() =>
-            setShowRoster({frameIdx: -1, teamId: -1, playerIdx: -1})
-          }>
-          <Roster
-            players={teams[showRoster.teamId]}
-            frameInfo={showRoster}
-            handleSelect={HandleSelect}
-            cancel={CancelPlayerSelect}
-          />
-        </Modal>
-      </Portal>
-      <FlatList
-        ListHeaderComponent={
-          <View style={{backgroundColor: '#fff'}}>
-            <View style={{flexDirection: 'row', padding: 5}}>
-              <Button
-                mode="contained"
-                onPress={() => props.navigation.goBack()}>
-                Back
-              </Button>
-            </View>
-            <RadioButton.Group
-              onValueChange={newValue => setFirstBreak(newValue)}
-              value={firstBreak}>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
+  if (isMounted) {
+    return (
+      <SafeAreaView>
+        <Portal>
+          <Modal
+            visible={
+              showRoster.teamId >= 0 &&
+              showRoster.frameIdx >= 0 &&
+              showRoster.playerIdx >= 0
+            }
+            contentContainerStyle={{
+              backgroundColor: 'white',
+              padding: 20,
+              margin: 10,
+              maxHeight: '80%',
+            }}
+            onDismiss={() =>
+              setShowRoster({frameIdx: -1, teamId: -1, playerIdx: -1})
+            }>
+            <Roster
+              players={teams[showRoster.teamId]}
+              frameInfo={showRoster}
+              handleSelect={HandleSelect}
+              cancel={CancelPlayerSelect}
+            />
+          </Modal>
+        </Portal>
+        <FlatList
+          ListHeaderComponent={
+            <View style={{backgroundColor: '#fff'}}>
+              <View style={{flexDirection: 'row', padding: 5}}>
+                <Button
+                  mode="contained"
+                  onPress={() => props.navigation.goBack()}>
+                  Back
+                </Button>
+              </View>
+              <RadioButton.Group
+                onValueChange={newValue => setFirstBreak(newValue)}
+                value={firstBreak}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+                      {matchInfo.home_team_short_name}
+                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <RadioButton value={matchInfo.home_team_id} />
+                      <Text>First Break</Text>
+                    </View>
+                  </View>
+                  <View style={{flex: 1, alignItems: 'center'}}>
+                    <Text>VS</Text>
+                  </View>
+                  <View style={{flex: 1, alignItems: 'center'}}>
+                    <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+                      {matchInfo.away_team_short_name}
+                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <RadioButton value={matchInfo.away_team_id} />
+                      <Text>First Break</Text>
+                    </View>
+                  </View>
+              </View>
+              </RadioButton.Group>
+              <View style={{flexDirection: 'row'}}>
                 <View
                   style={{
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text variant="headlineMedium" style={{textAlign: 'center'}}>
-                    {matchInfo.home_team_short_name}
-                  </Text>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <RadioButton value={matchInfo.home_team_id} />
-                    <Text>First Break</Text>
-                  </View>
+                  <Text variant="displayMedium">{awayScore}</Text>
                 </View>
-                <View style={{flex: 1, alignItems: 'center'}}>
-                  <Text>VS</Text>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text variant="displayMedium">{homeScore}</Text>
                 </View>
-                <View style={{flex: 1, alignItems: 'center'}}>
-                  <Text variant="headlineMedium" style={{textAlign: 'center'}}>
-                    {matchInfo.away_team_short_name}
-                  </Text>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <RadioButton value={matchInfo.away_team_id} />
-                    <Text>First Break</Text>
-                  </View>
-                </View>
-            </View>
-            </RadioButton.Group>
-            <View style={{flexDirection: 'row'}}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text variant="displayMedium">{awayScore}</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text variant="displayMedium">{homeScore}</Text>
               </View>
             </View>
-          </View>
-        }
-        ListFooterComponent={
-          <View>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
-                <Button mode="elevated">Finalize Home</Button>
-              </View>
-              <View style={{flex: 1}}>
-                <Button>Finalize Away</Button>
-              </View>
-            </View>
+          }
+          ListFooterComponent={
             <View>
-              <Button onPress={() => AddSinglesFrame()}>
-                Add an extra Singles Frame
-              </Button>
-              <Button onPress={() => AddDoublesFrame()}>
-                Add an extra Doubles Frame
-              </Button>
+              <View style={{flexDirection: 'row'}}>
+                <View style={{flex: 1}}>
+                  <Button mode="elevated">Finalize Home</Button>
+                </View>
+                <View style={{flex: 1}}>
+                  <Button>Finalize Away</Button>
+                </View>
+              </View>
+              <View>
+                <Notes matchInfo={matchInfo} />
+              </View>
             </View>
-            <View>
-              <Notes matchInfo={matchInfo} />
+          }
+          data={frames}
+          ItemSeparatorComponent={
+            <View style={{marginVertical: 5}}>
+              <Divider bold />
             </View>
-          </View>
-        }
-        data={frames}
-        ItemSeparatorComponent={
-          <View style={{marginVertical: 5}}>
-            <Divider bold />
-          </View>
-        }
-        stickyHeaderIndices={[0]}
-        renderItem={({item, index}) => (
-          <Frame
-            firstBreak={firstBreak}
-            removeFrame={RemoveFrame}
-            matchInfo={matchInfo}
-            teams={teams}
-            frame={item}
-            choosePlayer={ChoosePlayer}
-            setWinner={SetWinner}
-            frameIdx={index}
-          />
-        )}
-      />
-    </SafeAreaView>
-  )
+          }
+          stickyHeaderIndices={[0]}
+          renderItem={({item, index}) => (
+            <Frame
+              firstBreak={firstBreak}
+              matchInfo={matchInfo}
+              teams={teams}
+              gameTypes={gameTypes}
+              frame={item}
+              choosePlayer={ChoosePlayer}
+              setWinner={SetWinner}
+              frameIdx={index}
+            />
+          )}
+        />
+      </SafeAreaView>
+    )
+  } else {
+    return null
+  }
 }
 
 export default MatchScreen

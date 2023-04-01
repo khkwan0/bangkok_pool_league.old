@@ -149,7 +149,17 @@ export const useSeason = (): any => {
     }
   }
 
-  return {GetMatches, GetTeams}
+  const GetGameTypes = async (): Promise<Object> => {
+    try {
+      const gameTypes = await Get('/game/types')
+      return gameTypes
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
+  return {GetMatches, GetTeams, GetGameTypes}
 }
 
 export const useTeams = (): any => {
