@@ -1,7 +1,14 @@
 import React from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {FlatList, View} from 'react-native'
-import {Button, Divider, Modal, Portal, RadioButton, Text} from 'react-native-paper'
+import {
+  Button,
+  Divider,
+  Modal,
+  Portal,
+  RadioButton,
+  Text,
+} from 'react-native-paper'
 import Frame from '@components/Frame'
 import Roster from '@components/Roster'
 import {io} from 'socket.io-client'
@@ -22,6 +29,8 @@ const MatchScreen = (props: any) => {
   const [firstBreak, setFirstBreak] = React.useState(null)
   const [frames, setFrames] = React.useState([])
   const [isMounted, setIsMounted] = React.useState(false)
+  const [homeScore, setHomeScore] = React.useState(0)
+  const [awayScore, setAwayScore] = React.useState(0)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -86,6 +95,8 @@ const MatchScreen = (props: any) => {
         frameNumber: -1,
         type: 'section',
         section: section_count,
+        homeScore: 0,
+        awayScore: 0,
       })
       section_count++
     })
@@ -119,23 +130,29 @@ const MatchScreen = (props: any) => {
     _frames[frameIdx].timestamp > 0
       ? (_frames[frameIdx].lastUpdate = Date.now())
       : (_frames[frameIdx].timestamp = Date.now())
-    setFrames(_frames)
+    let awayScore = 0
+    let homeScore = 0
+    const __frames = _frames.map(frame => {
+      if (frame.winner === matchInfo.home_team_id) {
+        homeScore++
+      }
+      if (frame.winner === matchInfo.away_team_id) {
+        awayScore++
+      }
+      if (frame.type === 'section') {
+        frame.homeScore = homeScore
+        frame.awayScore = awayScore
+      }
+      return frame
+    })
+    setFrames(__frames)
+    setAwayScore(awayScore)
+    setHomeScore(homeScore)
   }
 
   function CancelPlayerSelect() {
     setShowRoster({teamId: -1, frameIdx: -1, playerIdx: -1})
   }
-
-  let awayScore = 0
-  let homeScore = 0
-  frames.forEach(frame => {
-    if (frame.winner === matchInfo.home_team_id) {
-      homeScore++
-    }
-    if (frame.winner === matchInfo.away_team_id) {
-      awayScore++
-    }
-  })
 
   if (
     showRoster.teamId >= 0 &&
@@ -205,11 +222,13 @@ const MatchScreen = (props: any) => {
                   }}>
                   <View
                     style={{
-                      flex: 1,
+                      flex: 2,
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+                    <Text
+                      variant="headlineMedium"
+                      style={{textAlign: 'center'}}>
                       {matchInfo.home_team_short_name}
                     </Text>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -220,8 +239,15 @@ const MatchScreen = (props: any) => {
                   <View style={{flex: 1, alignItems: 'center'}}>
                     <Text>VS</Text>
                   </View>
-                  <View style={{flex: 1, alignItems: 'center'}}>
-                    <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+                  <View
+                    style={{
+                      flex: 2,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      variant="headlineMedium"
+                      style={{textAlign: 'center'}}>
                       {matchInfo.away_team_short_name}
                     </Text>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -238,7 +264,7 @@ const MatchScreen = (props: any) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text variant="displayMedium">{awayScore}</Text>
+                  <Text variant="displayMedium">{homeScore}</Text>
                 </View>
                 <View
                   style={{
@@ -246,7 +272,7 @@ const MatchScreen = (props: any) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text variant="displayMedium">{homeScore}</Text>
+                  <Text variant="displayMedium">{awayScore}</Text>
                 </View>
               </View>
             </View>
