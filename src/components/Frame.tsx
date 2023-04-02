@@ -37,11 +37,14 @@ const Frame = (props: any) => {
 
     return (
       <View
-        style={
-          props.frameIdx % 2 === 1
-            ? [{backgroundColor: '#ddd'}]
-            : [{backgroundColor: 'white'}]
-        }>
+        style={[
+          {
+            backgroundColor: props.frameIdx % 2 === 1 ? '#ddd' : '#fff',
+          },
+          {
+            paddingBottom: 10,
+          },
+        ]}>
         <Text style={{textAlign: 'center'}}>
           Frame {props.frame.frameNumber}
         </Text>
