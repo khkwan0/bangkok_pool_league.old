@@ -100,7 +100,8 @@ const Frame = (props: any) => {
             )}
             {props.frame.winner !== props.matchInfo.home_team_id && (
               <Button
-                disabled={
+                disabled={false
+                  /*
                   props.gameType === 'doubles'
                     ? homePlayerA && homePlayerB && awayPlayerA && awayPlayerB
                       ? false
@@ -108,9 +109,14 @@ const Frame = (props: any) => {
                     : homePlayerA && awayPlayerA
                     ? false
                     : true
+                    */
                 }
                 onPress={() =>
-                  props.setWinner(props.matchInfo.home_team_id, props.frameIdx)
+                  props.setWinner(
+                    props.matchInfo.home_team_id,
+                    props.frame.homePlayerIds,
+                    props.frameIdx,
+                  )
                 }>
                 win
               </Button>
@@ -139,7 +145,11 @@ const Frame = (props: any) => {
                     : true
                 }
                 onPress={() =>
-                  props.setWinner(props.matchInfo.away_team_id, props.frameIdx)
+                  props.setWinner(
+                    props.matchInfo.away_team_id,
+                    props.frame.awayPlayerIds,
+                    props.frameIdx,
+                  )
                 }>
                 win
               </Button>

@@ -11,22 +11,35 @@ import {
 } from 'react-native-paper'
 import Frame from '@components/Frame'
 import Roster from '@components/Roster'
-import {io} from 'socket.io-client'
+import {Socket, io} from 'socket.io-client'
 import config from '~/config'
 import {useFocusEffect} from '@react-navigation/native'
 import Notes from '@components/Notes'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useTeams, useSeason} from '~/lib/hooks'
+import {socket} from '~/socket'
 
 const MatchScreen = (props: any) => {
+  type FrameType = {
+    frameNumber: number
+    type: string
+    winner?: number
+    homePlayerIds?: Array<number>
+    awayPlayerIds?: Array<number>
+    homeScore?: number
+    awayScore?: number
+    section?: number
+    timeStamp?: number
+    lastUpdate?: number
+  }
+
   const matchInfo = props.route.params.matchInfo
-  const socket = React.useRef(null)
   const user = useAppSelector(_state => _state.user)
   const team = useTeams()
   const season = useSeason()
   const [gameTypes, setGameTypes] = React.useState({})
   const [teams, setTeams] = React.useState({})
-  const [firstBreak, setFirstBreak] = React.useState(null)
+  const [firstBreak, setFirstBreak] = React.useState(0)
   const [frames, setFrames] = React.useState([])
   const [isMounted, setIsMounted] = React.useState(false)
   const [homeScore, setHomeScore] = React.useState(0)
@@ -34,18 +47,7 @@ const MatchScreen = (props: any) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      const roomId = matchInfo.home_team_id + 'vs' + matchInfo.away_team_id + matchInfo.date
-      socket.current = io('https://' + config.domain)
-      const engine = socket.current.io.engine
-      engine.once('upgrade', () => {
-      })
-      socket.current.on('connect', () => {
-        socket.current.emit('join', roomId)
-      })
-
-      socket.current.on('disconnect', () => {
-      })
-      return () => socket.current.disconnect()
+      return () => socket.disconnect()
     }, []),
   )
 
@@ -66,6 +68,64 @@ const MatchScreen = (props: any) => {
     }, []),
   )
 
+  const framesRef = React.useRef([])
+  const setFramesRef = React.useRef(setFrames)
+
+  React.useEffect(() => {
+    framesRef.current = frames
+  }, [frames])
+
+  React.useEffect(() => {
+    function UpdateFrameWin(frameIdx: number, winnerTeamId: number) {
+      try {
+        const _frames = framesRef.current
+        _frames[frameIdx].winner = winnerTeamId
+        setFrames([..._frames])
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    function UpdateFramePlayers(
+      frameIdx: number,
+      teamId: number,
+      players: Array<number>,
+    ) {
+      const _frames: Array<FrameType> = [...frames]
+      if (teamId === matchInfo.home_team_id) {
+        _frames[frameIdx].homePlayerIds = players
+      } else {
+        _frames[frameIdx].awayPlayerIds = players
+      }
+    }
+    const roomId = 'match_' + matchInfo.match_id
+
+    socket.on('connect', () => {
+      socket.emit('join', roomId)
+    })
+
+    const engine = socket.io.engine
+    engine.once('upgrade', () => {
+      /*
+       */
+    })
+
+    socket.on('disconnect', () => {
+      /*
+       */
+    })
+
+    socket.on('frame_update', data => {
+      if (typeof data.type !== 'undefined') {
+        if (data.type === 'win') {
+          UpdateFrameWin(data.frameIdx, data.winnerTeamId)
+        } else if (data.type === 'players') {
+          UpdateFramePlayers(data.frameIdx, data.teamId, data.players)
+        }
+      }
+    })
+  }, [])
+
   React.useEffect(() => {
     ;(async () => {
       const _gameTypes = await season.GetGameTypes()
@@ -77,7 +137,7 @@ const MatchScreen = (props: any) => {
   React.useEffect(() => {
     const _format = JSON.parse(matchInfo.format)
     const sections = _format[0].subsections
-    const _frames: Array<any> = []
+    const _frames: Array<FrameType> = []
     let frame_number = 1
     let section_count = 1
     sections.forEach((section: any) => {
@@ -109,12 +169,13 @@ const MatchScreen = (props: any) => {
     frameIdx: -1,
   })
 
+
   function ChoosePlayer(teamId: number, playerIdx: number, frameIdx: number) {
     setShowRoster({teamId, playerIdx, frameIdx})
   }
 
   function HandleSelect(frameInfo: any, playerId: number) {
-    const _frames = [...frames]
+    const _frames: Array<FrameType> = [...frames]
     if (frameInfo.teamId === matchInfo.away_team_id) {
       _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
     } else {
@@ -124,12 +185,22 @@ const MatchScreen = (props: any) => {
     setShowRoster({teamId: -1, frameIdx: -1, playerIdx: -1})
   }
 
-  function SetWinner(teamId: number, frameIdx: number) {
+  function SetWinner(
+    teamId: number,
+    playerIds: Array<number>,
+    frameIdx: number,
+  ) {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
-    _frames[frameIdx].timestamp > 0
+    socket.current?.emit('frame_update_win', {
+      winnerTeamId: teamId,
+      playerIds: playerIds,
+      frameIdx: frameIdx,
+      matchId: matchInfo.match_id,
+    })
+    _frames[frameIdx].timeStamp > 0
       ? (_frames[frameIdx].lastUpdate = Date.now())
-      : (_frames[frameIdx].timestamp = Date.now())
+      : (_frames[frameIdx].timeStamp = Date.now())
     let awayScore = 0
     let homeScore = 0
     const __frames = _frames.map(frame => {
@@ -211,8 +282,10 @@ const MatchScreen = (props: any) => {
                 </Button>
               </View>
               <RadioButton.Group
-                onValueChange={newValue => setFirstBreak(newValue)}
-                value={firstBreak}>
+                onValueChange={newValue =>
+                  setFirstBreak(parseInt(newValue, 10))
+                }
+                value={firstBreak.toString()}>
                 <View
                   style={{
                     flex: 1,
@@ -255,7 +328,7 @@ const MatchScreen = (props: any) => {
                       <Text>First Break</Text>
                     </View>
                   </View>
-              </View>
+                </View>
               </RadioButton.Group>
               <View style={{flexDirection: 'row'}}>
                 <View
