@@ -318,9 +318,9 @@ const MatchScreen = (props: any) => {
               </View>
               <RadioButton.Group
                 onValueChange={newValue =>
-                  setFirstBreak(parseInt(newValue, 10))
+                  setFirstBreak(newValue)
                 }
-                value={firstBreak.toString()}>
+                value={firstBreak}>
                 <View
                   style={{
                     flex: 1,
