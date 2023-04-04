@@ -123,6 +123,7 @@ const MatchScreen = (props: any) => {
                   _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
                 }
               })
+              UpdateScore(_frames)
               setFrames([..._frames])
             },
           )
@@ -215,6 +216,26 @@ const MatchScreen = (props: any) => {
     setShowRoster({teamId: -1, frameIdx: -1, playerIdx: -1})
   }
 
+  function UpdateScore(_frames) {
+    let awayScore = 0
+    let homeScore = 0
+    const __frames = _frames.map(frame => {
+      if (frame.winner === matchInfo.home_team_id) {
+        homeScore++
+      }
+      if (frame.winner === matchInfo.away_team_id) {
+        awayScore++
+      }
+      if (frame.type === 'section') {
+        frame.homeScore = homeScore
+        frame.awayScore = awayScore
+      }
+      return frame
+    })
+    setAwayScore(awayScore)
+    setHomeScore(homeScore)
+  }
+
   function SetWinner(
     teamId: number,
     playerIds: Array<number>,
@@ -232,24 +253,7 @@ const MatchScreen = (props: any) => {
     _frames[frameIdx].timeStamp > 0
       ? (_frames[frameIdx].lastUpdate = Date.now())
       : (_frames[frameIdx].timeStamp = Date.now())
-    let awayScore = 0
-    let homeScore = 0
-    const __frames = _frames.map(frame => {
-      if (frame.winner === matchInfo.home_team_id) {
-        homeScore++
-      }
-      if (frame.winner === matchInfo.away_team_id) {
-        awayScore++
-      }
-      if (frame.type === 'section') {
-        frame.homeScore = homeScore
-        frame.awayScore = awayScore
-      }
-      return frame
-    })
-    setFrames(__frames)
-    setAwayScore(awayScore)
-    setHomeScore(homeScore)
+    UpdateScore(_frames)
   }
 
   function CancelPlayerSelect() {
