@@ -11,8 +11,6 @@ import {
 } from 'react-native-paper'
 import Frame from '@components/Frame'
 import Roster from '@components/Roster'
-import {Socket, io} from 'socket.io-client'
-import config from '~/config'
 import {useFocusEffect} from '@react-navigation/native'
 import Notes from '@components/Notes'
 import {useAppSelector} from '~/lib/hooks/redux'
@@ -169,7 +167,6 @@ const MatchScreen = (props: any) => {
     frameIdx: -1,
   })
 
-
   function ChoosePlayer(teamId: number, playerIdx: number, frameIdx: number) {
     setShowRoster({teamId, playerIdx, frameIdx})
   }
@@ -192,7 +189,7 @@ const MatchScreen = (props: any) => {
   ) {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
-    socket.current?.emit('frame_update_win', {
+    socket.emit('frame_update_win', {
       winnerTeamId: teamId,
       playerIds: playerIds,
       frameIdx: frameIdx,
