@@ -99,7 +99,35 @@ const MatchScreen = (props: any) => {
     const roomId = 'match_' + matchInfo.match_id
 
     socket.on('connect', () => {
-      socket.emit('join', roomId)
+      socket.emit('join', roomId, (joinStatus) => {
+        if (joinStatus.status === 'ok') {
+          // get matchinfo, may or may not exist yet
+          socket.emit(
+            'getframes',
+            {matchId: matchInfo.match_id},
+            (response: any) => {
+              const _frames = framesRef.current
+              response.frames.forEach(_incomingFrame => {
+                let i = 0
+                let found = false
+                while (i < _frames.length && !found) {
+                  if (i === _incomingFrame.frameIdx) {
+                    found = true
+                  } else {
+                    i++
+                  }
+                }
+                if (found) {
+                  _frames[i].winner = _incomingFrame.winner
+                  _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
+                  _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
+                }
+              })
+              setFrames([..._frames])
+            },
+          )
+        }
+      })
     })
 
     const engine = socket.io.engine
@@ -111,6 +139,11 @@ const MatchScreen = (props: any) => {
     socket.on('disconnect', () => {
       /*
        */
+    })
+
+    // receive frameinfo from first joining
+    socket.on('frameinfo', data => {
+      console.log(data)
     })
 
     socket.on('frame_update', data => {
@@ -190,6 +223,7 @@ const MatchScreen = (props: any) => {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
     socket.emit('frame_update_win', {
+      type: 'win',
       winnerTeamId: teamId,
       playerIds: playerIds,
       frameIdx: frameIdx,
