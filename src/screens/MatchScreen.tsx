@@ -42,6 +42,7 @@ const MatchScreen = (props: any) => {
   const [isMounted, setIsMounted] = React.useState(false)
   const [homeScore, setHomeScore] = React.useState(0)
   const [awayScore, setAwayScore] = React.useState(0)
+  const [isLoading, setIsLoading] = React.useState(true)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -99,7 +100,7 @@ const MatchScreen = (props: any) => {
     const roomId = 'match_' + matchInfo.match_id
 
     socket.on('connect', () => {
-      socket.emit('join', roomId, (joinStatus) => {
+      socket.emit('join', roomId, joinStatus => {
         if (joinStatus.status === 'ok') {
           // get matchinfo, may or may not exist yet
           socket.emit(
@@ -125,6 +126,19 @@ const MatchScreen = (props: any) => {
               })
               UpdateScore(_frames)
               setFrames([..._frames])
+            },
+          )
+          socket.emit(
+            'getmatchinfo',
+            {matchId: matchInfo.match_id},
+            (response: any) => {
+              if (
+                typeof response && response &&
+                typeof response.firstBreak !== 'undefined' &&
+                response.firstBreak
+              ) {
+                setFirstBreak(response.firstBreak)
+              }
             },
           )
         }
@@ -156,15 +170,24 @@ const MatchScreen = (props: any) => {
         }
       }
     })
+
+    socket.on('matchdata', data => {
+      if (typeof data !== 'undefined' && data) {
+        if (typeof data.firstBreak !== 'undefined' && data.firstBreak) {
+          setFirstBreak(data.firstBreak)
+        }
+      }
+    })
   }, [])
 
   React.useEffect(() => {
-    ;(async () => {
-      const _gameTypes = await season.GetGameTypes()
-      setGameTypes(_gameTypes)
-      setIsMounted(true)
-    })()
-  }, [])
+    if (isMounted) {
+      socket.emit('updatematchinfo', {
+        matchId: matchInfo.match_id,
+        firstBreak: firstBreak,
+      })
+    }
+  }, [firstBreak])
 
   React.useEffect(() => {
     const _format = JSON.parse(matchInfo.format)
@@ -194,6 +217,15 @@ const MatchScreen = (props: any) => {
     })
     setFrames(_frames)
   }, [matchInfo])
+
+  React.useEffect(() => {
+    ;(async () => {
+      const _gameTypes = await season.GetGameTypes()
+      setGameTypes(_gameTypes)
+      setIsMounted(true)
+      setIsLoading(false)
+    })()
+  }, [])
 
   const [showRoster, setShowRoster] = React.useState({
     teamId: -1,
@@ -317,9 +349,8 @@ const MatchScreen = (props: any) => {
                 </Button>
               </View>
               <RadioButton.Group
-                onValueChange={newValue =>
-                  setFirstBreak(newValue)
-                }
+                disabled={isLoading}
+                onValueChange={newValue => setFirstBreak(newValue)}
                 value={firstBreak}>
                 <View
                   style={{
@@ -410,6 +441,7 @@ const MatchScreen = (props: any) => {
           renderItem={({item, index}) => (
             <Frame
               firstBreak={firstBreak}
+              isLoading={isLoading}
               matchInfo={matchInfo}
               teams={teams}
               gameTypes={gameTypes}
