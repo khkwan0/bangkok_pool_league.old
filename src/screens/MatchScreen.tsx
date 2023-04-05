@@ -50,23 +50,6 @@ const MatchScreen = (props: any) => {
     }, []),
   )
 
-  useFocusEffect(
-    React.useCallback(() => {
-      ;(async () => {
-        const _teams: any = {}
-        if (typeof matchInfo.home_team_id !== 'undefined') {
-          const homePlayers = await team.GetPlayers(matchInfo.home_team_id)
-          _teams[matchInfo.home_team_id] = homePlayers
-        }
-        if (typeof matchInfo.away_team_id !== 'undefined') {
-          const awayPlayers = await team.GetPlayers(matchInfo.away_team_id)
-          _teams[matchInfo.away_team_id] = awayPlayers
-        }
-        setTeams(_teams)
-      })()
-    }, []),
-  )
-
   const framesRef = React.useRef([])
   const setFramesRef = React.useRef(setFrames)
 
@@ -107,25 +90,27 @@ const MatchScreen = (props: any) => {
             'getframes',
             {matchId: matchInfo.match_id},
             (response: any) => {
-              const _frames = framesRef.current
-              response.frames.forEach(_incomingFrame => {
-                let i = 0
-                let found = false
-                while (i < _frames.length && !found) {
-                  if (i === _incomingFrame.frameIdx) {
-                    found = true
-                  } else {
-                    i++
+              if (response) {
+                const _frames = framesRef.current
+                response.frames.forEach(_incomingFrame => {
+                  let i = 0
+                  let found = false
+                  while (i < _frames.length && !found) {
+                    if (i === _incomingFrame.frameIdx) {
+                      found = true
+                    } else {
+                      i++
+                    }
                   }
-                }
-                if (found) {
-                  _frames[i].winner = _incomingFrame.winner
-                  _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
-                  _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
-                }
-              })
-              UpdateScore(_frames)
-              setFrames([..._frames])
+                  if (found) {
+                    _frames[i].winner = _incomingFrame.winner
+                    _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
+                    _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
+                  }
+                })
+                UpdateScore(_frames)
+                setFrames([..._frames])
+              }
             },
           )
           socket.emit(
@@ -154,11 +139,6 @@ const MatchScreen = (props: any) => {
     socket.on('disconnect', () => {
       /*
        */
-    })
-
-    // receive frameinfo from first joining
-    socket.on('frameinfo', data => {
-      console.log(data)
     })
 
     socket.on('frame_update', data => {
@@ -222,10 +202,28 @@ const MatchScreen = (props: any) => {
     ;(async () => {
       const _gameTypes = await season.GetGameTypes()
       setGameTypes(_gameTypes)
-      setIsMounted(true)
-      setIsLoading(false)
     })()
   }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      ;(async () => {
+        const _teams: any = {}
+        if (typeof matchInfo.home_team_id !== 'undefined') {
+          const homePlayers = await team.GetPlayers(matchInfo.home_team_id)
+          _teams[matchInfo.home_team_id] = homePlayers
+        }
+        if (typeof matchInfo.away_team_id !== 'undefined') {
+          const awayPlayers = await team.GetPlayers(matchInfo.away_team_id)
+          _teams[matchInfo.away_team_id] = awayPlayers
+        }
+        setTeams(_teams)
+        setIsMounted(true)
+        setIsLoading(false)
+      })()
+    }, []),
+  )
+
 
   const [showRoster, setShowRoster] = React.useState({
     teamId: -1,
@@ -238,12 +236,24 @@ const MatchScreen = (props: any) => {
   }
 
   function HandleSelect(frameInfo: any, playerId: number) {
+    // keep players in an array in frameInfo
+    // doubles games will have 2 playerIds in the array
+    // playerIdx is either element 0 or element 1 (if doubles)
     const _frames: Array<FrameType> = [...frames]
+    let side = 'home'
     if (frameInfo.teamId === matchInfo.away_team_id) {
+      side = 'away'
       _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
     } else {
       _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] = playerId
     }
+    socket.emit('frame_update_players', {
+      matchId: matchInfo.match_id,
+      frameIdx: frameInfo.frameIdx,
+      side: side,
+      playerId: playerId,
+      playerIdx: frameInfo.playerIdx,
+    })
     setFrames(_frames)
     setShowRoster({teamId: -1, frameIdx: -1, playerIdx: -1})
   }
