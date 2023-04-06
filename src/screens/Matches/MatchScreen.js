@@ -1,23 +1,17 @@
 import React from 'react'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {FlatList, View} from 'react-native'
-import {
-  Button,
-  Divider,
-  Modal,
-  Portal,
-  RadioButton,
-  Text,
-} from 'react-native-paper'
+import {Button, Divider, RadioButton, Text} from 'react-native-paper'
 import Frame from '@components/Frame'
-import Roster from '@components/Roster'
 import {useFocusEffect} from '@react-navigation/native'
 import Notes from '@components/Notes'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useTeams, useSeason} from '~/lib/hooks'
 import {socket} from '~/socket'
+import config from '~/config'
 
-const MatchScreen = (props: any) => {
+const MatchScreen = props => {
+  /*
   type FrameType = {
     frameNumber: number
     type: string
@@ -30,8 +24,9 @@ const MatchScreen = (props: any) => {
     timeStamp?: number
     lastUpdate?: number
   }
+  */
 
-  const matchInfo = props.route.params.matchInfo
+  const [matchInfo] = React.useState(props.route.params.matchInfo)
   const user = useAppSelector(_state => _state.user)
   const team = useTeams()
   const season = useSeason()
@@ -44,11 +39,13 @@ const MatchScreen = (props: any) => {
   const [awayScore, setAwayScore] = React.useState(0)
   const [isLoading, setIsLoading] = React.useState(true)
 
+  /*
   useFocusEffect(
     React.useCallback(() => {
       return () => socket.disconnect()
     }, []),
   )
+  */
 
   const framesRef = React.useRef([])
   const setFramesRef = React.useRef(setFrames)
@@ -58,7 +55,7 @@ const MatchScreen = (props: any) => {
   }, [frames])
 
   React.useEffect(() => {
-    function UpdateFrameWin(frameIdx: number, winnerTeamId: number) {
+    function UpdateFrameWin(frameIdx, winnerTeamId) {
       try {
         const _frames = framesRef.current
         _frames[frameIdx].winner = winnerTeamId
@@ -68,12 +65,8 @@ const MatchScreen = (props: any) => {
       }
     }
 
-    function UpdateFramePlayers(
-      frameIdx: number,
-      teamId: number,
-      players: Array<number>,
-    ) {
-      const _frames: Array<FrameType> = [...frames]
+    function UpdateFramePlayers(frameIdx, teamId, players) {
+      const _frames = [...frames]
       if (teamId === matchInfo.home_team_id) {
         _frames[frameIdx].homePlayerIds = players
       } else {
@@ -82,43 +75,41 @@ const MatchScreen = (props: any) => {
     }
     const roomId = 'match_' + matchInfo.match_id
 
+    socket.connect()
     socket.on('connect', () => {
       socket.emit('join', roomId, joinStatus => {
         if (joinStatus.status === 'ok') {
           // get matchinfo, may or may not exist yet
-          socket.emit(
-            'getframes',
-            {matchId: matchInfo.match_id},
-            (response: any) => {
-              if (response) {
-                const _frames = framesRef.current
-                response.frames.forEach(_incomingFrame => {
-                  let i = 0
-                  let found = false
-                  while (i < _frames.length && !found) {
-                    if (i === _incomingFrame.frameIdx) {
-                      found = true
-                    } else {
-                      i++
-                    }
+          socket.emit('getframes', {matchId: matchInfo.match_id}, response => {
+            if (response) {
+              const _frames = framesRef.current
+              response.frames.forEach(_incomingFrame => {
+                let i = 0
+                let found = false
+                while (i < _frames.length && !found) {
+                  if (i === _incomingFrame.frameIdx) {
+                    found = true
+                  } else {
+                    i++
                   }
-                  if (found) {
-                    _frames[i].winner = _incomingFrame.winner
-                    _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
-                    _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
-                  }
-                })
-                UpdateScore(_frames)
-                setFrames([..._frames])
-              }
-            },
-          )
+                }
+                if (found) {
+                  _frames[i].winner = _incomingFrame.winner
+                  _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
+                  _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
+                }
+              })
+              UpdateScore(_frames)
+              setFrames([..._frames])
+            }
+          })
           socket.emit(
             'getmatchinfo',
             {matchId: matchInfo.match_id},
-            (response: any) => {
+            response => {
               if (
-                typeof response && response &&
+                typeof response &&
+                response &&
                 typeof response.firstBreak !== 'undefined' &&
                 response.firstBreak
               ) {
@@ -137,8 +128,7 @@ const MatchScreen = (props: any) => {
     })
 
     socket.on('disconnect', () => {
-      /*
-       */
+      console.log('socket disconnected')
     })
 
     socket.on('frame_update', data => {
@@ -172,10 +162,10 @@ const MatchScreen = (props: any) => {
   React.useEffect(() => {
     const _format = JSON.parse(matchInfo.format)
     const sections = _format[0].subsections
-    const _frames: Array<FrameType> = []
+    const _frames = []
     let frame_number = 1
     let section_count = 1
-    sections.forEach((section: any) => {
+    sections.forEach(section => {
       for (let i = 0; i < section.frames; i++) {
         _frames.push({
           frameNumber: frame_number,
@@ -205,10 +195,37 @@ const MatchScreen = (props: any) => {
     })()
   }, [])
 
+  React.useEffect(() => {
+    // keep players in an array in frameInfo
+    // doubles games will have 1 playerIds in the array
+    // playerIdx is either element -1 or element 1 (if doubles)
+    if (isMounted && props.route.params.player) {
+      const player = props.route.params.player
+      const frameInfo = player.frameInfo
+      const playerId = player.playerId
+      const _frames = [...frames]
+      let side = 'home'
+      if (frameInfo.teamId === matchInfo.away_team_id) {
+        side = 'away'
+        _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
+      } else {
+        _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] = playerId
+      }
+      socket.emit('frame_update_players', {
+        matchId: matchInfo.match_id,
+        frameIdx: frameInfo.frameIdx,
+        side: side,
+        playerId: playerId,
+        playerIdx: frameInfo.playerIdx,
+      })
+      setFrames(_frames)
+    }
+  }, [props.route.params?.player])
+
   useFocusEffect(
     React.useCallback(() => {
       ;(async () => {
-        const _teams: any = {}
+        const _teams = {}
         if (typeof matchInfo.home_team_id !== 'undefined') {
           const homePlayers = await team.GetPlayers(matchInfo.home_team_id)
           _teams[matchInfo.home_team_id] = homePlayers
@@ -224,38 +241,11 @@ const MatchScreen = (props: any) => {
     }, []),
   )
 
-
-  const [showRoster, setShowRoster] = React.useState({
-    teamId: -1,
-    playerIdx: -1,
-    frameIdx: -1,
-  })
-
-  function ChoosePlayer(teamId: number, playerIdx: number, frameIdx: number) {
-    setShowRoster({teamId, playerIdx, frameIdx})
-  }
-
-  function HandleSelect(frameInfo: any, playerId: number) {
-    // keep players in an array in frameInfo
-    // doubles games will have 2 playerIds in the array
-    // playerIdx is either element 0 or element 1 (if doubles)
-    const _frames: Array<FrameType> = [...frames]
-    let side = 'home'
-    if (frameInfo.teamId === matchInfo.away_team_id) {
-      side = 'away'
-      _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
-    } else {
-      _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] = playerId
-    }
-    socket.emit('frame_update_players', {
-      matchId: matchInfo.match_id,
-      frameIdx: frameInfo.frameIdx,
-      side: side,
-      playerId: playerId,
-      playerIdx: frameInfo.playerIdx,
+  function ChoosePlayer(teamId, playerIdx, frameIdx) {
+    props.navigation.navigate('Roster', {
+      teams: teams,
+      frameInfo: {playerIdx, frameIdx, teamId},
     })
-    setFrames(_frames)
-    setShowRoster({teamId: -1, frameIdx: -1, playerIdx: -1})
   }
 
   function UpdateScore(_frames) {
@@ -278,11 +268,7 @@ const MatchScreen = (props: any) => {
     setHomeScore(homeScore)
   }
 
-  function SetWinner(
-    teamId: number,
-    playerIds: Array<number>,
-    frameIdx: number,
-  ) {
+  function SetWinner(teamId, playerIds, frameIdx) {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
     socket.emit('frame_update_win', {
@@ -298,63 +284,21 @@ const MatchScreen = (props: any) => {
     UpdateScore(_frames)
   }
 
-  function CancelPlayerSelect() {
-    setShowRoster({teamId: -1, frameIdx: -1, playerIdx: -1})
-  }
-
-  if (
-    showRoster.teamId >= 0 &&
-    showRoster.frameIdx >= 0 &&
-    showRoster.playerIdx >= 0
-  ) {
-    /*
-    return (
-      <SafeAreaView>
-        <Roster
-          cancel={CancelPlayerSelect}
-          team={teams[showRoster.teamId]}
-          frameInfo={showRoster}
-          handleSelect={HandleSelect}
-        />
-      </SafeAreaView>
-    )
-    */
+  function HandleGoBack() {
+    socket.off()
+    socket.disconnect()
+    socket.close()
+    props.navigation.goBack()
   }
 
   if (isMounted) {
     return (
       <SafeAreaView>
-        <Portal>
-          <Modal
-            visible={
-              showRoster.teamId >= 0 &&
-              showRoster.frameIdx >= 0 &&
-              showRoster.playerIdx >= 0
-            }
-            contentContainerStyle={{
-              backgroundColor: 'white',
-              padding: 20,
-              margin: 10,
-              maxHeight: '80%',
-            }}
-            onDismiss={() =>
-              setShowRoster({frameIdx: -1, teamId: -1, playerIdx: -1})
-            }>
-            <Roster
-              players={teams[showRoster.teamId]}
-              frameInfo={showRoster}
-              handleSelect={HandleSelect}
-              cancel={CancelPlayerSelect}
-            />
-          </Modal>
-        </Portal>
         <FlatList
           ListHeaderComponent={
             <View style={{backgroundColor: '#fff'}}>
               <View style={{flexDirection: 'row', padding: 5}}>
-                <Button
-                  mode="contained"
-                  onPress={() => props.navigation.goBack()}>
+                <Button mode="contained" onPress={() => HandleGoBack()}>
                   Back
                 </Button>
               </View>

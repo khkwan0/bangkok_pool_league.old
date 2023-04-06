@@ -2,7 +2,7 @@
 import React from 'react'
 import {useAccount, useLeague} from '~/lib/hooks'
 import {useAppSelector} from '~/lib/hooks/redux'
-import Matches from '~/screens/Matches'
+import Matches from '@screens/Matches'
 import Teams from '@screens/Teams'
 import Account from '@screens/Account'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
