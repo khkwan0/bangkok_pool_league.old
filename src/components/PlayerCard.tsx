@@ -4,7 +4,7 @@ import {Button, Text} from 'react-native-paper'
 
 const PlayerCard = (props: any) => {
   function HandleSelect(playerId: number) {
-    props.handleSelect(props.frameInfo, playerId)
+    props.handleSelect(playerId)
   }
 
   return (

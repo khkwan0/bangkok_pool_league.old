@@ -42,7 +42,7 @@ const MatchScreen = props => {
   /*
   useFocusEffect(
     React.useCallback(() => {
-      return () => socket.disconnect()
+      return () => setIsMounted(false)
     }, []),
   )
   */
@@ -136,7 +136,12 @@ const MatchScreen = props => {
         if (data.type === 'win') {
           UpdateFrameWin(data.frameIdx, data.winnerTeamId)
         } else if (data.type === 'players') {
-          UpdateFramePlayers(data.frameIdx, data.teamId, data.players)
+          ;(async () => {
+            if (data.newPlayer) {
+              await UpdateTeams()
+            }
+            UpdateFramePlayers(data.frameIdx, data.teamId, data.players)
+          })()
         }
       }
     })
@@ -200,31 +205,40 @@ const MatchScreen = props => {
     // doubles games will have 1 playerIds in the array
     // playerIdx is either element -1 or element 1 (if doubles)
     if (isMounted && props.route.params.player) {
+      setIsMounted(false)
       const player = props.route.params.player
       const frameInfo = player.frameInfo
       const playerId = player.playerId
       const _frames = [...frames]
-      let side = 'home'
-      if (frameInfo.teamId === matchInfo.away_team_id) {
-        side = 'away'
-        _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
-      } else {
-        _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] = playerId
-      }
-      socket.emit('frame_update_players', {
-        matchId: matchInfo.match_id,
-        frameIdx: frameInfo.frameIdx,
-        side: side,
-        playerId: playerId,
-        playerIdx: frameInfo.playerIdx,
-      })
-      setFrames(_frames)
+      const newPlayer = player.newPlayer
+      ;(async () => {
+        if (newPlayer) {
+          UpdateTeams()
+        }
+        let side = 'home'
+        if (frameInfo.teamId === matchInfo.away_team_id) {
+          side = 'away'
+          _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
+        } else {
+          _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] = playerId
+        }
+        socket.emit('frame_update_players', {
+          matchId: matchInfo.match_id,
+          frameIdx: frameInfo.frameIdx,
+          side: side,
+          playerId: playerId,
+          playerIdx: frameInfo.playerIdx,
+          newPlayer: newPlayer,
+        })
+        setFrames(_frames)
+      })()
     }
   }, [props.route.params?.player])
 
   useFocusEffect(
     React.useCallback(() => {
       ;(async () => {
+        /*
         const _teams = {}
         if (typeof matchInfo.home_team_id !== 'undefined') {
           const homePlayers = await team.GetPlayers(matchInfo.home_team_id)
@@ -235,6 +249,8 @@ const MatchScreen = props => {
           _teams[matchInfo.away_team_id] = awayPlayers
         }
         setTeams(_teams)
+        */
+        await UpdateTeams()
         setIsMounted(true)
         setIsLoading(false)
       })()
@@ -289,6 +305,19 @@ const MatchScreen = props => {
     socket.disconnect()
     socket.close()
     props.navigation.goBack()
+  }
+
+  async function UpdateTeams() {
+    const _teams = {}
+    if (typeof matchInfo.home_team_id !== 'undefined') {
+      const homePlayers = await team.GetPlayers(matchInfo.home_team_id)
+      _teams[matchInfo.home_team_id] = homePlayers
+    }
+    if (typeof matchInfo.away_team_id !== 'undefined') {
+      const awayPlayers = await team.GetPlayers(matchInfo.away_team_id)
+      _teams[matchInfo.away_team_id] = awayPlayers
+    }
+    setTeams(_teams)
   }
 
   if (isMounted) {

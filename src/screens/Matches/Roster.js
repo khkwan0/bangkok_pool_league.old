@@ -48,9 +48,10 @@ const Roster = props => {
   }, [])
 
   // this is a "goBack" with params
-  function HandleSelect(frameInfo, playerId) {
+  function HandleSelect(playerId, newPlayer = false) {
+    setShowAddNew(false)
     props.navigation.navigate('Match Screen', {
-      player: {playerId: playerId, frameInfo: props.route.params.frameInfo},
+      player: {playerId: playerId, frameInfo: props.route.params.frameInfo, newPlayer: newPlayer},
     })
   }
 
@@ -62,6 +63,7 @@ const Roster = props => {
             <NewPlayerInput
               allPlayers={allPlayers}
               frameInfo={props.route.params.frameInfo}
+              handleSelect={HandleSelect}
             />
           </View>
         </Modal>

@@ -3,6 +3,7 @@ import {FlatList, View} from 'react-native'
 import {Button, Text, TextInput} from 'react-native-paper'
 import TrieSearch from 'trie-search'
 import PlayerCard from '@components/PlayerCard'
+import {useLeague} from '~/lib/hooks'
 
 const NewPlayerInput = props => {
   const [nickname, setNickname] = React.useState('')
@@ -13,6 +14,8 @@ const NewPlayerInput = props => {
   const [showAddNew, setShowAddNew] = React.useState(false)
   const [list, setList] = React.useState([])
   const [error, setError] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
+  const league = useLeague()
 
   const trie = React.useRef(new TrieSearch('nickname', {splitOnRegEx: false}))
 
@@ -38,7 +41,38 @@ const NewPlayerInput = props => {
   }, [newNickname])
 
   async function HandleAddNew() {
-    if (nickname && nickname.length >= 3) {
+    if (newNickname && newNickname.length >= 3) {
+      try {
+        setLoading(true)
+        const res = await league.SaveNewPlayer(
+          newNickname,
+          newFirstName,
+          newLastName,
+          newEmail,
+          props.frameInfo.teamId,
+        )
+        if (typeof res.status !== 'undefined' && res.status === 'ok') {
+          if (
+            typeof res.data !== 'undefined' &&
+            res.data.playerId !== 'undefined' &&
+            res.data.playerId
+          ) {
+            props.handleSelect(res.data.playerId, true)
+          } else {
+            setError('Error Saving')
+          }
+        } else if (typeof res.status !== 'undefined' && res.status === 'err') {
+          if (typeof res.msg !== 'undefined') {
+            setError(res.msg)
+          } else {
+            setError('Error Saving (unknown)')
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -85,6 +119,7 @@ const NewPlayerInput = props => {
             </View>
             <View>
               <Button
+                loading={loading}
                 disabled={error ? true : false}
                 mode="contained"
                 onPress={() => HandleAddNew()}>

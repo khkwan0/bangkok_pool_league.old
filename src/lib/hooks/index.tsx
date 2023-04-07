@@ -115,7 +115,7 @@ export const useAccount = (): any => {
 }
 
 export const useLeague = (): any => {
-  const {Get} = useNetwork()
+  const {Get, Post} = useNetwork()
 
   const GetSeason = async (): Promise<Object> => {
     const localSeason = await AsyncStorage.getItem('season')
@@ -130,7 +130,6 @@ export const useLeague = (): any => {
   const GetPlayers = async () => {
     try {
       const _players = await AsyncStorage.getItem('allplayers')
-      console.log('as', _players)
       if (_players) {
         const players = JSON.parse(_players)
         return players
@@ -146,7 +145,23 @@ export const useLeague = (): any => {
     }
   }
 
-  return {GetPlayers, GetSeason}
+  const SaveNewPlayer = async (
+    nickName = '',
+    firstName = '',
+    lastName = '',
+    email = '',
+    teamId = 0,
+  ) => {
+    try {
+      const res = Post('/player', {nickName, firstName, lastName, email, teamId})
+      return res
+    } catch (e) {
+      console.log(e)
+      return {status: 'err', msg: 'Save error'}
+    }
+  }
+
+  return {GetPlayers, GetSeason, SaveNewPlayer}
 }
 
 export const useSeason = (): any => {
