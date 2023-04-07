@@ -127,7 +127,26 @@ export const useLeague = (): any => {
     }
   }
 
-  return {GetSeason}
+  const GetPlayers = async () => {
+    try {
+      const _players = await AsyncStorage.getItem('allplayers')
+      console.log('as', _players)
+      if (_players) {
+        const players = JSON.parse(_players)
+        return players
+      }
+      const __players = await Get('/players')
+      if (__players) {
+        return __players
+      }
+      return []
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
+  return {GetPlayers, GetSeason}
 }
 
 export const useSeason = (): any => {
