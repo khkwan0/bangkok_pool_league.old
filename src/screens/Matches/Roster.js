@@ -51,7 +51,11 @@ const Roster = props => {
   function HandleSelect(playerId, newPlayer = false) {
     setShowAddNew(false)
     props.navigation.navigate('Match Screen', {
-      player: {playerId: playerId, frameInfo: props.route.params.frameInfo, newPlayer: newPlayer},
+      player: {
+        playerId: playerId,
+        frameInfo: props.route.params.frameInfo,
+        newPlayer: newPlayer,
+      },
     })
   }
 

@@ -218,9 +218,11 @@ const MatchScreen = props => {
         let side = 'home'
         if (frameInfo.teamId === matchInfo.away_team_id) {
           side = 'away'
-          _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] = playerId
+          _frames[frameInfo.frameIdx].awayPlayerIds[frameInfo.playerIdx] =
+            playerId
         } else {
-          _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] = playerId
+          _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] =
+            playerId
         }
         socket.emit('frame_update_players', {
           matchId: matchInfo.match_id,
