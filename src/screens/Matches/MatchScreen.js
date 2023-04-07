@@ -74,6 +74,7 @@ const MatchScreen = props => {
         console.log(e)
       }
     })()
+    return () => setIsMounted(false)
   }, [])
 
   const framesRef = React.useRef([])
@@ -520,7 +521,11 @@ const MatchScreen = props => {
       </>
     )
   } else {
-    return null
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    )
   }
 }
 

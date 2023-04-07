@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import config from '~/config'
 import {useAppDispatch, useAppSelector} from '~/lib/hooks/redux'
 import {ClearUser, SetUser} from '~/redux/userSlice'
+import {socket} from '~/socket'
 
 export const useNetwork = (): any => {
   const Get = async function (
@@ -53,7 +54,19 @@ export const useNetwork = (): any => {
       return {}
     }
   }
-  return {Get, Post}
+
+  const SocketSend = (type, data, dest) => {
+    console.log(socket.connected)
+    const toSend = {
+      type: type,
+      dest: dest,
+      data: {...data},
+    }
+    if (socket && socket.connected) {
+      socket.emit('incoming', data)
+    }
+  }
+  return {Get, Post, SocketSend}
 }
 
 export const useAccount = (): any => {

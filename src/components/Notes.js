@@ -10,7 +10,14 @@ const Notes = props => {
 
   function HandleCancel() {
     setNewNote('')
-    setAddNew(false)
+  }
+
+  function HandleSaveNewNote() {
+    if (newNote) {
+      props.handleSaveNote(newNote)
+      setNewNote('')
+      setAddNew(false)
+    }
   }
 
   return (
@@ -59,7 +66,7 @@ const Notes = props => {
                 margin: 5,
               }}>
               <Button mode="contained" onPress={() => HandleCancel()}>Cancel</Button>
-              <Button>Save</Button>
+              <Button onPress={() => HandleSaveNewNote()}>Save</Button>
             </View>
           </View>
         )}
