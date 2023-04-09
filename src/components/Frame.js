@@ -117,6 +117,7 @@ const Frame = props => {
                     props.matchInfo.home_team_id,
                     props.frame.homePlayerIds,
                     props.frameIdx,
+                    props.frame.frameNumber,
                   )
                 }>
                 win
@@ -150,6 +151,7 @@ const Frame = props => {
                     props.matchInfo.away_team_id,
                     props.frame.awayPlayerIds,
                     props.frameIdx,
+                    props.frame.frameNumber,
                   )
                 }>
                 win
@@ -172,7 +174,13 @@ const Frame = props => {
                   props.frameIdx,
                 )
               }>
-              {awayPlayerA ? awayPlayerA : awayPlayerA === null ? <ActivityIndicator color="#f00" /> : 'Player'}
+              {awayPlayerA ? (
+                awayPlayerA
+              ) : awayPlayerA === null ? (
+                <ActivityIndicator color="#f00" />
+              ) : (
+                'Player'
+              )}
             </Button>
             {props.gameTypes[props.frame.type].no_players === 2 && (
               <View style={{marginTop: 5}}>

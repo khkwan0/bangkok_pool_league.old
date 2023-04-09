@@ -1,11 +1,18 @@
 import React from 'react'
 import {FlatList, View} from 'react-native'
 import {Button, Text} from 'react-native-paper'
+import {DateTime} from 'luxon'
 
 const HistoryCard = ({item, index}) => {
+  console.log(item)
   return (
     <View key={index} style={{margin: 10}}>
-      {item.map((txt, idx) => (
+      <Text>
+        {DateTime.fromMillis(item.timestamp).toLocaleString(
+          DateTime.DATETIME_SHORT_WITH_SECONDS,
+        )}
+      </Text>
+      {item.msg.map((txt, idx) => (
         <Text key={index + '_' + idx}>{txt}</Text>
       ))}
     </View>

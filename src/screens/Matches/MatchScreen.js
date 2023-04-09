@@ -145,6 +145,7 @@ const MatchScreen = props => {
               'getmatchinfo',
               {matchId: matchInfo.match_id},
               _response => {
+                console.log(JSON.stringify(_response, null, 2))
                 if (
                   typeof _response &&
                   _response &&
@@ -349,10 +350,11 @@ const MatchScreen = props => {
     setHomeScore(_homeScore)
   }
 
-  function SetWinner(teamId, playerIds, frameIdx) {
+  function SetWinner(teamId, playerIds, frameIdx, frameNumber) {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
     SocketSend('win', {
+      frameNumber: frameNumber,
       winnerTeamId: teamId,
       playerIds: playerIds,
       frameIdx: frameIdx,
