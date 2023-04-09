@@ -2,6 +2,7 @@ import React from 'react'
 import {View} from 'react-native'
 import {Button, IconButton, Text, TextInput} from 'react-native-paper'
 import {useAppSelector} from '~/lib/hooks/redux'
+import {DateTime} from 'luxon'
 
 const Notes = props => {
   const [newNote, setNewNote] = React.useState('')
@@ -25,14 +26,19 @@ const Notes = props => {
       <Text variant="headlineMedium" style={{textAlign: 'center'}}>
         Notes
       </Text>
-      {typeof props.matchInfo.notes !== 'undefined' &&
-        props.matchInfo.notes.map(note => {
+      {typeof props.matchInfo.meta.notes !== 'undefined' &&
+        props.matchInfo.meta.notes.map((note, idx) => {
           return (
-            <View>
-              <Text>{note.timestamp}</Text>
-              <Text>{note.author}</Text>
-              <Text>{note.message}</Text>
-              {!props.matchInfo.finalized && <IconButton icon="cancel" />}
+            <View key={'note' + idx}>
+              <Text>
+                {DateTime.fromMillis(note.timestamp).toLocaleString(
+                  DateTime.DATETIME_SHORT_WITH_SECONDS,
+                )}
+              </Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text>{note.author}: </Text>
+                <Text>{note.note}</Text>
+              </View>
             </View>
           )
         })}

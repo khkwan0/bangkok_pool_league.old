@@ -11,7 +11,7 @@ const ExtendedMatchInfo = props => {
   const matchInfo = props.route.params.matchInfo
 
   async function HandleSaveNote(newNote = '') {
-    network.SocketSend('newNote', {newNote})
+    network.SocketSend('newnote', matchInfo.match_id, {note: newNote})
   }
 
   return (

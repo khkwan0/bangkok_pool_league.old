@@ -33,6 +33,7 @@ const MatchScreen = props => {
   //  const user = useAppSelector(_state => _state.user)
   const user = {
     id: 1933,
+    nickname: 'Ken K',
   }
 
   const team = useTeams()
@@ -145,7 +146,6 @@ const MatchScreen = props => {
               'getmatchinfo',
               {matchId: matchInfo.match_id},
               _response => {
-                console.log(JSON.stringify(_response, null, 2))
                 if (
                   typeof _response &&
                   _response &&
@@ -196,8 +196,15 @@ const MatchScreen = props => {
 
     socket.on('matchdata', data => {
       if (typeof data !== 'undefined' && data) {
-        if (typeof data.firstBreak !== 'undefined' && data.firstBreak) {
-          setFirstBreak(data.firstBreak)
+        if (typeof data.type !== 'undefined' && data.type) {
+          if (data.type === 'firstbreak') {
+            setFirstBreak(data.data.firstBreak)
+          }
+          if (data.type === 'newnote') {
+            if (typeof matchInfo.meta !== 'undefined') {
+              matchInfo.meta.notes.push(data.data)
+            }
+          }
         }
       }
     })

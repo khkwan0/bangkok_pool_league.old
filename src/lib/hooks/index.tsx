@@ -56,12 +56,16 @@ export const useNetwork = (): any => {
   }
 
   const SocketSend = (type = '', matchId = 0, data = {}, dest = '') => {
-    const playerId = 1933
+    const user = {
+      id: 1933,
+      nickname: 'Ken K',
+    }
     const toSend = {
       type: type,
       matchId: matchId,
       timestamp: Date.now(),
-      playerId: playerId ?? 0,
+      playerId: user.id ?? 0,
+      nickname: user.nickname,
       dest: dest,
       data: {...data},
     }
