@@ -1,12 +1,17 @@
 import React from 'react'
 import {FlatList, View} from 'react-native'
-import {ActivityIndicator, Button, Divider, RadioButton, Text} from 'react-native-paper'
+import {
+  ActivityIndicator,
+  Button,
+  Divider,
+  RadioButton,
+  Text,
+} from 'react-native-paper'
 import Frame from '@components/Frame'
 import {useFocusEffect} from '@react-navigation/native'
 import {useAppSelector} from '~/lib/hooks/redux'
-import {useTeams, useSeason} from '~/lib/hooks'
+import {useTeams, useSeason, useNetwork} from '~/lib/hooks'
 import {socket} from '~/socket'
-import config from '~/config'
 
 const MatchScreen = props => {
   /*
@@ -32,6 +37,7 @@ const MatchScreen = props => {
 
   const team = useTeams()
   const season = useSeason()
+  const network = useNetwork()
   const [gameTypes, setGameTypes] = React.useState({})
   const [teams, setTeams] = React.useState({})
   const [firstBreak, setFirstBreak] = React.useState(0)
@@ -112,9 +118,9 @@ const MatchScreen = props => {
       socket.emit('join', roomId, joinStatus => {
         if (joinStatus.status === 'ok') {
           // get matchinfo, may or may not exist yet
+          setIsLoading(true)
           socket.emit('getframes', {matchId: matchInfo.match_id}, response => {
             if (response) {
-              console.log('recvd frame data')
               const _frames = framesRef.current
               response.frames.forEach(_incomingFrame => {
                 let i = 0
@@ -146,6 +152,19 @@ const MatchScreen = props => {
                   _response.firstBreak
                 ) {
                   setFirstBreak(_response.firstBreak)
+                  matchInfo.meta = {..._response}
+                }
+                if (
+                  typeof _response.finalize_home !== 'undefined' &&
+                  _response.finalize_home.teamId
+                ) {
+                  setFinalizedHome(true)
+                }
+                if (
+                  typeof _response.finalize_away !== 'undefined' &&
+                  _response.finalize_away.teamId
+                ) {
+                  setFinalizedHome(true)
                 }
                 setIsLoading(false)
               },
@@ -183,16 +202,16 @@ const MatchScreen = props => {
     })
   }, [])
 
-  React.useEffect(() => {
-    if (isMounted) {
-      socket.emit('updatematchinfo', {
-        matchId: matchInfo.match_id,
-        firstBreak: firstBreak,
-      })
-    }
-  }, [firstBreak])
-
-
+  /*
+   * When returning from the Roster (the screen where a captain assign's a
+   * player for a slot), that is when the playerId is passed back.  Normally
+   * I would've passed a function handler in the props to the Roster screen,
+   * however you cannot pass non serializable values (like a function) through
+   * the react navigation navigator via props.route.params.
+   * However, react native navigation allows you to pass non serialized values
+   * BACK to the previous screen in the stack when you goBack() or
+   * when you props.navigation.navigate('previous screen')
+   */
   React.useEffect(() => {
     // keep players in an array in frameInfo
     // doubles games will have 1 playerIds in the array
@@ -216,7 +235,8 @@ const MatchScreen = props => {
           _frames[frameInfo.frameIdx].homePlayerIds[frameInfo.playerIdx] =
             playerId
         }
-        socket.emit('frame_update_players', {
+        SocketSend('players', {
+          frameNumber: _frames[frameInfo.frameIdx].frameNumber,
           matchId: matchInfo.match_id,
           frameIdx: frameInfo.frameIdx,
           side: side,
@@ -260,6 +280,10 @@ const MatchScreen = props => {
     }
     return null
   }, [user, teams])
+
+  function SocketSend(type, data = {}) {
+    network.SocketSend(type, matchInfo.match_id, data)
+  }
 
   function RenderInitialFrames() {
     return new Promise((resolve, reject) => {
@@ -328,8 +352,7 @@ const MatchScreen = props => {
   function SetWinner(teamId, playerIds, frameIdx) {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
-    socket.emit('frame_update_win', {
-      type: 'win',
+    SocketSend('win', {
       winnerTeamId: teamId,
       playerIds: playerIds,
       frameIdx: frameIdx,
@@ -346,6 +369,31 @@ const MatchScreen = props => {
     socket.disconnect()
     socket.close()
     props.navigation.goBack()
+  }
+
+  function HandleSetFirstBreak(teamId) {
+    setFirstBreak(teamId)
+    SocketSend('firstbreak', {
+      firstBreak: teamId,
+    })
+  }
+
+  function HandleFinalized(side) {
+    if (side === 'home' && side === userTeam) {
+      setFinalizedHome(true)
+      SocketSend('finalize', {
+        teamId: matchInfo.home_team_id,
+        side: side,
+        matchId: matchInfo.match_id,
+      })
+    } else if (side === 'away' && side === userTeam) {
+      setFinalizedAway(true)
+      SocketSend('finalize', {
+        teamId: matchInfo.away_team_id,
+        side: side,
+        matchId: matchInfo.match_id,
+      })
+    }
   }
 
   async function UpdateTeams() {
@@ -394,7 +442,7 @@ const MatchScreen = props => {
                   </View>
                 </View>
                 <RadioButton.Group
-                  onValueChange={newValue => setFirstBreak(newValue)}
+                  onValueChange={newValue => HandleSetFirstBreak(newValue)}
                   value={firstBreak}>
                   <View
                     style={{
@@ -472,24 +520,20 @@ const MatchScreen = props => {
               <View>
                 <View style={{flexDirection: 'row'}}>
                   <View style={{flex: 1}}>
-                    {userTeam === 'home' ? (
-                      <Button
-                        disabled={finalizedHome}
-                        onPress={() => setFinalizedHome(true)}
-                        mode="elevated">
-                        Finalize Home
-                      </Button>
-                    ) : null}
+                    <Button
+                      disabled={finalizedHome || isLoading}
+                      onPress={() => HandleFinalized('home')}
+                      mode="elevated">
+                      Finalize Home
+                    </Button>
                   </View>
                   <View style={{flex: 1}}>
-                    {userTeam === 'away' ? (
-                      <Button
-                        disabled={finalizedAway}
-                        onPress={() => setFinalizedAway(true)}
-                        mode="elevated">
-                        Finalize Away
-                      </Button>
-                    ) : null}
+                    <Button
+                      disabled={finalizedAway || isLoading}
+                      onPress={() => HandleFinalized('away')}
+                      mode="elevated">
+                      Finalize Away
+                    </Button>
                   </View>
                 </View>
               </View>

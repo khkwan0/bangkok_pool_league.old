@@ -55,15 +55,18 @@ export const useNetwork = (): any => {
     }
   }
 
-  const SocketSend = (type, data, dest) => {
-    console.log(socket.connected)
+  const SocketSend = (type = '', matchId = 0, data = {}, dest = '') => {
+    const playerId = 1933
     const toSend = {
       type: type,
+      matchId: matchId,
+      timestamp: Date.now(),
+      playerId: playerId ?? 0,
       dest: dest,
       data: {...data},
     }
     if (socket && socket.connected) {
-      socket.emit('incoming', data)
+      socket.emit('matchupdate', toSend)
     }
   }
   return {Get, Post, SocketSend}

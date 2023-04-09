@@ -1,6 +1,6 @@
 import React from 'react'
 import {View} from 'react-native'
-import {Colors, Button, IconButton, Text, TextInput} from 'react-native-paper'
+import {Button, IconButton, Text, TextInput} from 'react-native-paper'
 import {useAppSelector} from '~/lib/hooks/redux'
 
 const Notes = props => {
@@ -22,7 +22,9 @@ const Notes = props => {
 
   return (
     <View>
-      <Text variant="headlineMedium" style={{textAlign: 'center'}}>Notes</Text>
+      <Text variant="headlineMedium" style={{textAlign: 'center'}}>
+        Notes
+      </Text>
       {typeof props.matchInfo.notes !== 'undefined' &&
         props.matchInfo.notes.map(note => {
           return (
@@ -41,7 +43,12 @@ const Notes = props => {
           </Text>
         </View>
       )}
-      <View style={{}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         <Button
           icon="plus-circle"
           mode="outlined"
@@ -65,7 +72,9 @@ const Notes = props => {
                 justifyContent: 'flex-end',
                 margin: 5,
               }}>
-              <Button mode="contained" onPress={() => HandleCancel()}>Cancel</Button>
+              <Button mode="contained" onPress={() => HandleCancel()}>
+                Cancel
+              </Button>
               <Button onPress={() => HandleSaveNewNote()}>Save</Button>
             </View>
           </View>
