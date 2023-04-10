@@ -98,18 +98,23 @@ const MatchScreen = props => {
       try {
         const _frames = framesRef.current
         _frames[frameIdx].winner = winnerTeamId
-        setFrames([..._frames])
+        UpdateScore(_frames)
       } catch (e) {
         console.log(e)
       }
     }
 
-    function UpdateFramePlayers(frameIdx, teamId, players) {
-      const _frames = [...frames]
-      if (teamId === matchInfo.home_team_id) {
-        _frames[frameIdx].homePlayerIds = players
-      } else {
-        _frames[frameIdx].awayPlayerIds = players
+    function UpdateFramePlayers(frameIdx, side, playerIdx, playerId) {
+      try {
+        const _frames = framesRef.current
+        if (side === 'home') {
+          _frames[frameIdx].homePlayerIds[playerIdx] = playerId
+        } else {
+          _frames[frameIdx].awayPlayerIds[playerIdx] = playerId
+        }
+        setFrames([..._frames])
+      } catch (e) {
+        console.log(e)
       }
     }
     const roomId = 'match_' + matchInfo.match_id
@@ -188,7 +193,12 @@ const MatchScreen = props => {
             if (data.newPlayer) {
               await UpdateTeams()
             }
-            UpdateFramePlayers(data.frameIdx, data.teamId, data.players)
+            UpdateFramePlayers(
+              data.frameIdx,
+              data.side,
+              data.playerIdx,
+              data.playerId,
+            )
           })()
         }
       }
