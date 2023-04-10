@@ -33,6 +33,7 @@ import {
   adaptNavigationTheme,
   DefaultTheme,
 } from 'react-native-paper'
+import {SafeAreaProvider} from 'react-native-safe-area-context'
 
 import Main from './src/Main'
 
@@ -80,9 +81,11 @@ function App(): JSX.Element {
   return (
     <Provider store={store}>
       <PaperProvider theme={MD3LightTheme}>
-        <NavigationContainer theme={LightTheme}>
-          <Main />
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer theme={LightTheme}>
+            <Main />
+          </NavigationContainer>
+        </SafeAreaProvider>
       </PaperProvider>
     </Provider>
   )
