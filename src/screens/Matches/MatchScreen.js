@@ -204,7 +204,8 @@ const MatchScreen = props => {
       }
     })
 
-    socket.on('matchdata', data => {
+    socket.on('match_update', data => {
+      console.log(JSON.stringify(data, null, 2))
       if (typeof data !== 'undefined' && data) {
         if (typeof data.type !== 'undefined' && data.type) {
           if (data.type === 'firstbreak') {
