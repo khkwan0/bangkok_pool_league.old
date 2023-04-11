@@ -576,6 +576,7 @@ const MatchScreen = props => {
             stickyHeaderIndices={[0]}
             renderItem={({item, index}) => (
               <Frame
+                side={userTeam}
                 firstBreak={firstBreak}
                 isLoading={isLoading}
                 matchInfo={matchInfo}
