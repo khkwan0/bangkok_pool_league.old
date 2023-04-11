@@ -493,7 +493,7 @@ const MatchScreen = props => {
                       </Text>
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <RadioButton
+                        <RadioButton.Android
                           disabled={isLoading}
                           value={matchInfo.home_team_id}
                         />
@@ -516,7 +516,7 @@ const MatchScreen = props => {
                       </Text>
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <RadioButton
+                        <RadioButton.Android
                           disabled={isLoading}
                           value={matchInfo.away_team_id}
                         />
