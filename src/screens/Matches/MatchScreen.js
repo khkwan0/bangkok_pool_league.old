@@ -200,7 +200,6 @@ const MatchScreen = props => {
     })
 
     socket.on('match_update', data => {
-      console.log(JSON.stringify(data, null, 2))
       if (typeof data !== 'undefined' && data) {
         if (typeof data.type !== 'undefined' && data.type) {
           if (data.type === 'firstbreak') {
@@ -354,12 +353,19 @@ const MatchScreen = props => {
         ) {
           setFirstBreak(_matchInfo.firstBreak)
         }
-        if (typeof _matchInfo.finalize_home !== 'undefined' && _matchInfo.finalize_home.teamId) {
+        if (
+          typeof _matchInfo.finalize_home !== 'undefined' &&
+          _matchInfo.finalize_home.teamId
+        ) {
           setFinalizedHome(true)
         }
-        if (typeof _matchInfo.finalize_away !== 'undefined' && _matchInfo.finalize_away.teamId) {
+        if (
+          typeof _matchInfo.finalize_away !== 'undefined' &&
+          _matchInfo.finalize_away.teamId
+        ) {
           setFinalizedAway(true)
         }
+        matchInfo.meta = {..._matchInfo}
       }
     } catch (e) {
       console.log(e)
