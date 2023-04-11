@@ -137,6 +137,17 @@ const Roster = props => {
           if (count >= props.route.params.mfpp) {
             disabled = true
           }
+
+          // if doubles, make sure same person can't be chosen
+          const frame =
+            props.route.params.frames[props.route.params.frameInfo.frameIdx]
+          if (
+            frame.homePlayerIds.includes(playerId) ||
+            frame.awayPlayerIds.includes(playerId)
+          ) {
+            disabled = true
+          }
+
           return (
             <PlayerCard
               idx={index}

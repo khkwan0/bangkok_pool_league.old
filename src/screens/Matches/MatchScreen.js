@@ -347,7 +347,6 @@ const MatchScreen = props => {
   }
 
   function ChoosePlayer(teamId, playerIdx, frameIdx, section, mfpp) {
-    console.log('chooseplayer', section)
     props.navigation.navigate('Roster', {
       teams: teams,
       frameInfo: {playerIdx, frameIdx, teamId},
