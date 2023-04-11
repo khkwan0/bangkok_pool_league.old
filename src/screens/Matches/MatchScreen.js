@@ -3,7 +3,10 @@ import {FlatList, View} from 'react-native'
 import {
   ActivityIndicator,
   Button,
+  Dialog,
   Divider,
+  Paragraph,
+  Portal,
   RadioButton,
   Text,
 } from 'react-native-paper'
@@ -50,6 +53,14 @@ const MatchScreen = props => {
   const [isLoading, setIsLoading] = React.useState(true)
   const [finalizedHome, setFinalizedHome] = React.useState(false)
   const [finalizedAway, setFinalizedAway] = React.useState(false)
+  const [showDialogFirstBreak, setShowDialogFirstBreak] = React.useState({
+    show: false,
+    cb: null,
+  })
+  const [showDialogWin, setShowDialogWin] = React.useState({
+    show: false,
+    cb: null,
+  })
   const [error, setError] = React.useState('')
 
   /*
@@ -441,6 +452,16 @@ const MatchScreen = props => {
     setHomeScore(_homeScore)
   }
 
+  function HandleSetWinner(teamId, playerIds, frameIdx, frameNumber) {
+    if (frames[frameIdx].winner !== 0) {
+      setShowDialogWin({
+        show: true,
+        cb: () => SetWinner(teamId, playerIds, frameIdx, frameNumber),
+      })
+    } else {
+      SetWinner(teamId, playerIds, frameIdx, frameNumber)
+    }
+  }
   function SetWinner(teamId, playerIds, frameIdx, frameNumber) {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
@@ -464,11 +485,20 @@ const MatchScreen = props => {
     props.navigation.goBack()
   }
 
-  function HandleSetFirstBreak(teamId) {
+  function DoSetFirstBreak(teamId) {
     setFirstBreak(teamId)
     SocketSend('firstbreak', {
       firstBreak: teamId,
     })
+    setShowDialogFirstBreak({show: false, cb: null})
+  }
+
+  function HandleSetFirstBreak(teamId) {
+    if (firstBreak !== 0) {
+      setShowDialogFirstBreak({show: true, cb: () => DoSetFirstBreak(teamId)})
+    } else {
+      DoSetFirstBreak(teamId)
+    }
   }
 
   function HandleFinalized(side) {
@@ -505,6 +535,45 @@ const MatchScreen = props => {
   if (isMounted) {
     return (
       <>
+        <Portal>
+          <Dialog
+            visible={showDialogFirstBreak.show}
+            onDismiss={() => setShowDialogFirstBreak({show: false, cb: null})}>
+            <Dialog.Title>Change First Break</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>This has already been set. Are you sure?</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                mode="contained"
+                onPress={() => showDialogFirstBreak.cb()}>
+                Confirm
+              </Button>
+              <Button
+                onPress={() =>
+                  setShowDialogFirstBreak({show: false, cb: null})
+                }>
+                Cancel
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+          <Dialog
+            visible={showDialogWin.show}
+            onDismiss={() => setShowDialogWin({show: false, cb: null})}>
+            <Dialog.Title>Change Winner</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>This has already been set. Are you sure?</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button mode="contained" onPress={() => showDialogWin.cb()}>
+                Confirm
+              </Button>
+              <Button onPress={() => setShowDialogWin({show: false, cb: null})}>
+                Cancel
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
         <View>
           <FlatList
             ListHeaderComponent={
@@ -648,7 +717,7 @@ const MatchScreen = props => {
                 gameTypes={gameTypes}
                 frame={item}
                 choosePlayer={ChoosePlayer}
-                setWinner={SetWinner}
+                setWinner={HandleSetWinner}
                 frameIdx={index}
                 finalizedAway={finalizedAway}
                 finalizedHome={finalizedHome}
