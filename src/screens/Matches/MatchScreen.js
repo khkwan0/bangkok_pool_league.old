@@ -152,7 +152,7 @@ const MatchScreen = props => {
               {matchId: matchInfo.match_id},
               _response => {
                 if (
-                  typeof _response &&
+                  typeof _response !== 'undefined' &&
                   _response &&
                   typeof _response.firstBreak !== 'undefined' &&
                   _response.firstBreak
@@ -161,12 +161,16 @@ const MatchScreen = props => {
                   matchInfo.meta = {..._response}
                 }
                 if (
+                  typeof _response !== 'undefined' &&
+                  _response &&
                   typeof _response.finalize_home !== 'undefined' &&
                   _response.finalize_home.teamId
                 ) {
                   setFinalizedHome(true)
                 }
                 if (
+                  typeof _response !== 'undefined' &&
+                  _response &&
                   typeof _response.finalize_away !== 'undefined' &&
                   _response.finalize_away.teamId
                 ) {
@@ -315,6 +319,8 @@ const MatchScreen = props => {
         sections.forEach(section => {
           for (let i = 0; i < section.frames; i++) {
             _frames.push({
+              section: section_count,
+              mfpp: section.mfpp,
               frameNumber: frame_number,
               type: section.type,
               winner: 0,
@@ -340,10 +346,14 @@ const MatchScreen = props => {
     })
   }
 
-  function ChoosePlayer(teamId, playerIdx, frameIdx) {
+  function ChoosePlayer(teamId, playerIdx, frameIdx, section, mfpp) {
+    console.log('chooseplayer', section)
     props.navigation.navigate('Roster', {
       teams: teams,
       frameInfo: {playerIdx, frameIdx, teamId},
+      section: section,
+      mfpp: mfpp,
+      frames: frames,
     })
   }
 

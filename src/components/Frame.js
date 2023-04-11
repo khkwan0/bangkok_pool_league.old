@@ -64,6 +64,8 @@ const Frame = props => {
                   props.matchInfo.home_team_id,
                   0,
                   props.frameIdx,
+                  props.frame.section,
+                  props.frame.mfpp,
                 )
               }>
               {homePlayerA ? homePlayerA : 'Player'}
@@ -78,6 +80,8 @@ const Frame = props => {
                       props.matchInfo.home_team_id,
                       1,
                       props.frameIdx,
+                      props.frame.section,
+                      props.frame.mfpp,
                     )
                   }>
                   {homePlayerB ? homePlayerB : 'Player'}
@@ -172,6 +176,8 @@ const Frame = props => {
                   props.matchInfo.away_team_id,
                   0,
                   props.frameIdx,
+                  props.frame.section,
+                  props.frame.mfpp,
                 )
               }>
               {awayPlayerA ? (
@@ -192,6 +198,8 @@ const Frame = props => {
                       props.matchInfo.away_team_id,
                       1,
                       props.frameIdx,
+                      props.frame.section,
+                      props.frame.mfpp,
                     )
                   }>
                   {awayPlayerB ? awayPlayerB : 'Player'}

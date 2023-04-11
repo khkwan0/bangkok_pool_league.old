@@ -113,15 +113,41 @@ const Roster = props => {
         }
         stickyHeaderIndices={[0]}
         data={props.route.params.teams[props.route.params.frameInfo.teamId]}
-        renderItem={({item, index}) => (
-          <PlayerCard
-            idx={index}
-            player={item}
-            handleSelect={HandleSelect}
-            frameInfo={props.route.params.frameInfo}
-            abbrevLast
-          />
-        )}
+        renderItem={({item, index}) => {
+          // check to see if how many times a player can play in a section (aka mfpp)
+          let i = 0
+          let count = 0
+          let disabled = false
+          const playerId = item.playerId
+          while (i < props.route.params.frames.length) {
+            const frame = props.route.params.frames[i]
+            if (
+              frame.type !== 'section' &&
+              frame.section === props.route.params.section
+            ) {
+              if (
+                frame.homePlayerIds.includes(playerId) ||
+                frame.awayPlayerIds.includes(playerId)
+              ) {
+                count++
+              }
+            }
+            i++
+          }
+          if (count >= props.route.params.mfpp) {
+            disabled = true
+          }
+          return (
+            <PlayerCard
+              idx={index}
+              disabled={disabled}
+              player={item}
+              handleSelect={HandleSelect}
+              frameInfo={props.route.params.frameInfo}
+              abbrevLast
+            />
+          )
+        }}
       />
     </>
   )
