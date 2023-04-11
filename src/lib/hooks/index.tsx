@@ -233,3 +233,27 @@ export const useTeams = (): any => {
 
   return {GetPlayers}
 }
+
+export const useMatch = () => {
+  const {Get} = useNetwork()
+
+  const GetFrames = async matchId => {
+    try {
+      const frames = await Get('/frames/' + matchId)
+      return frames
+    } catch (e) {
+      return []
+    }
+  }
+
+  const GetMatchInfo = async matchId => {
+    try {
+      const res = await Get('/match/' + matchId)
+      return res
+    } catch (e) {
+      return {}
+    }
+  }
+
+  return {GetFrames, GetMatchInfo}
+}

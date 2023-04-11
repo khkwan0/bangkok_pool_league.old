@@ -10,7 +10,7 @@ import {
 import Frame from '@components/Frame'
 import {useFocusEffect} from '@react-navigation/native'
 import {useAppSelector} from '~/lib/hooks/redux'
-import {useTeams, useSeason, useNetwork} from '~/lib/hooks'
+import {useMatch, useTeams, useSeason, useNetwork} from '~/lib/hooks'
 import {socket} from '~/socket'
 
 const MatchScreen = props => {
@@ -39,6 +39,7 @@ const MatchScreen = props => {
   const team = useTeams()
   const season = useSeason()
   const network = useNetwork()
+  const match = useMatch()
   const [gameTypes, setGameTypes] = React.useState({})
   const [teams, setTeams] = React.useState({})
   const [firstBreak, setFirstBreak] = React.useState(0)
@@ -74,6 +75,12 @@ const MatchScreen = props => {
         console.log('update teams')
         await UpdateTeams()
 
+        //setFrames(await match.GetFrames(matchInfo.match_id))
+        await GetFrames()
+
+        await UpdateMatchInfo()
+
+        setIsLoading(false)
         console.log('init socket')
         socket.connect()
       } catch (e) {
@@ -118,35 +125,17 @@ const MatchScreen = props => {
       }
     }
     const roomId = 'match_' + matchInfo.match_id
-
+    socket.on('reconnect', () => {
+      console.log('reconnect')
+    })
     socket.on('connect', () => {
       console.log('socket connected')
       socket.emit('join', roomId, joinStatus => {
         if (joinStatus.status === 'ok') {
+          /*
           // get matchinfo, may or may not exist yet
           setIsLoading(true)
           socket.emit('getframes', {matchId: matchInfo.match_id}, response => {
-            if (response) {
-              const _frames = framesRef.current
-              response.frames.forEach(_incomingFrame => {
-                let i = 0
-                let found = false
-                while (i < _frames.length && !found) {
-                  if (i === _incomingFrame.frameIdx) {
-                    found = true
-                  } else {
-                    i++
-                  }
-                }
-                if (found) {
-                  _frames[i].winner = _incomingFrame.winner
-                  _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
-                  _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
-                }
-              })
-              UpdateScore(_frames)
-              setFrames([..._frames])
-            }
             socket.emit(
               'getmatchinfo',
               {matchId: matchInfo.match_id},
@@ -180,6 +169,8 @@ const MatchScreen = props => {
               },
             )
           })
+          */
+          console.log('joined OK')
         }
       })
     })
@@ -306,6 +297,73 @@ const MatchScreen = props => {
 
   function SocketSend(type, data = {}) {
     network.SocketSend(type, matchInfo.match_id, data)
+  }
+  function UpdateFrames(frameData) {
+    if (frameData) {
+      const _frames = framesRef.current
+      frameData.frames.forEach(_incomingFrame => {
+        let i = 0
+        let found = false
+        while (i < _frames.length && !found) {
+          if (i === _incomingFrame.frameIdx) {
+            found = true
+          } else {
+            i++
+          }
+        }
+        if (found) {
+          _frames[i].winner = _incomingFrame.winner
+          _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
+          _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
+        }
+      })
+      UpdateScore(_frames)
+      setFrames([..._frames])
+    }
+  }
+
+  async function GetFrames() {
+    try {
+      const matchId = matchInfo.match_id
+      const res = await match.GetFrames(matchId)
+      if (
+        typeof res.status !== 'undefined' &&
+        res.status &&
+        res.status === 'ok'
+      ) {
+        UpdateFrames(res.data)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async function UpdateMatchInfo() {
+    try {
+      const matchId = matchInfo.match_id
+      const res = await match.GetMatchInfo(matchId)
+      if (
+        typeof res.status !== 'undefined' &&
+        res.status &&
+        res.status === 'ok'
+      ) {
+        const _matchInfo = res.data
+        if (
+          typeof _matchInfo?.firstBreak !== 'undefined' &&
+          _matchInfo.firstBreak
+        ) {
+          setFirstBreak(_matchInfo.firstBreak)
+        }
+        if (typeof _matchInfo.finalize_home !== 'undefined' && _matchInfo.finalize_home.teamId) {
+          setFinalizedHome(true)
+        }
+        if (typeof _matchInfo.finalize_away !== 'undefined' && _matchInfo.finalize_away.teamId) {
+          setFinalizedAway(true)
+        }
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   function RenderInitialFrames() {
