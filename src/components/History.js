@@ -4,11 +4,10 @@ import {Button, Text} from 'react-native-paper'
 import {DateTime} from 'luxon'
 
 const HistoryCard = ({item, index}) => {
-  console.log(item)
   return (
     <View key={index} style={{margin: 10}}>
       <Text>
-        {DateTime.fromMillis(item.timestamp).toLocaleString(
+        {DateTime.fromMillis(item?.timestamp ?? 0).toLocaleString(
           DateTime.DATETIME_SHORT_WITH_SECONDS,
         )}
       </Text>

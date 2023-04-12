@@ -155,7 +155,9 @@ const NewPlayerInput = props => {
             </View>
             <View
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Button onPress={() => setShowAddNew(true)}>Add New Player</Button>
+              <Button onPress={() => setShowAddNew(true)}>
+                Add New Player
+              </Button>
             </View>
           </View>
         </View>

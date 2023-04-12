@@ -210,6 +210,11 @@ const MatchScreen = props => {
       }
     })
 
+    socket.on('historyupdate', data => {
+      console.log(data)
+      matchInfo.meta.history.push(data)
+    })
+
     socket.on('match_update', data => {
       if (typeof data !== 'undefined' && data) {
         if (typeof data.type !== 'undefined' && data.type) {
