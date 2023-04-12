@@ -3,10 +3,12 @@ import {View} from 'react-native'
 import {Button, IconButton, Text, TextInput} from 'react-native-paper'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {DateTime} from 'luxon'
+import {socket} from '~/socket'
 
 const Notes = props => {
   const [newNote, setNewNote] = React.useState('')
   const [showAddNew, setAddNew] = React.useState(false)
+  const [notes, setNotes] = React.useState(props.matchInfo.meta.notes ?? [])
   const user = useAppSelector(_state => _state.user)
 
   function HandleCancel() {
@@ -21,13 +23,23 @@ const Notes = props => {
     }
   }
 
+  React.useEffect(() => {
+    socket.on('match_update2', data => {
+      if (data.type === 'newnote') {
+        const _notes = [...notes]
+        _notes.push(data)
+        setNotes(_notes)
+      }
+    })
+  }, [])
+
   return (
     <View>
       <Text variant="headlineMedium" style={{textAlign: 'center'}}>
         Notes
       </Text>
-      {typeof props.matchInfo.meta.notes !== 'undefined' &&
-        props.matchInfo.meta.notes.map((note, idx) => {
+      {typeof notes !== 'undefined' &&
+        notes.map((note, idx) => {
           return (
             <View key={'note' + idx}>
               <Text>

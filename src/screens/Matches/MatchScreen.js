@@ -211,7 +211,12 @@ const MatchScreen = props => {
     })
 
     socket.on('historyupdate', data => {
-      console.log(data)
+      if (typeof matchInfo.meta === 'undefined') {
+        matchInfo.meta = {
+          notes: [],
+          history: [],
+        }
+      }
       matchInfo.meta.history.push(data)
     })
 
@@ -222,9 +227,13 @@ const MatchScreen = props => {
             setFirstBreak(data.data.firstBreak)
           }
           if (data.type === 'newnote') {
-            if (typeof matchInfo.meta !== 'undefined') {
-              matchInfo.meta.notes.push(data.data)
+            if (typeof matchInfo.meta === 'undefined') {
+              matchInfo.meta = {
+                notes: [],
+                history: [],
+              }
             }
+            matchInfo.meta.notes.push(data)
           }
         }
       }
@@ -599,6 +608,7 @@ const MatchScreen = props => {
                   )}
                   <View style={{flex: 1, alignItems: 'flex-end'}}>
                     <Button
+                      disabled={isLoading}
                       icon="dots-triangle"
                       mode="contained"
                       onPress={() =>

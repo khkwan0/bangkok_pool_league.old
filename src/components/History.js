@@ -2,6 +2,7 @@ import React from 'react'
 import {FlatList, View} from 'react-native'
 import {Button, Text} from 'react-native-paper'
 import {DateTime} from 'luxon'
+import {socket} from '~/socket'
 
 const HistoryCard = ({item, index}) => {
   return (
@@ -11,9 +12,8 @@ const HistoryCard = ({item, index}) => {
           DateTime.DATETIME_SHORT_WITH_SECONDS,
         )}
       </Text>
-      {item.msg.map((txt, idx) => (
-        <Text key={index + '_' + idx}>{txt}</Text>
-      ))}
+      {item &&
+        item.msg.map((txt, idx) => <Text key={index + '_' + idx}>{txt}</Text>)}
     </View>
   )
 }
@@ -22,6 +22,13 @@ const History = props => {
   const [showHistory, setShowHistory] = React.useState(
     props.matchInfo?.autoShowHistory ?? false,
   )
+  const [history, setHistory] = React.useState(props.history ?? [])
+
+  React.useEffect(() => {
+    socket.on('historyupdate2', data => {
+      setHistory(data)
+    })
+  }, [])
 
   return (
     <View>
@@ -48,7 +55,7 @@ const History = props => {
       )}
       {showHistory && (
         <FlatList
-          data={props.history}
+          data={history}
           keyExtractor={(item, index) => index}
           renderItem={({item, index}) => (
             <HistoryCard item={item} index={index} />
