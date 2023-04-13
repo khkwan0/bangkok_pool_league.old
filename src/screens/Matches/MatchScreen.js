@@ -74,6 +74,7 @@ const MatchScreen = props => {
   React.useEffect(() => {
     ;(async () => {
       try {
+        setIsLoading(true)
         console.log('getting game types')
         const _gameTypes = await season.GetGameTypes()
         setGameTypes(_gameTypes)
@@ -635,7 +636,7 @@ const MatchScreen = props => {
                         alignItems: 'center',
                       }}>
                       <Text
-                        variant="headlineMedium"
+                        variant="headlineSmall"
                         style={{textAlign: 'center'}}>
                         {matchInfo.home_team_short_name}
                       </Text>
@@ -658,7 +659,7 @@ const MatchScreen = props => {
                         justifyContent: 'center',
                       }}>
                       <Text
-                        variant="headlineMedium"
+                        variant="headlineSmall"
                         style={{textAlign: 'center'}}>
                         {matchInfo.away_team_short_name}
                       </Text>
@@ -680,7 +681,7 @@ const MatchScreen = props => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Text variant="displayMedium">{homeScore}</Text>
+                    <Text variant="displaySmall">{homeScore}</Text>
                   </View>
                   <View
                     style={{
@@ -688,7 +689,7 @@ const MatchScreen = props => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Text variant="displayMedium">{awayScore}</Text>
+                    <Text variant="displaySmall">{awayScore}</Text>
                   </View>
                 </View>
               </View>
