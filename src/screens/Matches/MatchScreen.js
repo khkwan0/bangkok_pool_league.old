@@ -17,21 +17,6 @@ import {useMatch, useTeams, useSeason, useNetwork} from '~/lib/hooks'
 import {socket} from '~/socket'
 
 const MatchScreen = props => {
-  /*
-  type FrameType = {
-    frameNumber: number
-    type: string
-    winner?: number
-    homePlayerIds?: Array<number>
-    awayPlayerIds?: Array<number>
-    homeScore?: number
-    awayScore?: number
-    section?: number
-    timeStamp?: number
-    lastUpdate?: number
-  }
-  */
-
   const [matchInfo] = React.useState(props.route.params.matchInfo)
   //  const user = useAppSelector(_state => _state.user)
   const user = {
@@ -144,44 +129,6 @@ const MatchScreen = props => {
       console.log('socket connected')
       socket.emit('join', roomId, joinStatus => {
         if (joinStatus.status === 'ok') {
-          /*
-          // get matchinfo, may or may not exist yet
-          setIsLoading(true)
-          socket.emit('getframes', {matchId: matchInfo.match_id}, response => {
-            socket.emit(
-              'getmatchinfo',
-              {matchId: matchInfo.match_id},
-              _response => {
-                if (
-                  typeof _response !== 'undefined' &&
-                  _response &&
-                  typeof _response.firstBreak !== 'undefined' &&
-                  _response.firstBreak
-                ) {
-                  setFirstBreak(_response.firstBreak)
-                  matchInfo.meta = {..._response}
-                }
-                if (
-                  typeof _response !== 'undefined' &&
-                  _response &&
-                  typeof _response.finalize_home !== 'undefined' &&
-                  _response.finalize_home.teamId
-                ) {
-                  setFinalizedHome(true)
-                }
-                if (
-                  typeof _response !== 'undefined' &&
-                  _response &&
-                  typeof _response.finalize_away !== 'undefined' &&
-                  _response.finalize_away.teamId
-                ) {
-                  setFinalizedHome(true)
-                }
-                setIsLoading(false)
-              },
-            )
-          })
-          */
           console.log('joined OK')
         }
       })
@@ -235,6 +182,19 @@ const MatchScreen = props => {
               }
             }
             matchInfo.meta.notes.push(data)
+          }
+          if (data.type === 'finalize') {
+            if (
+              typeof data.data !== 'undefined' &&
+              typeof data.data.side !== 'undefined'
+            ) {
+              if (data.data.side === 'home') {
+                setFinalizedHome(true)
+              }
+              if (data.data.side === 'away') {
+                setFinalizedAway(true)
+              }
+            }
           }
         }
       }

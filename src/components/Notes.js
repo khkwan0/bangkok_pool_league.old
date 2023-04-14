@@ -8,7 +8,7 @@ import {socket} from '~/socket'
 const Notes = props => {
   const [newNote, setNewNote] = React.useState('')
   const [showAddNew, setAddNew] = React.useState(false)
-  const [notes, setNotes] = React.useState(props.matchInfo.meta.notes ?? [])
+  const [notes, setNotes] = React.useState(props.matchInfo?.meta?.notes ?? [])
   const user = useAppSelector(_state => _state.user)
 
   function HandleCancel() {

@@ -193,9 +193,7 @@ const Frame = props => {
             {props.gameTypes[props.frame.type].no_players === 2 && (
               <View style={{marginTop: 5}}>
                 <Button
-                  disabled={
-                    props.isLoading || disabled || props.side === 'home'
-                  }
+                  disabled={props.isLoading || disabled || props.side === 'home'}
                   icon={!awayPlayerB ? 'plus-circle' : ''}
                   onPress={() =>
                     props.choosePlayer(

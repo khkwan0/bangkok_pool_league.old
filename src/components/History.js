@@ -49,7 +49,7 @@ const History = props => {
       {!showHistory && (
         <View>
           <Text style={{textAlign: 'center'}}>
-            ({props.history.length} items)
+            ({props.history?.length ?? 0} items)
           </Text>
         </View>
       )}
