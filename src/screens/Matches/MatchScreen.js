@@ -72,9 +72,10 @@ const MatchScreen = props => {
         console.log('update teams')
         await UpdateTeams()
 
-        //setFrames(await match.GetFrames(matchInfo.match_id))
+        console.log('Get frames')
         await GetFrames()
 
+        console.log('updatematch info')
         await UpdateMatchInfo()
 
         setIsLoading(false)
@@ -242,6 +243,7 @@ const MatchScreen = props => {
           playerId: playerId,
           playerIdx: frameInfo.playerIdx,
           newPlayer: newPlayer,
+          frameType: _frames[frameInfo.frameIdx].type,
         })
         setFrames(_frames)
       })()
@@ -286,24 +288,26 @@ const MatchScreen = props => {
   function UpdateFrames(frameData) {
     if (frameData) {
       const _frames = framesRef.current
-      frameData.frames.forEach(_incomingFrame => {
-        let i = 0
-        let found = false
-        while (i < _frames.length && !found) {
-          if (i === _incomingFrame.frameIdx) {
-            found = true
-          } else {
-            i++
+      if (frameData.frames !== 'undefined' && Array.isArray(frameData.frames)) {
+        frameData.frames.forEach(_incomingFrame => {
+          let i = 0
+          let found = false
+          while (i < _frames.length && !found) {
+            if (i === _incomingFrame.frameIdx) {
+              found = true
+            } else {
+              i++
+            }
           }
-        }
-        if (found) {
-          _frames[i].winner = _incomingFrame.winner
-          _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
-          _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
-        }
-      })
-      UpdateScore(_frames)
-      setFrames([..._frames])
+          if (found) {
+            _frames[i].winner = _incomingFrame.winner
+            _frames[i].homePlayerIds = _incomingFrame.homePlayerIds
+            _frames[i].awayPlayerIds = _incomingFrame.awayPlayerIds
+          }
+        })
+        UpdateScore(_frames)
+        setFrames([..._frames])
+      }
     }
   }
 
@@ -319,7 +323,7 @@ const MatchScreen = props => {
         UpdateFrames(res.data)
       }
     } catch (e) {
-      console.log(e)
+      console.log('get frames', e)
     }
   }
 
@@ -427,21 +431,29 @@ const MatchScreen = props => {
     setHomeScore(_homeScore)
   }
 
-  function HandleSetWinner(teamId, playerIds, frameIdx, frameNumber) {
+  function HandleSetWinner(
+    teamId,
+    playerIds,
+    frameIdx,
+    frameType,
+    frameNumber,
+  ) {
     if (frames[frameIdx].winner !== 0) {
       setShowDialogWin({
         show: true,
-        cb: () => SetWinner(teamId, playerIds, frameIdx, frameNumber),
+        cb: () =>
+          SetWinner(teamId, playerIds, frameIdx, frameType, frameNumber),
       })
     } else {
-      SetWinner(teamId, playerIds, frameIdx, frameNumber)
+      SetWinner(teamId, playerIds, frameIdx, frameType, frameNumber)
     }
   }
-  function SetWinner(teamId, playerIds, frameIdx, frameNumber) {
+  function SetWinner(teamId, playerIds, frameIdx, frameType, frameNumber) {
     const _frames = [...frames]
     _frames[frameIdx].winner = teamId
     SocketSend('win', {
       frameNumber: frameNumber,
+      frameType: frameType,
       winnerTeamId: teamId,
       playerIds: playerIds,
       frameIdx: frameIdx,
@@ -450,6 +462,7 @@ const MatchScreen = props => {
     _frames[frameIdx].timeStamp > 0
       ? (_frames[frameIdx].lastUpdate = Date.now())
       : (_frames[frameIdx].timeStamp = Date.now())
+    setShowDialogWin({show: false, cb: null})
     UpdateScore(_frames)
   }
 

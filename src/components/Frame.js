@@ -57,7 +57,8 @@ const Frame = props => {
               backgroundColor: '#ff000050',
             }}>
             <Button
-              disabled={props.isLoading || disabled || props.side === 'away'}
+              disabled={false
+                /*props.isLoading || disabled || props.side === 'away'*/}
               icon={!homePlayerA ? 'plus-circle' : ''}
               onPress={() =>
                 props.choosePlayer(
@@ -123,7 +124,6 @@ const Frame = props => {
                     props.matchInfo.home_team_id,
                     props.frame.homePlayerIds,
                     props.frameIdx,
-                    props.frame.frameNumber,
                   )
                 }>
                 win
@@ -157,7 +157,6 @@ const Frame = props => {
                     props.matchInfo.away_team_id,
                     props.frame.awayPlayerIds,
                     props.frameIdx,
-                    props.frame.frameNumber,
                   )
                 }>
                 win
@@ -193,7 +192,9 @@ const Frame = props => {
             {props.gameTypes[props.frame.type].no_players === 2 && (
               <View style={{marginTop: 5}}>
                 <Button
-                  disabled={props.isLoading || disabled || props.side === 'home'}
+                  disabled={
+                    props.isLoading || disabled || props.side === 'home'
+                  }
                   icon={!awayPlayerB ? 'plus-circle' : ''}
                   onPress={() =>
                     props.choosePlayer(

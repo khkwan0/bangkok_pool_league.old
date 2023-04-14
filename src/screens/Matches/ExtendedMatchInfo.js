@@ -13,7 +13,7 @@ const ExtendedMatchInfo = props => {
   async function HandleSaveNote(newNote = '') {
     network.SocketSend('newnote', matchInfo.match_id, {note: newNote})
   }
-  
+
   return (
     <View style={{flex: 1}}>
       <FlatList
