@@ -54,7 +54,8 @@ const Frame = props => {
             style={{
               flex: 2,
               paddingVertical: 10,
-              backgroundColor: '#ff000050',
+              backgroundColor: '#fca9a9',
+              borderRadius: 5,
             }}>
             <Button
               disabled={false
@@ -167,7 +168,8 @@ const Frame = props => {
             style={{
               flex: 2,
               paddingVertical: 10,
-              backgroundColor: '#0000ff22',
+              backgroundColor: '#b8bbf5',
+              borderRadius: 5,
             }}>
             <Button
               disabled={props.isLoading || disabled || props.side === 'home'}
