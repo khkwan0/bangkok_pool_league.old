@@ -1,11 +1,18 @@
 import React from 'react'
-import {View} from 'react-native'
-import {Text, TouchableRipple} from 'react-native-paper'
+import {Image, View} from 'react-native'
+import {Portal, Text, TouchableRipple} from 'react-native-paper'
 import {DateTime} from 'luxon'
 
 const MatchCard = props => {
+  console.log(JSON.stringify(props.match, null, 2))
   return (
-    <View style={{paddingHorizontal: 10}}>
+    <View
+      style={{
+        margin: 10,
+        paddingHorizontal: 10,
+        backgroundColor: '#ddd',
+        borderRadius: 10,
+      }}>
       <TouchableRipple onPress={() => props.handlePress(props.idx)}>
         <View>
           <Text>{props.match.round}</Text>
@@ -26,6 +33,17 @@ const MatchCard = props => {
             {props.match.latitude},{props.match.longitude}
           </Text>
           <Text>{props.match.phone}</Text>
+          {props.match.logo && (
+            <View
+              style={{position: 'absolute', bottom: 0, right: 10, zIndex: -1}}>
+              <Image
+                source={{uri: props.match.logo}}
+                width={100}
+                height={100}
+                resizeMode="contain"
+              />
+            </View>
+          )}
         </View>
       </TouchableRipple>
     </View>
