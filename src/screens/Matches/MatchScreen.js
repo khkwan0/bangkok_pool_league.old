@@ -1,5 +1,5 @@
 import React from 'react'
-import {FlatList, View} from 'react-native'
+import {AppState, FlatList, View} from 'react-native'
 import {
   ActivityIndicator,
   Button,
@@ -47,6 +47,7 @@ const MatchScreen = props => {
     cb: null,
   })
   const [error, setError] = React.useState('')
+  const appState = React.useRef(AppState.currentState)
 
   /*
   useFocusEffect(
@@ -87,6 +88,39 @@ const MatchScreen = props => {
       }
     })()
     return () => setIsMounted(false)
+  }, [])
+
+  React.useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        ;(async () => {
+          try {
+            setIsLoading(true)
+            console.log('update teams')
+            await UpdateTeams()
+
+            console.log('Get frames')
+            await GetFrames()
+
+            console.log('updatematch info')
+            await UpdateMatchInfo()
+
+            setIsLoading(false)
+            console.log('init socket')
+            socket.connect()
+          } catch (e) {
+            console.log(e)
+          }
+        })()
+      }
+      appState.current = nextAppState
+      return () => {
+        subscription.remove()
+      }
+    })
   }, [])
 
   const framesRef = React.useRef([])
