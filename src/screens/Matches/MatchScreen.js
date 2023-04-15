@@ -706,7 +706,9 @@ const MatchScreen = props => {
                 <View style={{flexDirection: 'row'}}>
                   <View style={{flex: 1}}>
                     <Button
-                      disabled={finalizedHome || isLoading}
+                      disabled={false
+                        //  finalizedHome || isLoading
+                      }
                       onPress={() => HandleFinalized('home')}
                       mode="elevated">
                       Finalize Home
@@ -714,7 +716,9 @@ const MatchScreen = props => {
                   </View>
                   <View style={{flex: 1}}>
                     <Button
-                      disabled={finalizedAway || isLoading}
+                      disabled={false
+                     //   finalizedAway || isLoading
+                      }
                       onPress={() => HandleFinalized('away')}
                       mode="elevated">
                       Finalize Away
