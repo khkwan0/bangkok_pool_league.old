@@ -5,20 +5,18 @@ import {ClearUser, SetUser} from '~/redux/userSlice'
 import {socket} from '~/socket'
 
 export const useNetwork = (): any => {
-  const Get = async function (
-    endpoint: string,
-    token: string = '',
-  ): Promise<Object> {
+  const Get = async function (endpoint: string): Promise<Object> {
     try {
       const _endpoint =
         typeof endpoint !== 'undefined' && endpoint[0] === '/'
           ? endpoint.substring(1)
           : endpoint
       const domain = config.domain ?? 'localhost'
+      const token = await AsyncStorage.getItem('jwt')
       const res = await fetch('https://' + domain + '/' + _endpoint, {
         headers: {
           Authorization: 'Bearer ' + token,
-        }
+        },
       })
       const json = await res.json()
       return json
@@ -31,7 +29,6 @@ export const useNetwork = (): any => {
   const Post = async function (
     endpoint: string,
     payload: object,
-    token: string = '',
   ): Promise<Object> {
     try {
       const _endpoint =
@@ -39,6 +36,7 @@ export const useNetwork = (): any => {
           ? endpoint.substring(1)
           : endpoint
       const domain = config.domain ?? 'localhost'
+      const token = await AsyncStorage.getItem('jwt')
       const res = await fetch('https://' + domain + '/' + _endpoint, {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -89,13 +87,19 @@ export const useAccount = (): any => {
     }
   }
 
+  // uses jwt
   const FetchUser = async (): Promise<void> => {
     try {
-      const token = user?.data?.token ?? ''
-      const userId = user?.data?.token ?? ''
-      // const userData = await Get('/user/' + userId, token)
-      const userData = {
-        gamesPlayed: 5,
+      if (
+        typeof user === 'undefined' ||
+        !user ||
+        typeof user?.id === 'undefined' ||
+        !user.id
+      ) {
+        const userData = await Get('/user')
+        console.log(userData)
+        dispatch(SetUser(userData))
+        console.log('here')
       }
     } catch (e) {
       console.log(e)
@@ -110,9 +114,10 @@ export const useAccount = (): any => {
     }
   }
 
-  async function Login(email: string, password: string) {
+  async function UserLogin(email: string, password: string) {
     try {
-      // const res = await Post('/login', {email, password}, false)
+      const res = await Post('/login', {email, password}, false)
+/*
       const res = {
         email: 'khkwan0@gmail.com',
         id: 1,
@@ -120,18 +125,25 @@ export const useAccount = (): any => {
         firstName: 'Kenneth',
         lastName: 'K',
       }
-      dispatch(SetUser(res))
+      */
+      if (typeof res.status !== 'undefined' && res.status === 'ok') {
+        if (typeof res.data !== 'undefined' && res.data) {
+          await AsyncStorage.setItem('jwt', res.data.token)
+          dispatch(SetUser(res.data.user))
+        }
+      }
     } catch (e) {
       console.log(e)
     }
   }
 
   async function Logout() {
-    dispatch(ClearUser())
     await AsyncStorage.removeItem('user')
+    dispatch(ClearUser())
+    Get('/logout')
   }
 
-  return {FetchUser, LoadUser, Login, Logout, UpdateUser}
+  return {FetchUser, LoadUser, UserLogin, Logout, UpdateUser}
 }
 
 export const useLeague = (): any => {

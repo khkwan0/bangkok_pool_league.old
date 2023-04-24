@@ -2,22 +2,33 @@ import React from 'react'
 import {View} from 'react-native'
 import {Button, TextInput} from 'react-native-paper'
 import {useAccount} from '~/lib/hooks'
+import LineLogin from 'rn-line-login-android'
 
-const Login = (props: any) => {
-  const {Login} = useAccount()
-  const [email, setEmail] = React.useState('')
+const Login = props => {
+  const {UserLogin} = useAccount()
+  const [email, setEmail] = React.useState('khkwan0@gmail.com')
   const [secure, setSecure] = React.useState(true)
-  const [password, setPassword] = React.useState('')
+  const [password, setPassword] = React.useState('KiN-1BdH')
   const [loading, setLoading] = React.useState(false)
 
   async function AttemptLogin() {
     try {
       setLoading(true)
-      await Login(email, password)
+      const user = await UserLogin(email, password)
+      console.log(user)
     } catch (e) {
       console.log(e)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function HandleLineLogin() {
+    try {
+      const res = await LineLogin.Login()
+      console.log(res)
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -45,8 +56,17 @@ const Login = (props: any) => {
           }
           onChangeText={text => setPassword(text)}
         />
-        <View style={{flex: 1, justifyContent: 'center'}}>
-          <Button mode="contained" icon="login" loading={loading} disabled={loading} onPress={() => AttemptLogin()}>Login</Button>
+        <View>
+          <Button
+            mode="contained"
+            loading={loading}
+            disabled={loading}
+            onPress={() => AttemptLogin()}>
+            Login
+          </Button>
+        </View>
+        <View>
+          <Button onPress={() => HandleLineLogin()}>Line</Button>
         </View>
       </View>
     </View>
