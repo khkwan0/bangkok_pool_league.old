@@ -97,9 +97,7 @@ export const useAccount = (): any => {
         !user.id
       ) {
         const userData = await Get('/user')
-        console.log(userData)
         dispatch(SetUser(userData))
-        console.log('here')
       }
     } catch (e) {
       console.log(e)
@@ -200,9 +198,24 @@ export const useSeason = (): any => {
   const {Get} = useNetwork()
 
   const GetMatches = async (options: Array<string> = []): Promise<Object> => {
-    const query = options.join('&')
-    const matches = await Get('/matches?' + query)
-    return matches
+    try {
+      const query = options.join('&')
+      const matches = await Get('/matches?' + query)
+      return matches
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
+  const GetMatchesBySeason = async (season: number): Promise<Object> => {
+    try {
+      const matches = await Get('/season/matches?season=' + season)
+      return matches
+    } catch (e) {
+      console.log(e)
+      return []
+    }
   }
 
   const GetTeams = async (): Promise<Object> => {
@@ -225,7 +238,7 @@ export const useSeason = (): any => {
     }
   }
 
-  return {GetMatches, GetTeams, GetGameTypes}
+  return {GetMatches, GetMatchesBySeason, GetTeams, GetGameTypes}
 }
 
 export const useTeams = (): any => {

@@ -3,7 +3,7 @@ import React from 'react'
 import {useAccount, useLeague} from '~/lib/hooks'
 import {useAppSelector} from '~/lib/hooks/redux'
 import Matches from '@screens/Matches'
-import Teams from '@screens/Teams'
+import Calendar from '~/screens/Calendar'
 import Account from '@screens/Account'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -49,13 +49,13 @@ function Main(): JSX.Element {
         }}
       />
       <Tab.Screen
-        name="Teams"
-        component={Teams}
+        name="Calendar"
+        component={Calendar}
         options={{
           tabBarIcon: ({color, size}) => {
             return (
               <MaterialCommunityIcons
-                name="account-multiple"
+                name="calendar"
                 size={size}
                 color={color}
               />
