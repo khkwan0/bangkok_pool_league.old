@@ -20,59 +20,64 @@ const tiedStyle = StyleSheet.create({
   fontSize: 16,
 })
 
+const marginStyle = StyleSheet.create({
+  marginLeft: 4,
+  borderLeftWidth: 2,
+  borderLeftColor: '#aaa',
+  paddingLeft: 10,
+})
+
 const MatchGrouping = props => {
-  const key = Object.keys(props.matches)[0]
+  const matchDate = Object.keys(props.matches)[0]
   return (
-    <View style={{margin: 5}}>
+    <View style={{marginLeft: 5}}>
       <View style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
         <Text style={{color: '#aaa'}}>&#x2b24;</Text>
-        <Text variant="headlineMedium" style={{color: '#000'}}>{key}</Text>
+        <Text variant="headlineMedium" style={{color: '#000'}}>
+          {matchDate}
+        </Text>
       </View>
-      <Text
-        style={{
-          fontSize: 18,
-          marginLeft: 4,
-          borderLeftColor: '#aaa',
-          borderLeftWidth: 2,
-          paddingLeft: 5,
-        }}>
-        Round {props.matches[key][0].round}
-      </Text>
-      {props.matches[key].map((match, idx) => {
-        const homeStyle =
-          match.home_frames > match.away_frames
-            ? winnerStyle
-            : match.away_frames === match.home_frames
-            ? tiedStyle
-            : loserStyle
-        const awayStyle =
-          match.away_frames > match.home_frames
-            ? winnerStyle
-            : match.away_frames === match.home_frames
-            ? tiedStyle
-            : loserStyle
-
+      {Object.keys(props.matches[matchDate]).map(divisionName => {
         return (
-          <View
-            key={match.id + '_' + idx}
-            style={{
-              marginLeft: 4,
-              borderLeftWidth: 2,
-              borderLeftColor: '#aaa',
-              paddingLeft: 10,
-            }}>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                gap: 10,
-                alignItems: 'center',
-              }}>
-              <Text style={homeStyle}>{match.home_short_name}</Text>
-              <Text>VS</Text>
-              <Text style={awayStyle}>{match.away_short_name}</Text>
+          <>
+            <View style={[marginStyle, {paddingLeft: 20}]}>
+              <Text>{divisionName}</Text>
             </View>
-          </View>
+            <View>
+              {props.matches[matchDate][divisionName].map((match, idx) => {
+                const homeStyle =
+                  match.home_frames > match.away_frames
+                    ? winnerStyle
+                    : match.away_frames === match.home_frames
+                    ? tiedStyle
+                    : loserStyle
+                const awayStyle =
+                  match.away_frames > match.home_frames
+                    ? winnerStyle
+                    : match.away_frames === match.home_frames
+                    ? tiedStyle
+                    : loserStyle
+
+                return (
+                  <View
+                    key={match.id + '_' + idx}
+                    style={[marginStyle, {paddingLeft: 40}]}>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        gap: 10,
+                        alignItems: 'center',
+                      }}>
+                      <Text style={homeStyle}>{match.home_short_name}</Text>
+                      <Text>VS</Text>
+                      <Text style={awayStyle}>{match.away_short_name}</Text>
+                    </View>
+                  </View>
+                )
+              })}
+            </View>
+          </>
         )
       })}
     </View>
@@ -88,7 +93,7 @@ const Calendar = props => {
     ;(async () => {
       const res = await season.GetMatchesBySeason(9)
       console.log(res.scrollIndex)
-//      setScrollIndex(res.scrollIndex ?? 0)
+      //      setScrollIndex(res.scrollIndex ?? 0)
       setMatches(res.matches)
       setScrollIndex(19)
     })()
