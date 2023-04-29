@@ -128,6 +128,7 @@ export const useAccount = (): any => {
         if (typeof res.data !== 'undefined' && res.data) {
           await AsyncStorage.setItem('jwt', res.data.token)
           dispatch(SetUser(res.data.user))
+          return {status: 'ok'}
         }
       }
     } catch (e) {

@@ -3,7 +3,8 @@ import React from 'react'
 import {useAccount, useLeague} from '~/lib/hooks'
 import {useAppSelector} from '~/lib/hooks/redux'
 import Matches from '@screens/Matches'
-import Calendar from '~/screens/Calendar'
+import Calendar from '@screens/Calendar'
+import Login from '@screens/Auth/Login'
 import Account from '@screens/Account'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createDrawerNavigator} from '@react-navigation/drawer'
@@ -36,6 +37,7 @@ function Main(): JSX.Element {
         drawerContent={params => <DrawerContent {...params} />}
         screenOptions={{drawerPosition: 'right', headerShown: false}}>
         <Drawer.Screen name="Matches" component={Matches} />
+        <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="Calendar" component={Calendar} />
       </Drawer.Navigator>
     )

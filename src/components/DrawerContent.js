@@ -28,7 +28,7 @@ const DrawerContent = props => {
     <View style={drawerPanelStyle}>
       <View style={{flex: 5, gap: 10}}>
         <View>
-          <Pressable onPress={() => props.navigation.navigate('Calendar')}>
+          <Pressable onPress={() => props.navigation.navigate('Login')}>
             <View style={drawerItemStyle}>
               <MaterialCommunityIcons name="login" color="#000" size={30} />
               <Text variant="titleLarge">Login</Text>

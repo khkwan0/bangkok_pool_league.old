@@ -11,6 +11,7 @@ const UpcomingMatches = (props: any) => {
   const [fixtures, setFixtures] = React.useState([])
   const {user} = useAppSelector(_state => _state.user)
   const season = useSeason()
+  const routeName = props.navigation.getState().routes[0].name
 
   React.useEffect(() => {
     ;(async () => {
@@ -33,7 +34,12 @@ const UpcomingMatches = (props: any) => {
         ListHeaderComponent={
           <View>
             {!user.data.id && (
-              <Button onPress={() => props.navigation.navigate('Me')}>
+              <Button
+                onPress={() =>
+                  props.navigation.navigate('Login', {
+                    previous: routeName,
+                  })
+                }>
                 Login to see your matches
               </Button>
             )}
