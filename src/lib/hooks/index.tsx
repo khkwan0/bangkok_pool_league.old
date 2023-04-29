@@ -138,7 +138,8 @@ export const useAccount = (): any => {
   async function Logout() {
     await AsyncStorage.removeItem('user')
     dispatch(ClearUser())
-    Get('/logout')
+    await Get('/logout')
+    await AsyncStorage.removeItem('jwt')
   }
 
   return {FetchUser, LoadUser, UserLogin, Logout, UpdateUser}

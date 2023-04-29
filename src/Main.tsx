@@ -8,6 +8,7 @@ import Account from '@screens/Account'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createDrawerNavigator} from '@react-navigation/drawer'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import DrawerContent from '@components/DrawerContent'
 
 const Tab = createBottomTabNavigator()
 const Drawer = createDrawerNavigator()
@@ -20,8 +21,8 @@ function Main(): JSX.Element {
   const {user} = useAppSelector(_state => _state.user)
 
   React.useEffect(() => {
-    account.LoadUser()
-  }, [account])
+    account.FetchUser()
+  }, [])
 
   React.useEffect(() => {
     ;(async () => {
@@ -31,8 +32,11 @@ function Main(): JSX.Element {
 
   if (drawerOnly) {
     return (
-      <Drawer.Navigator screenOptions={{drawerPosition: 'right'}}>
+      <Drawer.Navigator
+        drawerContent={params => <DrawerContent {...params} />}
+        screenOptions={{drawerPosition: 'right', headerShown: false}}>
         <Drawer.Screen name="Matches" component={Matches} />
+        <Drawer.Screen name="Calendar" component={Calendar} />
       </Drawer.Navigator>
     )
   } else {

@@ -32,7 +32,6 @@ const UpcomingMatches = (props: any) => {
       <FlatList
         ListHeaderComponent={
           <View>
-            <Text variant="titleMedium">Upcoming Matches</Text>
             {!user.data.id && (
               <Button onPress={() => props.navigation.navigate('Me')}>
                 Login to see your matches

@@ -1,6 +1,6 @@
 import React from 'react'
 import {FlatList, StyleSheet, View} from 'react-native'
-import {Text} from 'react-native-paper'
+import {ActivityIndicator, Text} from 'react-native-paper'
 import {useSeason} from '~/lib/hooks'
 
 const winnerStyle = StyleSheet.create({
@@ -37,9 +37,9 @@ const MatchGrouping = props => {
           {matchDate}
         </Text>
       </View>
-      {Object.keys(props.matches[matchDate]).map(divisionName => {
+      {Object.keys(props.matches[matchDate]).map((divisionName, idx) => {
         return (
-          <>
+          <View key={divisionName + matchDate + idx}>
             <View style={[marginStyle, {paddingLeft: 20}]}>
               <Text>{divisionName}</Text>
             </View>
@@ -77,7 +77,7 @@ const MatchGrouping = props => {
                 )
               })}
             </View>
-          </>
+          </View>
         )
       })}
     </View>
@@ -87,34 +87,29 @@ const MatchGrouping = props => {
 const Calendar = props => {
   const season = useSeason()
   const [matches, setMatches] = React.useState([])
-  const [scrollIndex, setScrollIndex] = React.useState(0)
+  const [isMounted, setIsMounted] = React.useState(false)
 
   React.useEffect(() => {
     ;(async () => {
       const res = await season.GetMatchesBySeason(9)
-      console.log(res.scrollIndex)
-      //      setScrollIndex(res.scrollIndex ?? 0)
       setMatches(res.matches)
-      setScrollIndex(19)
+      setIsMounted(true)
     })()
   }, [])
 
-  return (
-    <View>
-      <FlatList
-        data={matches}
-        getItemLayout={(data, idx) => {
-          return {
-            length: 120,
-            offset: 300 * idx,
-            index: idx,
-          }
-        }}
-        initialScrollIndex={scrollIndex}
-        renderItem={({item}) => <MatchGrouping matches={item} />}
-      />
-    </View>
-  )
+  if (isMounted) {
+    return (
+      <View>
+        <FlatList
+          data={matches}
+          initialNumToRender={2}
+          renderItem={({item}) => <MatchGrouping matches={item} />}
+        />
+      </View>
+    )
+  } else {
+    return <ActivityIndicator />
+  }
 }
 
 export default Calendar

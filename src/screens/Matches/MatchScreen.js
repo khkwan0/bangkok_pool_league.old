@@ -600,30 +600,40 @@ const MatchScreen = props => {
           <FlatList
             ListHeaderComponent={
               <View style={{backgroundColor: '#fff'}}>
-                <View style={{flexDirection: 'row', padding: 5}}>
-                  <View style={{flex: 1, alignItems: 'flex-start'}}>
-                    <Button
-                      icon="arrow-left"
-                      mode="contained"
-                      onPress={() => HandleGoBack()}>
-                      Back
-                    </Button>
+                {isLoading && (
+                  <View style={{flex: 1, justifyContent: 'center'}}>
+                    <ActivityIndicator />
                   </View>
-                  {isLoading && (
-                    <View style={{flex: 1, justifyContent: 'center'}}>
-                      <ActivityIndicator />
-                    </View>
-                  )}
-                  <View style={{flex: 1, alignItems: 'flex-end'}}>
-                    <Button
-                      disabled={isLoading}
-                      icon="dots-triangle"
-                      mode="contained"
-                      onPress={() =>
-                        props.navigation.navigate('Match Info', {matchInfo})
-                      }>
-                      More
-                    </Button>
+                )}
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <View
+                    style={{
+                      flex: 2,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text variant="headlineSmall" style={{textAlign: 'center'}}>
+                      {matchInfo.home_team_short_name}
+                    </Text>
+                  </View>
+                  <View style={{flex: 1, alignItems: 'center'}}>
+                    <Text>VS</Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 2,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text variant="headlineSmall" style={{textAlign: 'center'}}>
+                      {matchInfo.away_team_short_name}
+                    </Text>
                   </View>
                 </View>
                 <RadioButton.Group
@@ -634,50 +644,32 @@ const MatchScreen = props => {
                       flex: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
-                      justifyContent: 'center',
                     }}>
                     <View
                       style={{
-                        flex: 2,
-                        justifyContent: 'center',
+                        flex: 1,
+                        flexDirection: 'row',
                         alignItems: 'center',
+                        justifyContent: 'center',
                       }}>
-                      <Text
-                        variant="headlineSmall"
-                        style={{textAlign: 'center'}}>
-                        {matchInfo.home_team_short_name}
-                      </Text>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <RadioButton.Android
-                          disabled={isLoading}
-                          value={matchInfo.home_team_id}
-                        />
-                        <Text>First Break</Text>
-                      </View>
-                    </View>
-                    <View style={{flex: 1, alignItems: 'center'}}>
-                      <Text>VS</Text>
+                      <RadioButton.Android
+                        disabled={isLoading}
+                        value={matchInfo.home_team_id}
+                      />
+                      <Text>First Break</Text>
                     </View>
                     <View
                       style={{
-                        flex: 2,
+                        flex: 1,
+                        flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
-                      <Text
-                        variant="headlineSmall"
-                        style={{textAlign: 'center'}}>
-                        {matchInfo.away_team_short_name}
-                      </Text>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <RadioButton.Android
-                          disabled={isLoading}
-                          value={matchInfo.away_team_id}
-                        />
-                        <Text>First Break</Text>
-                      </View>
+                      <RadioButton.Android
+                        disabled={isLoading}
+                        value={matchInfo.away_team_id}
+                      />
+                      <Text>First Break</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -702,11 +694,12 @@ const MatchScreen = props => {
               </View>
             }
             ListFooterComponent={
-              <View>
+              <View style={{paddingBottom: 20}}>
                 <View style={{flexDirection: 'row'}}>
                   <View style={{flex: 1}}>
                     <Button
-                      disabled={false
+                      disabled={
+                        false
                         //  finalizedHome || isLoading
                       }
                       onPress={() => HandleFinalized('home')}
@@ -716,14 +709,26 @@ const MatchScreen = props => {
                   </View>
                   <View style={{flex: 1}}>
                     <Button
-                      disabled={false
-                     //   finalizedAway || isLoading
+                      disabled={
+                        false
+                        //   finalizedAway || isLoading
                       }
                       onPress={() => HandleFinalized('away')}
                       mode="elevated">
                       Finalize Away
                     </Button>
                   </View>
+                </View>
+                <View style={{marginTop: 10}}>
+                  <Button
+                    disabled={isLoading}
+                    icon="dots-triangle"
+                    mode="contained"
+                    onPress={() =>
+                      props.navigation.navigate('Match Info', {matchInfo})
+                    }>
+                    More
+                  </Button>
                 </View>
               </View>
             }

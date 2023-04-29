@@ -14,10 +14,7 @@ const Matches = props => {
 
   return (
     <View style={{flex: 1, backgroundColor: 'blue', paddingTop: insets.top}}>
-      <MatchStack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}>
+      <MatchStack.Navigator>
         <MatchStack.Screen
           name="Upcoming Matches"
           component={UpcomingMatches}
