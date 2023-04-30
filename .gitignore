@@ -64,3 +64,4 @@ yarn-error.log
 src/config.tsx
 Podfile.lock
 strings.xml
+google-services.json
