@@ -21,7 +21,7 @@ export const useNetwork = (): any => {
       const json = await res.json()
       return json
     } catch (e) {
-      console.log(e)
+      console.log(endpoint, e)
       return {}
     }
   }
@@ -100,7 +100,7 @@ export const useAccount = (): any => {
         dispatch(SetUser(userData))
       }
     } catch (e) {
-      console.log(e)
+      console.log('no user')
     }
   }
 
@@ -150,12 +150,16 @@ export const useLeague = (): any => {
   const {Get, Post} = useNetwork()
 
   const GetSeason = async (): Promise<Object> => {
-    const localSeason = await AsyncStorage.getItem('season')
-    if (!localSeason) {
-      const season = await Get('/season')
-      return season
-    } else {
-      return localSeason
+    try {
+      const localSeason = await AsyncStorage.getItem('season')
+      if (!localSeason) {
+        const season = await Get('/season')
+        return season
+      } else {
+        return localSeason
+      }
+    } catch (e) {
+      console.log('no season')
     }
   }
 

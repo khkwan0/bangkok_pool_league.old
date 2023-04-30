@@ -3,7 +3,11 @@ import {View} from 'react-native'
 import {Button, Text, TextInput} from 'react-native-paper'
 import {useAccount} from '~/lib/hooks'
 import LineLogin from 'rn-line-login-android'
-import {Settings, LoginButton, AccessToken} from 'react-native-fbsdk-next'
+import {Settings, LoginManager, AccessToken} from 'react-native-fbsdk-next'
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin'
 import {useAppSelector} from '~/lib/hooks/redux'
 
 const Login = props => {
@@ -13,10 +17,39 @@ const Login = props => {
   const [secure, setSecure] = React.useState(true)
   const [password, setPassword] = React.useState('KiN-1BdH')
   const [loading, setLoading] = React.useState(false)
+  const [showSocial, setShowSocial] = React.useState(false)
 
   React.useEffect(() => {
     Settings.initializeSDK()
+    AccessToken.getCurrentAccessToken().then(accessToken => {
+      console.log('fbtoken', accessToken)
+    })
+    GoogleSignin.configure({
+      webClientId:
+        '498946945828-1sk1rjvia7gthtro5lp7jjie5l4dct6i.apps.googleusercontent.com',
+    })
   }, [])
+
+  async function HandleFacebookLogin() {
+    const res = await LoginManager.logInWithPermissions(['public_profile'])
+    if (res.isCancelled) {
+      console.log('cancelled')
+    }
+    const data = await AccessToken.getCurrentAccessToken()
+    if (!data) {
+      console.log('no data')
+    }
+  }
+
+  async function HandleGoogleLogin() {
+    try {
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true})
+      const res = await GoogleSignin.signIn()
+      console.log(res)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   async function AttemptLogin() {
     try {
@@ -63,56 +96,68 @@ const Login = props => {
       )}
       {(typeof user.data?.nickname === 'undefined' || !user.data.nickname) && (
         <>
-          <View>
-            <TextInput
-              label="Email"
-              value={email}
-              left={<TextInput.Icon icon="email" />}
-              onChangeText={text => setEmail(text)}
-            />
-          </View>
-          <View>
-            <TextInput
-              secureTextEntry={secure}
-              label="Password"
-              value={password}
-              left={<TextInput.Icon icon="lock" />}
-              right={
-                <TextInput.Icon
-                  icon={secure ? 'eye' : 'eye-off'}
-                  onPress={() => setSecure(s => !s)}
-                />
-              }
-              onChangeText={text => setPassword(text)}
-            />
+          <View style={{flex: 2, justifyContent: 'center'}}>
             <View>
-              <Button
-                mode="contained"
-                loading={loading}
-                disabled={loading}
-                onPress={() => AttemptLogin()}>
-                Login
-              </Button>
-            </View>
-            <View>
-              <LoginButton
-                onLoginFinished={(err, res) => {
-                  if (err) {
-                    console.log('err', res.error)
-                  } else if (res.isCancelled) {
-                    console.log('cancelled')
-                  } else {
-                    AccessToken.getCurrentAccessToken().then(data => {
-                      console.log(data.accessToken.toString())
-                    })
-                  }
-                }}
-                onLogoutFinished={() => console.log('logout')}
+              <TextInput
+                label="Email"
+                value={email}
+                left={<TextInput.Icon icon="email" />}
+                onChangeText={text => setEmail(text)}
               />
             </View>
             <View>
-              <Button onPress={() => HandleLineLogin()}>Line</Button>
+              <TextInput
+                secureTextEntry={secure}
+                label="Password"
+                value={password}
+                left={<TextInput.Icon icon="lock" />}
+                right={
+                  <TextInput.Icon
+                    icon={secure ? 'eye' : 'eye-off'}
+                    onPress={() => setSecure(s => !s)}
+                  />
+                }
+                onChangeText={text => setPassword(text)}
+              />
             </View>
+            <View>
+              <View>
+                <Button
+                  mode="contained"
+                  loading={loading}
+                  disabled={loading}
+                  onPress={() => AttemptLogin()}>
+                  Login
+                </Button>
+              </View>
+            </View>
+          </View>
+          <View style={{flex: 1.5, justifyContent: 'flex-start'}}>
+            <View style={{marginBottom: 30}}>
+              <Button onPress={() => setShowSocial(s => !s)}>
+                Social Login
+              </Button>
+            </View>
+            {showSocial && (
+              <View stlye={{paddingTop: 10}}>
+                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                  <GoogleSigninButton
+                    style={{width: 192, height: 48}}
+                    size={GoogleSigninButton.Size.Wide}
+                    color={GoogleSigninButton.Color.Dark}
+                    onPress={HandleGoogleLogin}
+                  />
+                </View>
+                <View>
+                  <Button onPress={() => HandleFacebookLogin()}>
+                    Facebook
+                  </Button>
+                </View>
+                <View>
+                  <Button onPress={() => HandleLineLogin()}>Line</Button>
+                </View>
+              </View>
+            )}
           </View>
         </>
       )}
