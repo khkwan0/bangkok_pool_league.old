@@ -6,15 +6,25 @@ import Matches from '@screens/Matches'
 import Calendar from '@screens/Calendar'
 import Login from '@screens/Auth/Login'
 import Account from '@screens/Account'
+import Divisions from '@screens/Divisions'
+import Teams from '@screens/Teams'
+import Venues from '@screens/Venues'
+import Players from '@screens/Players'
+import Seasons from '@screens/Seasons'
+import Schedules from '@screens/Schedules'
+import Statistics from '@screens/Statistics'
+import Info from '@screens/Info'
+import Settings from '@screens/Settings'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createDrawerNavigator} from '@react-navigation/drawer'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import DrawerContent from '@components/DrawerContent'
+import {IconButton} from 'react-native-paper'
 
 const Tab = createBottomTabNavigator()
 const Drawer = createDrawerNavigator()
 
-function Main(): JSX.Element {
+const Main = props => {
   const account = useAccount()
   const league = useLeague()
   const [drawerOnly, setDrawerOnly] = React.useState(true)
@@ -26,7 +36,7 @@ function Main(): JSX.Element {
   }, [])
 
   React.useEffect(() => {
-    ;(async () => {
+    (async () => {
       const season = await league.GetSeason()
     })()
   }, [league])
@@ -35,10 +45,32 @@ function Main(): JSX.Element {
     return (
       <Drawer.Navigator
         drawerContent={params => <DrawerContent {...params} />}
-        screenOptions={{drawerPosition: 'right', headerShown: false}}>
-        <Drawer.Screen name="Matches" component={Matches} />
+        screenOptions={({navigation}) => ({
+          drawerPosition: 'right',
+          headerTitleAlign: 'center',
+          headerLeft: () => null,
+          headerRight: () => 
+            <IconButton
+              icon="menu"
+              onPress={() => navigation.openDrawer()}
+            />
+        })}>
+        <Drawer.Screen
+          name="Matches"
+          component={Matches}
+          options={{headerShown: false}}
+        />
         <Drawer.Screen name="Login" component={Login} />
+        <Drawer.Screen name="Divisions" component={Divisions} />
+        <Drawer.Screen name="Venues" component={Venues} />
+        <Drawer.Screen name="Teams" component={Teams} />
+        <Drawer.Screen name="Players" component={Players} />
         <Drawer.Screen name="Calendar" component={Calendar} />
+        <Drawer.Screen name="Schedules" component={Schedules} />
+        <Drawer.Screen name="Seasons" component={Seasons} />
+        <Drawer.Screen name="Statistics" component={Statistics} />
+        <Drawer.Screen name="Info" component={Info} />
+        <Drawer.Screen name="Settings" component={Settings} />
       </Drawer.Navigator>
     )
   } else {

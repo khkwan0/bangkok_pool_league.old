@@ -1,11 +1,9 @@
 import React from 'react'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {View, FlatList} from 'react-native'
-import {Button, Text} from 'react-native-paper'
+import {Button} from 'react-native-paper'
 import MatchCard from '@components/MatchCard'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useSeason} from '~/lib/hooks'
-import userSlice from '~/redux/userSlice'
 
 const UpcomingMatches = (props: any) => {
   const [fixtures, setFixtures] = React.useState([])
