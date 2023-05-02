@@ -4,8 +4,8 @@ import UpcomingMatches from './UpcomingMatches'
 import Roster from './Roster'
 import ExtendedMatchInfo from './ExtendedMatchInfo'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import {Pressable, View} from 'react-native'
-import {IconButton, Text} from 'react-native-paper'
+import {View} from 'react-native'
+import {IconButton} from 'react-native-paper'
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
 
 const MatchStack = createNativeStackNavigator()

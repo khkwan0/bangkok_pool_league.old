@@ -122,6 +122,7 @@ export const useAccount = (): any => {
         firstName: 'Kenneth',
         lastName: 'K',
       }
+  const user = useAppSelector
       */
       if (typeof res.status !== 'undefined' && res.status === 'ok') {
         if (typeof res.data !== 'undefined' && res.data) {
@@ -202,7 +203,25 @@ export const useLeague = (): any => {
     }
   }
 
-  return {GetPlayers, GetSeason, SaveNewPlayer}
+  const GetVenues = async () => {
+    try {
+      const res = await Get('/venues')
+      return res
+    } catch (e) {
+      return []
+    }
+  }
+
+  const GetTeams = async () => {
+    try {
+      const res = await Get('/teams')
+      return res
+    } catch (e) {
+      return []
+    }
+  }
+
+  return {GetPlayers, GetSeason, SaveNewPlayer, GetVenues, GetTeams}
 }
 
 export const useSeason = (): any => {

@@ -5,7 +5,7 @@ import MatchCard from '@components/MatchCard'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useSeason} from '~/lib/hooks'
 
-const UpcomingMatches = (props: any) => {
+const UpcomingMatches = props => {
   const [fixtures, setFixtures] = React.useState([])
   const {user} = useAppSelector(_state => _state.user)
   const season = useSeason()
@@ -22,7 +22,7 @@ const UpcomingMatches = (props: any) => {
     })()
   }, [user])
 
-  function HandlePress(idx: number) {
+  function HandlePress(idx) {
     props.navigation.navigate('Match Screen', {matchInfo: fixtures[idx]})
   }
 

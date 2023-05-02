@@ -62,8 +62,8 @@ const Main = props => {
         />
         <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="Divisions" component={Divisions} />
-        <Drawer.Screen name="Venues" component={Venues} />
-        <Drawer.Screen name="Teams" component={Teams} />
+        <Drawer.Screen name="Venues" component={Venues} options={{headerShown: false}} />
+        <Drawer.Screen name="Teams" component={Teams} options={{headerShown: false}} />
         <Drawer.Screen name="Players" component={Players} />
         <Drawer.Screen name="Calendar" component={Calendar} />
         <Drawer.Screen name="Schedules" component={Schedules} />
