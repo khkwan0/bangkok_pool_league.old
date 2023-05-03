@@ -22,9 +22,9 @@ const Team = props => {
       </View>
       <View style={{marginTop: 20}}>
         {team.captains.map((captain, idx) => (
-          <TwoColumns label={idx === 0 ? 'captain' : ''}>
+          <TwoColumns key={'captain' + idx} label={idx === 0 ? 'captain' : ''}>
             <View style={{flexDirection: 'row', gap: 5}}>
-              <Text>&#127482;&#127480;</Text>
+              <Text>{captain.flag}</Text>
               <Text variant="bodyLarge">{captain.nickname}</Text>
               <Text variant="bodyLarge">
                 ({captain.firstname} {captain.lastname})
@@ -33,9 +33,11 @@ const Team = props => {
           </TwoColumns>
         ))}
         {team.assistants.map((assistant, idx) => (
-          <TwoColumns label={idx === 0 ? 'assistants' : ''}>
+          <TwoColumns
+            key={'assistant' + idx}
+            label={idx === 0 ? 'assistants' : ''}>
             <View style={{flexDirection: 'row', gap: 5}}>
-              <Text>&#127482;&#127480;</Text>
+              <Text>{assistant.flag}</Text>
               <Text variant="bodyLarge">{assistant.nickname}</Text>
               <Text variant="bodyLarge">
                 ({assistant.firstname} {assistant.lastname})
@@ -46,9 +48,9 @@ const Team = props => {
       </View>
       <View style={{marginTop: 20}}>
         {team.players.map((player, idx) => (
-          <TwoColumns label={idx === 0 ? 'players' : ''}>
+          <TwoColumns key={'player' + idx} label={idx === 0 ? 'players' : ''}>
             <View style={{flexDirection: 'row', gap: 5}}>
-              <Text>&#127482;&#127480;</Text>
+              <Text>{player.flag}</Text>
               <Text variant="bodyLarge">{player.nickname}</Text>
               <Text variant="bodyLarge">
                 ({player.firstname} {player.lastname})
