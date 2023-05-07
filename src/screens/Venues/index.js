@@ -6,6 +6,7 @@ import Venue from './Venue'
 import Team from './Team'
 import {IconButton} from 'react-native-paper'
 import {useNavigation} from '@react-navigation/native'
+import Player from './Player'
 
 const VenueStack = createNativeStackNavigator()
 
@@ -38,6 +39,17 @@ const VenuesNav = props => {
         component={Team}
         option={{title: 'Team'}}
       />
+      <VenueStack.Screen
+        name="VenuePlayer"
+        component={Player}
+        option={{title: 'Player'}}
+      />
+    </VenueStack.Navigator>
+  )
+}
+
+export default VenuesNav
+
     </VenueStack.Navigator>
   )
 }

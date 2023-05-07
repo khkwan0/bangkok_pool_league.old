@@ -5,6 +5,7 @@ import TeamsHome from './TeamsHome'
 import Team from './Team'
 import {IconButton} from 'react-native-paper'
 import {useNavigation} from '@react-navigation/native'
+import Player from '@screens/Player'
 
 const TeamsStack = createNativeStackNavigator()
 
@@ -32,6 +33,11 @@ const TeamsScreen = props => {
         }}
       />
       <TeamsStack.Screen name="Team" component={Team} />
+      <TeamsStack.Screen
+        name="VenuePlayer"
+        component={Player}
+        option={{title: 'Player'}}
+      />
     </TeamsStack.Navigator>
   )
 }

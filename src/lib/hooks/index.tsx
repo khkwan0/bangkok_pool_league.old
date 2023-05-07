@@ -163,6 +163,16 @@ export const useLeague = (): any => {
     }
   }
 
+  const GetPlayerInfo = async (playerId = 0) => {
+    try {
+      const playerInfo = await Get('/player/' + playerId)
+      return playerInfo
+    } catch (e) {
+      console.log(e)
+      throw new Error(e)
+    }
+  }
+
   const GetPlayers = async () => {
     try {
       const _players = await AsyncStorage.getItem('allplayers')
@@ -231,6 +241,7 @@ export const useLeague = (): any => {
   }
 
   return {
+    GetPlayerInfo,
     GetPlayers,
     GetSeason,
     SaveNewPlayer,
