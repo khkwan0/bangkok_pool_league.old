@@ -65,3 +65,4 @@ src/config.tsx
 Podfile.lock
 strings.xml
 google-services.json
+config.js

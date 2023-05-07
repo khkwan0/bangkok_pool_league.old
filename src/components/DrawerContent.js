@@ -5,11 +5,11 @@ import {useAccount} from '~/lib/hooks'
 import {useNavigation} from '@react-navigation/native'
 import Icon from '@components/Icon'
 import {useAppSelector} from '~/lib/hooks/redux'
+import {useSafeAreaInsets} from 'react-native-safe-area-context'
 
 const drawerPanelStyle = StyleSheet.create({
   flex: 1,
   marginHorizontal: 50,
-  paddingTop: 30,
 })
 
 const drawerItemStyle = StyleSheet.create({
@@ -33,6 +33,7 @@ const DrawerItem = ({navDest, icon, label, as}) => {
 }
 
 const DrawerContent = props => {
+  const insets = useSafeAreaInsets()
   const user = useAppSelector(_state => _state.user.user.data)
   const account = useAccount()
 
@@ -42,7 +43,7 @@ const DrawerContent = props => {
   }
 
   return (
-    <View style={drawerPanelStyle}>
+    <View style={[drawerPanelStyle, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
       <View style={{flex: 5}}>
         {typeof user?.id !== 'undefined' && user.id && (
           <View style={{flex: 1}}>
@@ -98,7 +99,7 @@ const DrawerContent = props => {
           <DrawerItem navDest="Settings" icon="cog" label="Settings" />
         </View>
       </View>
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, justifyContent: 'flex-end'}}>
         <Pressable onPress={() => HandleLogout()}>
           <View style={drawerItemStyle}>
             <Icon name="logout" />

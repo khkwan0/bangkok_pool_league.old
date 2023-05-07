@@ -221,7 +221,23 @@ export const useLeague = (): any => {
     }
   }
 
-  return {GetPlayers, GetSeason, SaveNewPlayer, GetVenues, GetTeams}
+  const GetTeamInfo = async teamId => {
+    try {
+      const res = await Get('/team/' + teamId)
+      return res
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  return {
+    GetPlayers,
+    GetSeason,
+    SaveNewPlayer,
+    GetVenues,
+    GetTeams,
+    GetTeamInfo,
+  }
 }
 
 export const useSeason = (): any => {
