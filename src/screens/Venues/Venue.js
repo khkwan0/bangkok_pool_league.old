@@ -7,6 +7,10 @@ import {showLocation} from 'react-native-map-link'
 const Venue = props => {
   const venue = props.route.params.venue
 
+  function HandleTeamPress(team) {
+    props.navigation.navigate('VenueTeam', {team: team})
+  }
+
   return (
     <View style={{flex: 1}}>
       <View style={{padding: 20}}>
@@ -55,7 +59,7 @@ const Venue = props => {
 
       <View flex={3}>
         {venue.teams.map((team, idx) => (
-          <Pressable>
+          <Pressable key={team.name + idx} onPress={() => HandleTeamPress(team)}>
             <TwoColumns label={idx === 0 ? 'Teams' : ''} style={{padding: 10}}>
               <Text variant="bodyLarge" style={{fontWeight: 'bold'}}>
                 {team.name}

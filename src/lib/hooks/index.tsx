@@ -163,6 +163,16 @@ export const useLeague = (): any => {
     }
   }
 
+  const GetPlayerInfo = async (playerId = 0) => {
+    try {
+      const playerInfo = await Get('/player/' + playerId)
+      return playerInfo
+    } catch (e) {
+      console.log(e)
+      throw new Error(e)
+    }
+  }
+
   const GetPlayers = async () => {
     try {
       const res = await Get('/players')
@@ -212,7 +222,24 @@ export const useLeague = (): any => {
     }
   }
 
-  return {GetPlayers, GetSeason, SaveNewPlayer, GetVenues, GetTeams}
+  const GetTeamInfo = async teamId => {
+    try {
+      const res = await Get('/team/' + teamId)
+      return res
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  return {
+    GetPlayerInfo,
+    GetPlayers,
+    GetSeason,
+    SaveNewPlayer,
+    GetVenues,
+    GetTeams,
+    GetTeamInfo,
+  }
 }
 
 export const useSeason = (): any => {

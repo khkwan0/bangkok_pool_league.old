@@ -4,7 +4,7 @@ import PlayerCard from '@components/PlayerCard'
 import {Button, Modal, Portal, TextInput} from 'react-native-paper'
 import NewPlayerInput from '@components/NewPlayerInput'
 import {useLeague} from '~/lib/hooks'
-
+import {useSafeAreaInsets} from 'react-native-safe-area-context'
 /*
         <Portal>
           <Modal
@@ -32,6 +32,7 @@ import {useLeague} from '~/lib/hooks'
         </Portal>
         */
 const Roster = props => {
+  const insets = useSafeAreaInsets()
   const [showAddNew, setShowAddNew] = React.useState(false)
   const [allPlayers, setAllPlayers] = React.useState([])
   const league = useLeague()
@@ -60,10 +61,11 @@ const Roster = props => {
   }
 
   return (
-    <>
+    <View style={{paddingBottom: insets.bottom}}>
       <Portal>
         <Modal visible={showAddNew} onDismiss={() => setShowAddNew(false)}>
           <View style={{backgroundColor: 'white', height: '90%', margin: 20}}>
+            <Button onPress={() => setShowAddNew(false)}>Cancel</Button>
             <NewPlayerInput
               allPlayers={allPlayers}
               frameInfo={props.route.params.frameInfo}
@@ -160,7 +162,7 @@ const Roster = props => {
           )
         }}
       />
-    </>
+    </View>
   )
 }
 

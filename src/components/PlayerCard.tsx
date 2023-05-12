@@ -19,7 +19,7 @@ const PlayerCard = (props: any) => {
           {props.player.firstname && (
             <Text variant="bodyLarge">{props.player.firstname}</Text>
           )}
-          {props.player.lastName && (
+          {props.player.lastname && (
             <Text variant="bodyLarge">
               &nbsp;
               {props.abbrevLast
@@ -28,7 +28,6 @@ const PlayerCard = (props: any) => {
                     props.player.lastname.length > 2 ? 3 : 2,
                   )
                 : props.player.lastname}
-              ...
             </Text>
           )}
         </View>

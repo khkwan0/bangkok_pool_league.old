@@ -15,8 +15,10 @@ import {useFocusEffect} from '@react-navigation/native'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useMatch, useTeams, useSeason, useNetwork} from '~/lib/hooks'
 import {socket} from '~/socket'
+import {useSafeAreaInsets} from 'react-native-safe-area-context'
 
 const MatchScreen = props => {
+  const insets = useSafeAreaInsets()
   const [matchInfo] = React.useState(props.route.params.matchInfo)
   //  const user = useAppSelector(_state => _state.user)
   const user = {
@@ -596,7 +598,7 @@ const MatchScreen = props => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-        <View>
+        <View style={{paddingBottom: insets.bottom}}>
           <FlatList
             ListHeaderComponent={
               <View style={{backgroundColor: '#fff'}}>
