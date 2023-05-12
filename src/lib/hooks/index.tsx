@@ -165,18 +165,9 @@ export const useLeague = (): any => {
 
   const GetPlayers = async () => {
     try {
-      const _players = await AsyncStorage.getItem('allplayers')
-      if (_players) {
-        const players = JSON.parse(_players)
-        return players
-      }
-      const __players = await Get('/players')
-      if (__players) {
-        return __players
-      }
-      return []
+      const res = await Get('/players')
+      return res
     } catch (e) {
-      console.log(e)
       return []
     }
   }
