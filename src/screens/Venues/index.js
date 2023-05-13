@@ -49,9 +49,3 @@ const VenuesNav = props => {
 }
 
 export default VenuesNav
-
-    </VenueStack.Navigator>
-  )
-}
-
-export default VenuesNav

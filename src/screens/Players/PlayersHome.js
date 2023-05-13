@@ -1,27 +1,64 @@
 import React from 'react'
 import {FlatList, Pressable, View} from 'react-native'
-import {Text} from 'react-native-paper'
+import {ActivityIndicator, Button, Text} from 'react-native-paper'
 import {useLeague} from '~/lib/hooks'
 import {useNavigation} from '@react-navigation/native'
 
-const PlayerCard = ({team, idx}) => {
+const PlayerCard = ({player, idx}) => {
   const bgColor = idx % 2 ? '#eee' : '#fff'
   const navigation = useNavigation()
 
   function HandlePress() {
-    navigation.navigate('Player', {team: team})
+    navigation.navigate('Player', {playerInfo: player})
   }
 
+  if (player.teams.length > 0) {
+  }
   return (
     <Pressable onPress={() => HandlePress()}>
       <View style={{backgroundColor: bgColor, padding: 15}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View>
-            <Text>{team.short_name}</Text>
-            <Text>{team.division_short_name}</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <View style={{flex: 1}}>
+            <Text>{player.flag}</Text>
           </View>
-          <View>
-            <Text>{team.total_players} players &gt;</Text>
+          <View style={{flex: 10}}>
+            <View style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
+              <Text>{player.name}</Text>
+              <Text variant="bodySmall">
+                ({player.firstname} {player.lastname})
+              </Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              {player.teams.map((team, index) => {
+                if (index === player.teams.length - 1) {
+                  return (
+                    <Text
+                      key={team + '_' + index}
+                      variant="bodySmall"
+                      style={{color: '#aaa'}}>
+                      {team}
+                    </Text>
+                  )
+                } else {
+                  return (
+                    <Text
+                      key={team + '_' + index}
+                      variant="bodySmall"
+                      style={{color: '#aaa'}}>
+                      {team},&nbsp;
+                    </Text>
+                  )
+                }
+              })}
+            </View>
+          </View>
+          <View style={{flex: 1, alignItems: 'flex-end'}}>
+            <Text>{player.total}</Text>
           </View>
         </View>
       </View>
@@ -32,24 +69,56 @@ const PlayerCard = ({team, idx}) => {
 const PlayersHome = props => {
   const league = useLeague()
   const [players, setPlayers] = React.useState([])
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [showActiveOnly, setShowActiveOnly] = React.useState(true)
 
-  React.useEffect(() => {
+  async function GetPlayers() {
     try {
-      ;(async () => {
-        const res = await league.GetPlayers()
-        setPlayers(res)
-      })()
+      setIsLoading(true)
+      const res = await league.GetPlayers(showActiveOnly)
+      setPlayers(res)
     } catch (e) {
       console.log(e)
+    } finally {
+      setIsLoading(false)
     }
-  }, [])
+  }
 
-  return (
-    <FlatList
-      data={players}
-      renderItem={({item, index}) => <PlayerCard team={item} idx={index} />}
-    />
-  )
+  React.useEffect(() => {
+    GetPlayers()
+  }, [showActiveOnly])
+
+  if (isLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    )
+  } else {
+    return (
+      <FlatList
+        ListHeaderComponent={
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              margin: 10,
+            }}>
+            <Text>
+              View: {showActiveOnly ? 'Active Players' : 'All Players'}
+            </Text>
+            <Button onPress={() => setShowActiveOnly(s => !s)}>
+              Show {showActiveOnly ? 'All' : 'Active Only'}
+            </Button>
+          </View>
+        }
+        data={players}
+        keyExtractor={(item, index) => item.player_name + '_' + index}
+        renderItem={({item, index}) => <PlayerCard player={item} idx={index} />}
+      />
+    )
+  }
 }
 
 export default PlayersHome

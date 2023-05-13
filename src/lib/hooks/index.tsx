@@ -173,9 +173,9 @@ export const useLeague = (): any => {
     }
   }
 
-  const GetPlayers = async () => {
+  const GetPlayers = async (activeOnly = false) => {
     try {
-      const res = await Get('/players')
+      const res = await Get('/players?active_only=' + activeOnly)
       return res
     } catch (e) {
       return []
@@ -292,10 +292,15 @@ export const useSeason = (): any => {
 export const useTeams = (): any => {
   const {Get} = useNetwork()
 
-  const GetPlayers = async (teamid: number = -1): Promise<Object> => {
+  const GetPlayers = async (
+    teamid: number = -1,
+    activeOnly = false,
+  ): Promise<Object> => {
     try {
       if (teamid && Number.isInteger(teamid) && teamid >= 0) {
-        const players = await Get('/players?teamid=' + teamid)
+        const players = await Get(
+          '/players?teamid=' + teamid + '&active_only=' + activeOnly,
+        )
         return players
       }
     } catch (e) {
