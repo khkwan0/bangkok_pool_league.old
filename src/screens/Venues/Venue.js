@@ -1,8 +1,9 @@
 import React from 'react'
-import {Linking, Pressable, View} from 'react-native'
+import {Image, Linking, Pressable, ScrollView, View} from 'react-native'
 import {Button, Text} from 'react-native-paper'
 import TwoColumns from '@components/TwoColumns'
 import {showLocation} from 'react-native-map-link'
+import config from '~/config'
 
 const Venue = props => {
   const venue = props.route.params.venue
@@ -12,13 +13,21 @@ const Venue = props => {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <ScrollView style={{marginBottom: 10}}>
       <View style={{padding: 20}}>
+        <View style={{alignItems: 'center'}}>
+          <Image
+            source={{uri: config.logoUrl + venue.logo}}
+            width={100}
+            height={100}
+            resizeMode="contain"
+          />
+        </View>
         <Text variant="titleLarge" style={{textAlign: 'center'}}>
           {venue.name}
         </Text>
       </View>
-      <View style={{flex: 1}}>
+      <View>
         <TwoColumns label="Location">
           <Text>{venue.location}</Text>
         </TwoColumns>
@@ -57,9 +66,11 @@ const Venue = props => {
         </Pressable>
       </View>
 
-      <View flex={3}>
+      <View>
         {venue.teams.map((team, idx) => (
-          <Pressable key={team.name + idx} onPress={() => HandleTeamPress(team)}>
+          <Pressable
+            key={team.name + idx}
+            onPress={() => HandleTeamPress(team)}>
             <TwoColumns label={idx === 0 ? 'Teams' : ''} style={{padding: 10}}>
               <Text variant="bodyLarge" style={{fontWeight: 'bold'}}>
                 {team.name}
@@ -68,7 +79,7 @@ const Venue = props => {
           </Pressable>
         ))}
       </View>
-    </View>
+    </ScrollView>
   )
 }
 

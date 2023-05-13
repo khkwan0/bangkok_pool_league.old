@@ -2,6 +2,7 @@ import React from 'react'
 import {Image, ScrollView, View} from 'react-native'
 import {Text} from 'react-native-paper'
 import TwoColumns from '~/components/TwoColumns'
+import config from '~/config'
 
 const Team = props => {
   const team = props.route.params.team
@@ -9,7 +10,7 @@ const Team = props => {
     <ScrollView style={{paddingBottom: 30}}>
       <View style={{alignItems: 'center'}}>
         <Image
-          source={{uri: 'https://api.bkkleague.com/logos/' + team.venue_logo}}
+          source={{uri: config.logoUrl + team.venue_logo}}
           width={100}
           height={100}
           resizeMode="contain"

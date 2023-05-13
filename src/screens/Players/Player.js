@@ -1,14 +1,12 @@
 import React from 'react'
-import {View} from 'react-native'
+import Player from '@screens/Player'
 
-const Player = props => {
+// could've just imported directly from previous screen,
+// but by doing this, it's just easier to see that the common
+// screen "Player" is part of this stack as well as others
+const _Player = props => {
   const playerInfo = props?.route?.params?.playerInfo ?? null
-
-  return (
-    <View>
-
-    </View>
-  )
+  return <Player playerInfo={playerInfo} />
 }
 
-export default Player
+export default _Player

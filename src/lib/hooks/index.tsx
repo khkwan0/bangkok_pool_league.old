@@ -245,6 +245,16 @@ export const useLeague = (): any => {
 export const useSeason = (): any => {
   const {Get} = useNetwork()
 
+  const GetDoublesStats = async (playerId: number): Promise<Object> => {
+    try {
+      const stats = await Get('/stats/doubles?playerid=' + playerId)
+      return stats
+    } catch (e) {
+      console.log(e)
+      return {}
+    }
+  }
+
   const GetMatches = async (options: Array<string> = []): Promise<Object> => {
     try {
       const query = options.join('&')
@@ -263,6 +273,16 @@ export const useSeason = (): any => {
     } catch (e) {
       console.log(e)
       return []
+    }
+  }
+
+  const GetPlayerStats = async (playerId: number): Promise<Object> => {
+    try {
+      const stats = await Get('/stats?playerid=' + playerId)
+      return stats
+    } catch (e) {
+      console.log(e)
+      return {}
     }
   }
 
@@ -286,7 +306,14 @@ export const useSeason = (): any => {
     }
   }
 
-  return {GetMatches, GetMatchesBySeason, GetTeams, GetGameTypes}
+  return {
+    GetDoublesStats,
+    GetMatches,
+    GetMatchesBySeason,
+    GetPlayerStats,
+    GetTeams,
+    GetGameTypes,
+  }
 }
 
 export const useTeams = (): any => {
