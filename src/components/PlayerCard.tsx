@@ -16,19 +16,18 @@ const PlayerCard = (props: any) => {
       <View style={{flex: 1.5}}>
         <Text variant="bodyLarge">{props.player.nickname}</Text>
         <View style={{flexDirection: 'row'}}>
-          {props.player.firstName && (
-            <Text variant="bodyLarge">{props.player.firstName}</Text>
+          {props.player.firstname && (
+            <Text variant="bodyLarge">{props.player.firstname}</Text>
           )}
-          {props.player.lastName && (
+          {props.player.lastname && (
             <Text variant="bodyLarge">
               &nbsp;
               {props.abbrevLast
-                ? props.player.lastName.substr(
+                ? props.player.lastname.substr(
                     0,
-                    props.player.lastName.length > 2 ? 3 : 2,
+                    props.player.lastname.length > 2 ? 3 : 2,
                   )
-                : props.player.lastName}
-              ...
+                : props.player.lastname}
             </Text>
           )}
         </View>
@@ -37,7 +36,7 @@ const PlayerCard = (props: any) => {
         <Button
           disabled={props.disabled}
           mode="outlined"
-          onPress={() => HandleSelect(props.player.playerId)}>
+          onPress={() => HandleSelect(props.player.id)}>
           Select
         </Button>
       </View>

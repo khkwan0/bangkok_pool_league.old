@@ -1,36 +1,28 @@
 import React from 'react'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {View, FlatList} from 'react-native'
-import {Text} from 'react-native-paper'
+import {Button} from 'react-native-paper'
 import MatchCard from '@components/MatchCard'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useSeason} from '~/lib/hooks'
 
-const UpcomingMatches = (props: any) => {
+const UpcomingMatches = props => {
   const [fixtures, setFixtures] = React.useState([])
-//  const user = useAppSelector(_state => _state.user)
-  const user = {
-    id: 1933,
-  }
+  const {user} = useAppSelector(_state => _state.user)
   const season = useSeason()
+  const routeName = props.navigation.getState().routes[0].name
 
   React.useEffect(() => {
     ;(async () => {
       try {
-        let matches = []
-        if (typeof user.id !== 'undefined') {
-          matches = await season.GetMatches(['userid=' + user.id, 'newonly=1'])
-        } else {
-          matches = await season.GetMatches()
-        }
+        const matches = await season.GetMatches(['newonly=1'])
         setFixtures(matches)
       } catch (e) {
         console.log(e)
       }
     })()
-  }, [])
+  }, [user])
 
-  function HandlePress(idx: number) {
+  function HandlePress(idx) {
     props.navigation.navigate('Match Screen', {matchInfo: fixtures[idx]})
   }
 
@@ -38,7 +30,18 @@ const UpcomingMatches = (props: any) => {
     <View style={{flex: 1}}>
       <FlatList
         ListHeaderComponent={
-          <Text variant="titleMedium">Upcoming Matches</Text>
+          <View>
+            {!user.data.id && (
+              <Button
+                onPress={() =>
+                  props.navigation.navigate('Login', {
+                    previous: routeName,
+                  })
+                }>
+                Login to see your matches
+              </Button>
+            )}
+          </View>
         }
         keyExtractor={(item, index) =>
           item.home_team_id + item.away_team_id + item.date + index

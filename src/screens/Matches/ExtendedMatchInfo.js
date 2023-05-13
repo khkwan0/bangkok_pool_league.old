@@ -17,21 +17,6 @@ const ExtendedMatchInfo = props => {
   return (
     <View style={{flex: 1}}>
       <FlatList
-        ListHeaderComponent={
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              padding: 5,
-            }}>
-            <Button
-              icon="arrow-left"
-              mode="contained"
-              onPress={() => props.navigation.goBack()}>
-              Back
-            </Button>
-          </View>
-        }
         data={screens}
         ItemSeparatorComponent={<Divider style={{marginVertical: 10}} bold />}
         renderItem={({item, index}) => {

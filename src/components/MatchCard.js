@@ -1,15 +1,22 @@
 import React from 'react'
 import {Image, View} from 'react-native'
-import {Portal, Text, TouchableRipple} from 'react-native-paper'
+import {Button, Text, TouchableRipple} from 'react-native-paper'
 import {DateTime} from 'luxon'
+import {showLocation} from 'react-native-map-link'
 
 const MatchCard = props => {
-  console.log(JSON.stringify(props.match, null, 2))
+  function ShowLocation(lat, long) {
+    showLocation({
+      latitude: lat,
+      longitude: long,
+    })
+  }
+
   return (
     <View
       style={{
         margin: 10,
-        paddingHorizontal: 10,
+        padding: 10,
         backgroundColor: '#ddd',
         borderRadius: 10,
       }}>
@@ -29,10 +36,18 @@ const MatchCard = props => {
           <Text>Where:</Text>
           <Text>{props.match.name}</Text>
           <Text>{props.match.location}</Text>
-          <Text>
-            {props.match.latitude},{props.match.longitude}
-          </Text>
           <Text>{props.match.phone}</Text>
+          {(props.match.latitude !== 0 || props.match.longitude !== 0) && (
+            <View style={{flexDirection: 'row'}}>
+              <Button
+                mode="outlined"
+                onPress={() =>
+                  ShowLocation(props.match.latitude, props.match.longitude)
+                }>
+                Map
+              </Button>
+            </View>
+          )}
           {props.match.logo && (
             <View
               style={{position: 'absolute', bottom: 0, right: 10, zIndex: -1}}>
