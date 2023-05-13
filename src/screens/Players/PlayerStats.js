@@ -15,7 +15,6 @@ const PlayerStats = props => {
   const [isDoubleStatsLoading, setIsDoubleStatsLoading] = React.useState(false)
   const [stats, setStats] = React.useState({})
   const [doublesStats, setDoublesStats] = React.useState([])
-  console.log(doublesStats)
 
   React.useEffect(() => {
     ;(async () => {
