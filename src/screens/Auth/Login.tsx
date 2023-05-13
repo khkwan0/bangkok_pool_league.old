@@ -2,6 +2,7 @@ import React from 'react'
 import {View} from 'react-native'
 import {Button, TextInput} from 'react-native-paper'
 import {useAccount} from '~/lib/hooks'
+import LineLogin from '@xmartlabs/react-native-line'
 
 const Login = (props: any) => {
   const {Login} = useAccount()
@@ -21,8 +22,18 @@ const Login = (props: any) => {
     }
   }
 
+  async function HandleLineLogin() {
+    try {
+      const res = await LineLogin.login()
+      console.log(res)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
     <View style={{flex: 1}}>
+      <Button onPress={() => HandleLineLogin()}>LINE</Button>
       <View style={{flex: 1, justifyContent: 'center'}}>
         <TextInput
           label="Email"

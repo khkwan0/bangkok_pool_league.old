@@ -2050,6 +2050,11 @@
     "@typescript-eslint/types" "5.56.0"
     eslint-visitor-keys "^3.3.0"
 
+"@xmartlabs/react-native-line@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@xmartlabs/react-native-line/-/react-native-line-2.1.0.tgz#0e35524c6519845b66806cfd9d7133f99da44986"
+  integrity sha512-M1nBP0+2qY2lcJVL+/R9rCnczJPBQ9bpfb9IlJfwDfMhphwxVd7P26qPlUJdOtSoi4k40+JqQWMdppyqfoSWHg==
+
 abort-controller@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/abort-controller/-/abort-controller-3.0.0.tgz"

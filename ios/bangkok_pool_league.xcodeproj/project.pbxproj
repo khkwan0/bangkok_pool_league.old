@@ -8,12 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* bangkok_pool_leagueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* bangkok_pool_leagueTests.m */; };
-		0C80B921A6F3F58F76C31292 /* libPods-bangkok_pool_league.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-bangkok_pool_league.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7699B88040F8A987B510C191 /* libPods-bangkok_pool_league-bangkok_pool_leagueTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-bangkok_pool_league-bangkok_pool_leagueTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		88EA584A3E8A08193ABE91A6 /* Pods_bangkok_pool_league_bangkok_pool_leagueTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 552410D04915948DBF0B10F1 /* Pods_bangkok_pool_league_bangkok_pool_leagueTests.framework */; };
+		94FD5429F1FA58D3D4180A11 /* Pods_bangkok_pool_league.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3F407C1F4FB8AE1BB8DF434 /* Pods_bangkok_pool_league.framework */; };
+		BE079FF229EF2B2B00746402 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667129D2DFE0004B351F /* Fontisto.ttf */; };
+		BE079FF329EF2B2B00746402 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667229D2DFE0004B351F /* Octicons.ttf */; };
+		BE079FF429EF2B2B00746402 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667329D2DFE0004B351F /* Feather.ttf */; };
+		BE079FF529EF2B2B00746402 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667429D2DFE0004B351F /* Entypo.ttf */; };
+		BE079FF629EF2B2B00746402 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667529D2DFE0004B351F /* FontAwesome5_Brands.ttf */; };
+		BE079FF729EF2B2B00746402 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667629D2DFE0004B351F /* MaterialCommunityIcons.ttf */; };
+		BE079FF829EF2B2B00746402 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667729D2DFE0004B351F /* AntDesign.ttf */; };
+		BE079FF929EF2B2B00746402 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667829D2DFE0004B351F /* Foundation.ttf */; };
+		BE079FFA29EF2B2B00746402 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667929D2DFE0004B351F /* Ionicons.ttf */; };
+		BE079FFB29EF2B2B00746402 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667A29D2DFE0004B351F /* FontAwesome5_Solid.ttf */; };
+		BE079FFC29EF2B2B00746402 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667B29D2DFE0004B351F /* FontAwesome5_Regular.ttf */; };
+		BE079FFD29EF2B2B00746402 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667C29D2DFE0004B351F /* FontAwesome.ttf */; };
+		BE079FFE29EF2B2B00746402 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667D29D2DFE0004B351F /* Zocial.ttf */; };
+		BE079FFF29EF2B2B00746402 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667E29D2DFE0004B351F /* EvilIcons.ttf */; };
+		BE07A00029EF2B2B00746402 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87667F29D2DFE0004B351F /* SimpleLineIcons.ttf */; };
+		BE07A00129EF2B2B00746402 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE87668029D2DFE0004B351F /* MaterialIcons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,13 +52,13 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = bangkok_pool_league/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = bangkok_pool_league/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = bangkok_pool_league/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-bangkok_pool_league-bangkok_pool_leagueTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bangkok_pool_league-bangkok_pool_leagueTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-bangkok_pool_league.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bangkok_pool_league.debug.xcconfig"; path = "Target Support Files/Pods-bangkok_pool_league/Pods-bangkok_pool_league.debug.xcconfig"; sourceTree = "<group>"; };
+		552410D04915948DBF0B10F1 /* Pods_bangkok_pool_league_bangkok_pool_leagueTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bangkok_pool_league_bangkok_pool_leagueTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5709B34CF0A7D63546082F79 /* Pods-bangkok_pool_league.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bangkok_pool_league.release.xcconfig"; path = "Target Support Files/Pods-bangkok_pool_league/Pods-bangkok_pool_league.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-bangkok_pool_league-bangkok_pool_leagueTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bangkok_pool_league-bangkok_pool_leagueTests.debug.xcconfig"; path = "Target Support Files/Pods-bangkok_pool_league-bangkok_pool_leagueTests/Pods-bangkok_pool_league-bangkok_pool_leagueTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-bangkok_pool_league.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bangkok_pool_league.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = bangkok_pool_league/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-bangkok_pool_league-bangkok_pool_leagueTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bangkok_pool_league-bangkok_pool_leagueTests.release.xcconfig"; path = "Target Support Files/Pods-bangkok_pool_league-bangkok_pool_leagueTests/Pods-bangkok_pool_league-bangkok_pool_leagueTests.release.xcconfig"; sourceTree = "<group>"; };
+		A3F407C1F4FB8AE1BB8DF434 /* Pods_bangkok_pool_league.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bangkok_pool_league.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE87667129D2DFE0004B351F /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		BE87667229D2DFE0004B351F /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		BE87667329D2DFE0004B351F /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -68,7 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-bangkok_pool_league-bangkok_pool_leagueTests.a in Frameworks */,
+				88EA584A3E8A08193ABE91A6 /* Pods_bangkok_pool_league_bangkok_pool_leagueTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,7 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-bangkok_pool_league.a in Frameworks */,
+				94FD5429F1FA58D3D4180A11 /* Pods_bangkok_pool_league.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,8 +134,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-bangkok_pool_league.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-bangkok_pool_league-bangkok_pool_leagueTests.a */,
+				A3F407C1F4FB8AE1BB8DF434 /* Pods_bangkok_pool_league.framework */,
+				552410D04915948DBF0B10F1 /* Pods_bangkok_pool_league_bangkok_pool_leagueTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -203,7 +219,6 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
-				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -226,7 +241,6 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
-				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -285,6 +299,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE079FF229EF2B2B00746402 /* Fontisto.ttf in Resources */,
+				BE079FF329EF2B2B00746402 /* Octicons.ttf in Resources */,
+				BE079FF429EF2B2B00746402 /* Feather.ttf in Resources */,
+				BE079FF529EF2B2B00746402 /* Entypo.ttf in Resources */,
+				BE079FF629EF2B2B00746402 /* FontAwesome5_Brands.ttf in Resources */,
+				BE079FF729EF2B2B00746402 /* MaterialCommunityIcons.ttf in Resources */,
+				BE079FF829EF2B2B00746402 /* AntDesign.ttf in Resources */,
+				BE079FF929EF2B2B00746402 /* Foundation.ttf in Resources */,
+				BE079FFA29EF2B2B00746402 /* Ionicons.ttf in Resources */,
+				BE079FFB29EF2B2B00746402 /* FontAwesome5_Solid.ttf in Resources */,
+				BE079FFC29EF2B2B00746402 /* FontAwesome5_Regular.ttf in Resources */,
+				BE079FFD29EF2B2B00746402 /* FontAwesome.ttf in Resources */,
+				BE079FFE29EF2B2B00746402 /* Zocial.ttf in Resources */,
+				BE079FFF29EF2B2B00746402 /* EvilIcons.ttf in Resources */,
+				BE07A00029EF2B2B00746402 /* SimpleLineIcons.ttf in Resources */,
+				BE07A00129EF2B2B00746402 /* MaterialIcons.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
@@ -385,40 +415,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bangkok_pool_league-bangkok_pool_leagueTests/Pods-bangkok_pool_league-bangkok_pool_leagueTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-bangkok_pool_league/Pods-bangkok_pool_league-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-bangkok_pool_league/Pods-bangkok_pool_league-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bangkok_pool_league/Pods-bangkok_pool_league-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-bangkok_pool_league-bangkok_pool_leagueTests/Pods-bangkok_pool_league-bangkok_pool_leagueTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-bangkok_pool_league-bangkok_pool_leagueTests/Pods-bangkok_pool_league-bangkok_pool_leagueTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bangkok_pool_league-bangkok_pool_leagueTests/Pods-bangkok_pool_league-bangkok_pool_leagueTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -529,7 +525,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = bangkok_pool_league/bangkok_pool_league.entitlements;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 2MXCL8R3KW;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = bangkok_pool_league/Info.plist;
@@ -560,7 +556,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = bangkok_pool_league/bangkok_pool_league.entitlements;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 2MXCL8R3KW;
 				INFOPLIST_FILE = bangkok_pool_league/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Bangkok Pool League";
