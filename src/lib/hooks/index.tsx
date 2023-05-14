@@ -265,6 +265,16 @@ export const useSeason = (): any => {
     }
   }
 
+  const GetMatchStats = async (matchId: number): Promise<Object> => {
+    try {
+      const stats = await Get('/match/stats/' + matchId)
+      return stats
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
   const GetMatches = async (options: Array<string> = []): Promise<Object> => {
     try {
       const query = options.join('&')
@@ -319,6 +329,7 @@ export const useSeason = (): any => {
   return {
     GetDoublesStats,
     GetMatchPerformance,
+    GetMatchStats,
     GetMatches,
     GetMatchesBySeason,
     GetPlayerStats,

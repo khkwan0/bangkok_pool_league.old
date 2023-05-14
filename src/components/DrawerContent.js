@@ -6,15 +6,16 @@ import {useNavigation} from '@react-navigation/native'
 import Icon from '@components/Icon'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
+import config from '~/config'
 
 const drawerPanelStyle = StyleSheet.create({
   flex: 1,
-  marginHorizontal: 50,
 })
 
 const drawerItemStyle = StyleSheet.create({
   flexDirection: 'row',
   alignItems: 'center',
+  justifyContent: 'flex-end',
   gap: 30,
 })
 
@@ -24,8 +25,12 @@ const DrawerItem = ({navDest, icon, label, as}) => {
     <View>
       <TouchableRipple onPress={() => navigation.navigate(navDest)}>
         <View style={drawerItemStyle}>
-          <Icon name={icon} as={as} />
-          <Text variant="titleLarge">{label}</Text>
+          <View style={{flex: 1, alignItems: 'flex-end'}}>
+            <Icon name={icon} as={as} />
+          </View>
+          <View style={{flex: 2}}>
+            <Text variant="titleLarge">{label}</Text>
+          </View>
         </View>
       </TouchableRipple>
     </View>
@@ -43,15 +48,19 @@ const DrawerContent = props => {
   }
 
   return (
-    <View style={[drawerPanelStyle, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
+    <View
+      style={[
+        drawerPanelStyle,
+        {paddingTop: insets.top, paddingBottom: insets.bottom},
+      ]}>
       <View style={{flex: 5}}>
         {typeof user?.id !== 'undefined' && user.id && (
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, padding: 10}}>
             <Text variant="titleLarge">{user.nickname}</Text>
             <Text variant="bodyLarge">player</Text>
           </View>
         )}
-        <View style={{flex: 5, gap: 10}}>
+        <View style={{flex: 15, gap: 10, marginTop: 30}}>
           {(typeof user?.id === 'undefined' || !user.id) && (
             <DrawerItem navDest="Login" icon="login" label="Login" />
           )}
@@ -100,12 +109,21 @@ const DrawerContent = props => {
         </View>
       </View>
       <View style={{flex: 1, justifyContent: 'flex-end'}}>
-        <TouchableRipple onPress={() => HandleLogout()}>
-          <View style={drawerItemStyle}>
-            <Icon name="logout" />
-            <Text variant="titleLarge">Logout</Text>
-          </View>
-        </TouchableRipple>
+        {typeof user?.id !== 'undefined' && user.id && (
+          <TouchableRipple onPress={() => HandleLogout()}>
+            <View style={drawerItemStyle}>
+              <View style={{flex: 1, alignItems: 'flex-end'}}>
+                <Icon name="logout" />
+              </View>
+              <View style={{flex: 2}}>
+                <Text variant="titleLarge">Logout</Text>
+              </View>
+            </View>
+          </TouchableRipple>
+        )}
+        <View style={{padding: 10}}>
+          <Text>Build {config.build}</Text>
+        </View>
       </View>
     </View>
   )
