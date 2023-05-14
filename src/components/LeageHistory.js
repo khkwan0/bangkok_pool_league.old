@@ -7,7 +7,7 @@ const LeagueHistory = ({playerInfo}) => {
     <View>
       {Object.keys(playerInfo.seasons).map((season, seasonIdx) => {
         return (
-          <View key={season + '_' + seasonIdx}>
+          <View key={season + '_' + seasonIdx} style={{marginVertical: 5}}>
             {Object.keys(playerInfo.seasons[season]).map((team, teamIdx) => (
               <View
                 key={team + '_' + teamIdx}
@@ -15,9 +15,15 @@ const LeagueHistory = ({playerInfo}) => {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                 }}>
-                <Text>{team}</Text>
-                <Text>{season}</Text>
-                <Text>{playerInfo.seasons[season][team]} frames</Text>
+                <View style={{flex: 2}}>
+                  <Text>{team}</Text>
+                </View>
+                <View style={{flex: 1}}>
+                  <Text>{season}</Text>
+                </View>
+                <View style={{flex: 1}}>
+                  <Text>{playerInfo.seasons[season][team]} frames</Text>
+                </View>
               </View>
             ))}
           </View>

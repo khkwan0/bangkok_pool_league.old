@@ -7,9 +7,9 @@ const StatsDoubles = ({stats}) => {
   const variant = 'bodyMedium'
   return (
     <>
-      {stats.map(stat => {
+      {stats.map((stat, index) => {
         return (
-          <View style={{flexDirection: 'row'}}>
+          <View key={stat + '_' + index} style={{flexDirection: 'row'}}>
             <View style={{flex: 2}}>
               <Text variant={variant} style={{fontWeight: fw}}>
                 {stat.nickname}

@@ -1,6 +1,6 @@
 import React from 'react'
-import {Pressable, StyleSheet, View} from 'react-native'
-import {Text} from 'react-native-paper'
+import {StyleSheet, View} from 'react-native'
+import {Text, TouchableRipple} from 'react-native-paper'
 import {useAccount} from '~/lib/hooks'
 import {useNavigation} from '@react-navigation/native'
 import Icon from '@components/Icon'
@@ -22,12 +22,12 @@ const DrawerItem = ({navDest, icon, label, as}) => {
   const navigation = useNavigation()
   return (
     <View>
-      <Pressable onPress={() => navigation.navigate(navDest)}>
+      <TouchableRipple onPress={() => navigation.navigate(navDest)}>
         <View style={drawerItemStyle}>
           <Icon name={icon} as={as} />
           <Text variant="titleLarge">{label}</Text>
         </View>
-      </Pressable>
+      </TouchableRipple>
     </View>
   )
 }
@@ -100,12 +100,12 @@ const DrawerContent = props => {
         </View>
       </View>
       <View style={{flex: 1, justifyContent: 'flex-end'}}>
-        <Pressable onPress={() => HandleLogout()}>
+        <TouchableRipple onPress={() => HandleLogout()}>
           <View style={drawerItemStyle}>
             <Icon name="logout" />
             <Text variant="titleLarge">Logout</Text>
           </View>
-        </Pressable>
+        </TouchableRipple>
       </View>
     </View>
   )

@@ -1,6 +1,11 @@
 import React from 'react'
-import {FlatList, Pressable, View} from 'react-native'
-import {ActivityIndicator, Button, Text} from 'react-native-paper'
+import {FlatList, View} from 'react-native'
+import {
+  ActivityIndicator,
+  Button,
+  Text,
+  TouchableRipple,
+} from 'react-native-paper'
 import {useLeague} from '~/lib/hooks'
 import {useNavigation} from '@react-navigation/native'
 
@@ -12,10 +17,8 @@ const PlayerCard = ({player, idx}) => {
     navigation.navigate('Player', {playerInfo: player})
   }
 
-  if (player.teams.length > 0) {
-  }
   return (
-    <Pressable onPress={() => HandlePress()}>
+    <TouchableRipple onPress={() => HandlePress()}>
       <View style={{backgroundColor: bgColor, padding: 15}}>
         <View
           style={{
@@ -62,7 +65,7 @@ const PlayerCard = ({player, idx}) => {
           </View>
         </View>
       </View>
-    </Pressable>
+    </TouchableRipple>
   )
 }
 
