@@ -4,10 +4,12 @@ import {Button, Text, TextInput} from 'react-native-paper'
 import {useAccount} from '~/lib/hooks'
 import LineLogin from 'rn-line-login-android'
 import {Settings, LoginManager, AccessToken} from 'react-native-fbsdk-next'
+/*
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin'
+*/
 import {useAppSelector} from '~/lib/hooks/redux'
 
 const Login = props => {
@@ -24,10 +26,12 @@ const Login = props => {
     AccessToken.getCurrentAccessToken().then(accessToken => {
       console.log('fbtoken', accessToken)
     })
+    /*
     GoogleSignin.configure({
       webClientId:
         '498946945828-1sk1rjvia7gthtro5lp7jjie5l4dct6i.apps.googleusercontent.com',
     })
+    */
   }, [])
 
   async function HandleFacebookLogin() {
@@ -40,7 +44,7 @@ const Login = props => {
       console.log('no data')
     }
   }
-
+  /*
   async function HandleGoogleLogin() {
     try {
       await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true})
@@ -50,6 +54,7 @@ const Login = props => {
       console.log(e)
     }
   }
+  */
 
   async function AttemptLogin() {
     try {
@@ -140,14 +145,6 @@ const Login = props => {
             </View>
             {showSocial && (
               <View stlye={{paddingTop: 10}}>
-                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                  <GoogleSigninButton
-                    style={{width: 192, height: 48}}
-                    size={GoogleSigninButton.Size.Wide}
-                    color={GoogleSigninButton.Color.Dark}
-                    onPress={HandleGoogleLogin}
-                  />
-                </View>
                 <View>
                   <Button onPress={() => HandleFacebookLogin()}>
                     Facebook
