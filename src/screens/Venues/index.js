@@ -35,12 +35,12 @@ const VenuesNav = props => {
       />
       <VenueStack.Screen name="Venue" component={Venue} />
       <VenueStack.Screen
-        name="VenueTeam"
+        name="Team"
         component={Team}
         option={{title: 'Team'}}
       />
       <VenueStack.Screen
-        name="VenuePlayer"
+        name="Player"
         component={Player}
         option={{title: 'Player'}}
       />

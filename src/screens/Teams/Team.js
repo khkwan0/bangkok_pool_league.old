@@ -1,88 +1,9 @@
 import React from 'react'
-import {Image, ScrollView, View} from 'react-native'
-import {Text, TouchableRipple} from 'react-native-paper'
-import TwoColumns from '~/components/TwoColumns'
-import config from '~/config'
+import Team from '@screens/Team'
 
-const Team = props => {
+const _Team = props => {
   const team = props.route.params.team
-  return (
-    <ScrollView style={{paddingBottom: 30}}>
-      <View style={{alignItems: 'center'}}>
-        <Image
-          source={{uri: config.logoUrl + team.venue_logo}}
-          width={100}
-          height={100}
-          resizeMode="contain"
-        />
-      </View>
-      <View style={{marginTop: 20}}>
-        <TwoColumns label="name">
-          <Text variant="titleLarge">{team.name}</Text>
-        </TwoColumns>
-      </View>
-      <View style={{marginTop: 20}}>
-        {team.captains.map((captain, idx) => (
-          <TwoColumns key={'captain' + idx} label={idx === 0 ? 'captain' : ''}>
-            <TouchableRipple
-              onPress={() =>
-                props.navigation.navigate('VenuePlayer', {
-                  playerId: captain.id,
-                })
-              }>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Text>{captain.flag}</Text>
-                <Text variant="bodyLarge">{captain.nickname}</Text>
-                <Text variant="bodyLarge">
-                  ({captain.firstname} {captain.lastname})
-                </Text>
-              </View>
-            </TouchableRipple>
-          </TwoColumns>
-        ))}
-        {team.assistants.map((assistant, idx) => (
-          <TwoColumns
-            key={'assistant' + idx}
-            label={idx === 0 ? 'assistants' : ''}>
-            <TouchableRipple
-              onPress={() =>
-                props.navigation.navigate('VenuePlayer', {
-                  playerId: assistant.id,
-                })
-              }>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Text>{assistant.flag}</Text>
-                <Text variant="bodyLarge">{assistant.nickname}</Text>
-                <Text variant="bodyLarge">
-                  ({assistant.firstname} {assistant.lastname})
-                </Text>
-              </View>
-            </TouchableRipple>
-          </TwoColumns>
-        ))}
-      </View>
-      <View style={{marginTop: 20}}>
-        {team.players.map((player, idx) => (
-          <TwoColumns key={'player' + idx} label={idx === 0 ? 'players' : ''}>
-            <TouchableRipple
-              onPress={() =>
-                props.navigation.navigate('VenuePlayer', {
-                  playerId: player.id,
-                })
-              }>
-              <View style={{flexDirection: 'row', gap: 5}}>
-                <Text>{player.flag}</Text>
-                <Text variant="bodyLarge">{player.nickname}</Text>
-                <Text variant="bodyLarge">
-                  ({player.firstname} {player.lastname})
-                </Text>
-              </View>
-            </TouchableRipple>
-          </TwoColumns>
-        ))}
-      </View>
-    </ScrollView>
-  )
+  return <Team team={team} />
 }
 
-export default Team
+export default _Team

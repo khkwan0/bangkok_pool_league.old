@@ -9,7 +9,7 @@ const Venue = props => {
   const venue = props.route.params.venue
 
   function HandleTeamPress(team) {
-    props.navigation.navigate('VenueTeam', {team: team})
+    props.navigation.navigate('Team', {team: team})
   }
 
   return (

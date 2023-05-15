@@ -232,12 +232,13 @@ export const useLeague = (): any => {
     }
   }
 
-  const GetTeamInfo = async teamId => {
+  const GetTeamInfo = async (teamId: number): Promise<Object> => {
     try {
       const res = await Get('/team/' + teamId)
       return res
     } catch (e) {
       console.log(e)
+      return {}
     }
   }
 

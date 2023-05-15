@@ -36,7 +36,7 @@ const TeamsScreen = props => {
       />
       <TeamsStack.Screen name="Team" component={Team} />
       <TeamsStack.Screen
-        name="VenuePlayer"
+        name="Player"
         component={Player}
         option={{title: 'Player'}}
       />
