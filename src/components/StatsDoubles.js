@@ -1,20 +1,24 @@
 import React from 'react'
 import {View} from 'react-native'
-import {Text} from 'react-native-paper'
+import {Text, TouchableRipple} from 'react-native-paper'
 
-const StatsDoubles = ({stats}) => {
+const StatsDoubles = props => {
+  const stats = props.stats
   const fw = 'normal'
   const variant = 'bodyMedium'
   return (
     <>
       {stats.map((stat, index) => {
+        const playerId = stat.playerId
         return (
           <View key={stat + '_' + index} style={{flexDirection: 'row'}}>
-            <View style={{flex: 2}}>
+            <TouchableRipple
+              onPress={() => props.playerSelect(playerId)}
+              style={{flex: 3}}>
               <Text variant={variant} style={{fontWeight: fw}}>
                 {stat.nickname}
               </Text>
-            </View>
+            </TouchableRipple>
             <View style={{flex: 1}}>
               <Text variant={variant} style={{fontWeight: fw}}>
                 {stat.played}

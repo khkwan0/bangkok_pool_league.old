@@ -7,13 +7,14 @@ import Stats from '@components/Stats'
 import StatsDoubles from '@components/StatsDoubles'
 import StatsMatchPerformance from '@components/StatsMatchPerformance'
 import config from '~/config'
-import {useSeason} from '~/lib/hooks'
+import {useSeason, useLeague} from '~/lib/hooks'
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
 
 const PlayerStats = props => {
   const season = useSeason()
+  const league = useLeague()
   const insets = useSafeAreaInsets()
-  const playerInfo = props.route.params.playerInfo
+  const [playerInfo, setPlayerInfo] = React.useState(props.route.params.playerInfo)
   const [isLoading, setIsLoading] = React.useState(false)
   const [isDoubleStatsLoading, setIsDoubleStatsLoading] = React.useState(false)
   const [isMatchPerformanceLoading, setIsMatchPerformanceLoading] =
@@ -34,7 +35,7 @@ const PlayerStats = props => {
         setIsLoading(false)
       }
     })()
-  }, [])
+  }, [playerInfo])
 
   React.useEffect(() => {
     ;(async () => {
@@ -48,7 +49,7 @@ const PlayerStats = props => {
         setIsDoubleStatsLoading(false)
       }
     })()
-  }, [])
+  }, [playerInfo])
 
   React.useEffect(() => {
     ;(async () => {
@@ -62,7 +63,7 @@ const PlayerStats = props => {
         setIsMatchPerformanceLoading(false)
       }
     })()
-  }, [])
+  }, [playerInfo])
 
   async function GetStats() {
     try {
@@ -93,6 +94,16 @@ const PlayerStats = props => {
       throw new Error(e)
     }
   }
+
+  async function HandlePlayerSelect(playerId) {
+    try {
+      const res = await league.GetPlayerStatsInfo(playerId)
+      setPlayerInfo(res)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
     <ScrollView
       style={{
@@ -149,7 +160,7 @@ const PlayerStats = props => {
       {!isDoubleStatsLoading && (
         <View style={{marginVertical: 20, paddingHorizontal: 20}}>
           <StatsHeader isDoubles={true} />
-          <StatsDoubles stats={doublesStats} />
+          <StatsDoubles stats={doublesStats} playerSelect={HandlePlayerSelect} />
         </View>
       )}
       {isMatchPerformanceLoading && (

@@ -173,6 +173,16 @@ export const useLeague = (): any => {
     }
   }
 
+  const GetPlayerStatsInfo = async (playerId = 0) => {
+    try {
+      const playerInfo = await Get('/player/stats/info/' + playerId)
+      return playerInfo
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
   const GetPlayers = async (activeOnly = false) => {
     try {
       const res = await Get('/players?active_only=' + activeOnly)
@@ -233,6 +243,7 @@ export const useLeague = (): any => {
 
   return {
     GetPlayerInfo,
+    GetPlayerStatsInfo,
     GetPlayers,
     GetSeason,
     SaveNewPlayer,
