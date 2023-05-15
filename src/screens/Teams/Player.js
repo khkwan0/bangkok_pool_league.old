@@ -15,9 +15,7 @@ const _Player = props => {
   React.useEffect(() => {
     ;(async () => {
       try {
-        console.log('playerid', playerId)
         const res = await league.GetPlayerStatsInfo(playerId)
-        console.log(res)
         setPlayerInfo(res)
       } catch (e) {
         console.log(e)

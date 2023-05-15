@@ -12,6 +12,14 @@ const Player = ({playerInfo}) => {
     navigation.navigate('Player Statistics', {playerInfo: playerInfo})
   }
 
+  if (typeof playerInfo.pic === 'undefined' || !playerInfo.pic) {
+    if (playerInfo.gender === 'Female') {
+      playerInfo.pic = 'default_female.png'
+    } else {
+      playerInfo.pic = 'default_male.png'
+    }
+  }
+
   return (
     <ScrollView style={{paddingVertical: 20}}>
       <View
