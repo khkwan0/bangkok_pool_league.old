@@ -23,7 +23,7 @@ const DrawerItem = ({navDest, icon, label, as}) => {
   const navigation = useNavigation()
   return (
     <View>
-      <TouchableRipple onPress={() => navigation.navigate(navDest)}>
+      <TouchableRipple onPress={() => navigation.navigate(navDest, {screen: 'Root'})}>
         <View style={drawerItemStyle}>
           <View style={{flex: 1, alignItems: 'flex-end'}}>
             <Icon name={icon} as={as} />

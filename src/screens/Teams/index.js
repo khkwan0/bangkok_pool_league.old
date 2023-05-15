@@ -22,7 +22,7 @@ const TeamsScreen = props => {
         ),
       }}>
       <TeamsStack.Screen
-        name="TeamsHome"
+        name="Root"
         component={TeamsHome}
         options={{
           title: 'Teams',

@@ -21,7 +21,7 @@ const PlayersScreen = props => {
         ),
       }}>
       <PlayersStack.Screen
-        name="PlayersHome"
+        name="Root"
         component={PlayersHome}
         options={{
           title: 'Players',

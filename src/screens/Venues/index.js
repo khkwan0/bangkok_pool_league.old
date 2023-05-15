@@ -21,7 +21,7 @@ const VenuesNav = props => {
         ),
       }}>
       <VenueStack.Screen
-        name="VenuesHome"
+        name="Root"
         component={VenuesHome}
         options={{
           title: 'Venues',
