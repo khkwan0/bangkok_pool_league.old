@@ -7,7 +7,7 @@ import {useSeason} from '~/lib/hooks'
 
 const MatchLine = ({data}) => {
   return (
-    <View style={{flexDirection: 'row', alignItems:'center'}}>
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <View style={{flex: 1}}>
         <Text style={{color: '#888'}}>{data.gameType}</Text>
       </View>
@@ -22,7 +22,9 @@ const MatchLine = ({data}) => {
             )
           } else {
             return (
-              <Text style={{color: color}} key={player.id + '_' + index}>{player.nickname}, </Text>
+              <Text style={{color: color}} key={player.id + '_' + index}>
+                {player.nickname},{' '}
+              </Text>
             )
           }
         })}
@@ -39,7 +41,9 @@ const MatchLine = ({data}) => {
             )
           } else {
             return (
-              <Text style={{color: color}} key={player.id + '_' + index}>{player.nickname}, </Text>
+              <Text style={{color: color}} key={player.id + '_' + index}>
+                {player.nickname},{' '}
+              </Text>
             )
           }
         })}
@@ -53,19 +57,29 @@ const MatchScreen = ({matchId}) => {
   const season = useSeason()
   const navigation = useNavigation()
   const [matchData, setMatchData] = React.useState([])
+  const [isLoading, setIsLoading] = React.useState(false)
 
   React.useEffect(() => {
     ;(async () => {
       try {
+        setIsLoading(true)
         const res = await season.GetMatchStats(matchId)
         setMatchData(res)
       } catch (e) {
         console.log(e)
+      } finally {
+        setIsLoading(false)
       }
     })()
-  }, [])
+  }, [matchId])
 
-  if (matchData.length > 0) {
+  if (isLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    )
+  } else if (matchData.length > 0) {
     return (
       <View style={{padding: 20}}>
         <FlatList
@@ -76,8 +90,8 @@ const MatchScreen = ({matchId}) => {
     )
   } else {
     return (
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator />
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>No Data</Text>
       </View>
     )
   }

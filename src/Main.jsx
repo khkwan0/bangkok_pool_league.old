@@ -68,7 +68,7 @@ const Main = props => {
         <Drawer.Screen name="Calendar" component={Calendar} />
         <Drawer.Screen name="Schedules" component={Schedules} />
         <Drawer.Screen name="Seasons" component={Seasons} />
-        <Drawer.Screen name="Statistics" component={Statistics} />
+        <Drawer.Screen name="Statistics" component={Statistics} options={{headerShown: false}} />
         <Drawer.Screen name="Info" component={Info} />
         <Drawer.Screen name="Settings" component={Settings} />
       </Drawer.Navigator>

@@ -192,6 +192,21 @@ export const useLeague = (): any => {
     }
   }
 
+  const GetStandings = async (seasonId = null) => {
+    try {
+      if (seasonId) {
+        const res = await Get('/league/standings/')
+        return res
+      } else {
+        const res = await Get('/league/standings/' + seasonId)
+        return res
+      }
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
   const SaveNewPlayer = async (
     nickName = '',
     firstName = '',
@@ -247,10 +262,11 @@ export const useLeague = (): any => {
     GetPlayerStatsInfo,
     GetPlayers,
     GetSeason,
-    SaveNewPlayer,
-    GetVenues,
+    GetStandings,
     GetTeams,
     GetTeamInfo,
+    GetVenues,
+    SaveNewPlayer,
   }
 }
 
