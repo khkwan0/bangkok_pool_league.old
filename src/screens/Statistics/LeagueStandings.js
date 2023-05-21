@@ -45,11 +45,11 @@ const TeamStandings = ({team, idx}) => {
             flex: 4,
           }}>
           <TouchableRipple onPress={() => setShowAll(s => !s)}>
-            <View style={{flexDirection: 'row', paddingVertical: 10, gap: 10}}>
-              <Text>{idx}</Text>
+            <View style={{paddingVertical: 10}}>
               <Text
                 variant="bodyLarge"
                 style={{fontWeight: 'bold', color: '#2c127a'}}>
+                {idx}&nbsp;
                 {team.name}
               </Text>
             </View>

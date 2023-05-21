@@ -7,11 +7,20 @@ const StatisticsHome = props => {
     props.navigation.navigate('League Standings')
   }
 
+  function ShowTeamStats() {
+    props.navigation.navigate('Team Statistics')
+  }
+
   return (
     <ScrollView style={{margin: 20}}>
       <TouchableRipple onPress={() => ShowLeagueStandings()}>
         <View style={{padding: 40}}>
           <Text>League Standings</Text>
+        </View>
+      </TouchableRipple>
+      <TouchableRipple onPress={() => ShowTeamStats()}>
+        <View style={{padding: 40}}>
+          <Text>Team Statistics</Text>
         </View>
       </TouchableRipple>
     </ScrollView>

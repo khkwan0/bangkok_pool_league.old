@@ -238,6 +238,15 @@ export const useLeague = (): any => {
     }
   }
 
+  const GetTeamStats = async (seasonId = 9) => {
+    try {
+      const res = await Get('/stats/teams/' + seasonId)
+      return res
+    } catch (e) {
+      return []
+    }
+  }
+
   const GetTeams = async () => {
     try {
       const res = await Get('/teams')
@@ -265,6 +274,7 @@ export const useLeague = (): any => {
     GetStandings,
     GetTeams,
     GetTeamInfo,
+    GetTeamStats,
     GetVenues,
     SaveNewPlayer,
   }

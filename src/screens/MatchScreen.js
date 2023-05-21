@@ -8,31 +8,31 @@ import {useSeason} from '~/lib/hooks'
 const MatchLine = ({data}) => {
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <View style={{flex: 1}}>
+      <View style={{flex: 2}}>
         <Text style={{color: '#888'}}>{data.gameType}</Text>
       </View>
-      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{flex: 1}}>
         {data.homePlayers.map((player, index) => {
           const color = data.home_win === 1 ? '#00f' : '#f00'
-          if (index === data.homePlayers.length - 1) {
-            return (
-              <Text style={{color: color}} key={player.id + '_' + index}>
-                {player.nickname}
-              </Text>
-            )
-          } else {
-            return (
-              <Text style={{color: color}} key={player.id + '_' + index}>
-                {player.nickname},{' '}
-              </Text>
-            )
-          }
+          return (
+            <Text style={{color: color}} key={player.id + '_' + index}>
+              {player.nickname}
+            </Text>
+          )
         })}
+      </View>
+      <View style={{flex: 1}}>
         {data.home_win === 1 && <Icon name="check" color="#0f0" />}
       </View>
-      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{flex: 1}}>
         {data.awayPlayers.map((player, index) => {
           const color = data.home_win === 0 ? '#00f' : '#f00'
+          return (
+            <Text style={{color: color}} key={player.id + '_' + index}>
+              {player.nickname}
+            </Text>
+          )
+          /*
           if (index === data.homePlayers.length - 1) {
             return (
               <Text style={{color: color}} key={player.id + '_' + index}>
@@ -46,9 +46,12 @@ const MatchLine = ({data}) => {
               </Text>
             )
           }
+          */
         })}
+        </View>
+        <View style={{flex: 1}}>
         {data.home_win === 0 && <Icon name="check" color="#0f0" />}
-      </View>
+        </View>
     </View>
   )
 }

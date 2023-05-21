@@ -5,6 +5,7 @@ import StatisticsHome from './StatisticsHome'
 import {IconButton} from 'react-native-paper'
 import {useNavigation} from '@react-navigation/native'
 import LeagueStandings from './LeagueStandings'
+import TeamStatistics from './TeamStatistics'
 import MatchScreen from './MatchScreen'
 
 const StatisticsStack = createNativeStackNavigator()
@@ -39,6 +40,10 @@ const StatisticsScreen = props => {
       <StatisticsStack.Screen
         name="Statistics Match Screen"
         component={MatchScreen}
+      />
+      <StatisticsStack.Screen
+        name="Team Statistics"
+        component={TeamStatistics}
       />
     </StatisticsStack.Navigator>
   )
