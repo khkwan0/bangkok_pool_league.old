@@ -7,6 +7,7 @@ import {useNavigation} from '@react-navigation/native'
 import LeagueStandings from './LeagueStandings'
 import TeamStatistics from './TeamStatistics'
 import MatchScreen from './MatchScreen'
+import PlayerStatistics from './PlayerStatistics'
 
 const StatisticsStack = createNativeStackNavigator()
 
@@ -44,6 +45,10 @@ const StatisticsScreen = props => {
       <StatisticsStack.Screen
         name="Team Statistics"
         component={TeamStatistics}
+      />
+      <StatisticsStack.Screen
+        name="Player Statistics"
+        component={PlayerStatistics}
       />
     </StatisticsStack.Navigator>
   )

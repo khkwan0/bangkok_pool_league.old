@@ -173,6 +173,16 @@ export const useLeague = (): any => {
     }
   }
 
+  const GetPlayerStats = async (seasonId = null) => {
+    try {
+      const stats = await Get('/stats/players/' + seasonId)
+      return stats
+    } catch (e) {
+      console.log(e)
+      return []
+    }
+  }
+
   const GetPlayerStatsInfo = async (playerId = 0) => {
     try {
       const playerInfo = await Get('/player/stats/info/' + playerId)
@@ -238,7 +248,7 @@ export const useLeague = (): any => {
     }
   }
 
-  const GetTeamStats = async (seasonId = 9) => {
+  const GetTeamStats = async (seasonId = null) => {
     try {
       const res = await Get('/stats/teams/' + seasonId)
       return res
@@ -268,6 +278,7 @@ export const useLeague = (): any => {
 
   return {
     GetPlayerInfo,
+    GetPlayerStats,
     GetPlayerStatsInfo,
     GetPlayers,
     GetSeason,

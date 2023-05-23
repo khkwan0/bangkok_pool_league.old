@@ -60,7 +60,7 @@ const TeamStanding = ({data, idx}) => {
               <TouchableRipple
                 key={matchIdx}
                 onPress={() => HandleMatchPress(match.match_id)}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', paddingHorizontal: 20, paddingVertical: 5}}>
                   <View style={{flex: 2}}>
                     <Text>{`vs ${vsTeam} (${homeAway})`}</Text>
                   </View>

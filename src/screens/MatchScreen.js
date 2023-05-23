@@ -48,10 +48,10 @@ const MatchLine = ({data}) => {
           }
           */
         })}
-        </View>
-        <View style={{flex: 1}}>
+      </View>
+      <View style={{flex: 1}}>
         {data.home_win === 0 && <Icon name="check" color="#0f0" />}
-        </View>
+      </View>
     </View>
   )
 }
@@ -67,6 +67,7 @@ const MatchScreen = ({matchId}) => {
       try {
         setIsLoading(true)
         const res = await season.GetMatchStats(matchId)
+        console.log(JSON.stringify(res, null, 2))
         setMatchData(res)
       } catch (e) {
         console.log(e)
@@ -86,6 +87,25 @@ const MatchScreen = ({matchId}) => {
     return (
       <View style={{padding: 20}}>
         <FlatList
+          ListHeaderComponent={
+            <View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flex: 3}}>
+                  <Text variant="titleMedium" style={{textAlign: 'center'}}>
+                    {matchData[0].homeTeam.name}
+                  </Text>
+                </View>
+                <View style={{flex: 1, alignItems: 'center'}}>
+                  <Text>vs</Text>
+                </View>
+                <View style={{flex: 3}}>
+                  <Text variant="titleMedium" style={{textAlign: 'center'}}>
+                    {matchData[0].awayTeam.name}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          }
           data={matchData}
           renderItem={({item, index}) => <MatchLine data={item} />}
         />
