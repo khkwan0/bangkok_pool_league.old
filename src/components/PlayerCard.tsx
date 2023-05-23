@@ -36,7 +36,7 @@ const PlayerCard = (props: any) => {
         <Button
           disabled={props.disabled}
           mode="outlined"
-          onPress={() => HandleSelect(props.player.id)}>
+          onPress={() => HandleSelect(props.player.playerId)}>
           Select
         </Button>
       </View>
