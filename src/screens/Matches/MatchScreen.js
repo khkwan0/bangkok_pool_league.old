@@ -533,7 +533,8 @@ const MatchScreen = props => {
         side: side,
         matchId: matchInfo.match_id,
       })
-    } else if (side === 'away' && side === userTeam) {
+    } else if (side === 'away') {
+      //} && side === userTeam) {
       setFinalizedAway(true)
       SocketSend('finalize', {
         teamId: matchInfo.away_team_id,
@@ -542,6 +543,7 @@ const MatchScreen = props => {
       })
     }
   }
+  console.log('finalizedhomne', finalizedHome)
 
   async function UpdateTeams() {
     const _teams = {}
@@ -655,7 +657,7 @@ const MatchScreen = props => {
                         justifyContent: 'center',
                       }}>
                       <RadioButton.Android
-                        disabled={isLoading}
+                        disabled={isLoading || (finalizedAway && finalizedHome)}
                         value={matchInfo.home_team_id}
                       />
                       <Text>First Break</Text>
@@ -668,7 +670,7 @@ const MatchScreen = props => {
                         justifyContent: 'center',
                       }}>
                       <RadioButton.Android
-                        disabled={isLoading}
+                        disabled={isLoading || (finalizedAway && finalizedHome)}
                         value={matchInfo.away_team_id}
                       />
                       <Text>First Break</Text>
@@ -700,29 +702,43 @@ const MatchScreen = props => {
                 <View style={{flexDirection: 'row'}}>
                   <View style={{flex: 1}}>
                     {finalizedHome && (
-                    <Button
-                      disabled={isLoading}
-                      onPress={() => HandleFinalized('home')}
-                      mode="elevated">
-                      Unfinalize Home
-                    </Button>
+                      <Button
+                        disabled={(finalizedHome && finalizedAway) || isLoading}
+                        onPress={() => HandleFinalized('home')}
+                        mode="elevated">
+                        {finalizedHome && finalizedAway
+                          ? 'Submitted'
+                          : 'Unfinalize Home'}
+                      </Button>
                     )}
                     {!finalizedHome && (
-                    <Button
-                      disabled={isLoading}
-                      onPress={() => HandleFinalized('home')}
-                      mode="elevated">
-                      Finalize Home
-                    </Button>
+                      <Button
+                        disabled={isLoading}
+                        onPress={() => HandleFinalized('home')}
+                        mode="elevated">
+                        Finalize Home
+                      </Button>
                     )}
                   </View>
                   <View style={{flex: 1}}>
-                    <Button
-                      disabled={finalizedAway || isLoading}
-                      onPress={() => HandleFinalized('away')}
-                      mode="elevated">
-                      Finalize Away
-                    </Button>
+                    {finalizedAway && (
+                      <Button
+                        disabled={(finalizedAway && finalizedHome) || isLoading}
+                        onPress={() => HandleFinalized('away')}
+                        mode="elevated">
+                        {finalizedHome && finalizedAway
+                          ? 'Submitted'
+                          : 'Unfinalize Away'}
+                      </Button>
+                    )}
+                    {!finalizedAway && (
+                      <Button
+                        disabled={isLoading}
+                        onPress={() => HandleFinalized('away')}
+                        mode="elevated">
+                        Finalize Away
+                      </Button>
+                    )}
                   </View>
                 </View>
                 <View style={{marginTop: 10}}>

@@ -4,7 +4,7 @@ import {ActivityIndicator, Button, Colors, Text} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const Frame = props => {
-  const disabled = props.finalizeHome && props.finalizedAway
+  const disabled = props.finalizedHome && props.finalizedAway
   if (props.frame.type !== 'section') {
     let awayPlayerA = ''
     let awayPlayerB = ''
@@ -58,9 +58,7 @@ const Frame = props => {
               borderRadius: 5,
             }}>
             <Button
-              disabled={false
-                // props.isLoading || disabled || props.side === 'away'
-              }
+              disabled={props.isLoading || disabled || props.side === 'away'}
               icon={!homePlayerA ? 'plus-circle' : ''}
               onPress={() =>
                 props.choosePlayer(
@@ -76,8 +74,8 @@ const Frame = props => {
             {props.gameTypes[props.frame.type].no_players === 2 && (
               <View style={{marginTop: 5}}>
                 <Button
-                  disabled={false
-                    // props.isLoading || disabled || props.side === 'away'
+                  disabled={
+                    props.isLoading || disabled || props.side === 'away'
                   }
                   icon={!homePlayerB ? 'plus-circle' : ''}
                   onPress={() =>
@@ -113,13 +111,15 @@ const Frame = props => {
             {props.frame.winner !== props.matchInfo.home_team_id && (
               <Button
                 disabled={
-                  disabled || props.isLoading || props.gameType === 'doubles'
+                  disabled ||
+                  props.isLoading ||
+                  (props.gameType === 'doubles'
                     ? homePlayerA && homePlayerB && awayPlayerA && awayPlayerB
                       ? false
                       : true
                     : homePlayerA && awayPlayerA
                     ? false
-                    : true
+                    : true)
                 }
                 onPress={() =>
                   props.setWinner(
@@ -146,13 +146,15 @@ const Frame = props => {
             {props.frame.winner !== props.matchInfo.away_team_id && (
               <Button
                 disabled={
-                  disabled || props.isLoading || props.gameType === 'doubles'
+                  disabled ||
+                  props.isLoading ||
+                  (props.gameType === 'doubles'
                     ? homePlayerA && homePlayerB && awayPlayerA && awayPlayerB
                       ? false
                       : true
                     : homePlayerA && awayPlayerA
                     ? false
-                    : true
+                    : true)
                 }
                 onPress={() =>
                   props.setWinner(
@@ -173,9 +175,7 @@ const Frame = props => {
               borderRadius: 5,
             }}>
             <Button
-              disabled={false
-                //props.isLoading || disabled || props.side === 'home'
-              }
+              disabled={props.isLoading || disabled || props.side === 'home'}
               icon={!awayPlayerA ? 'plus-circle' : ''}
               onPress={() =>
                 props.choosePlayer(
@@ -197,8 +197,8 @@ const Frame = props => {
             {props.gameTypes[props.frame.type].no_players === 2 && (
               <View style={{marginTop: 5}}>
                 <Button
-                  disabled={false
-                    // props.isLoading || disabled || props.side === 'home'
+                  disabled={
+                    props.isLoading || disabled || props.side === 'home'
                   }
                   icon={!awayPlayerB ? 'plus-circle' : ''}
                   onPress={() =>
