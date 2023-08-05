@@ -149,15 +149,10 @@ export const useAccount = (): any => {
 export const useLeague = (): any => {
   const {Get, Post} = useNetwork()
 
-  const GetSeason = async (): Promise<Object> => {
+  const GetSeason = async () => {
     try {
-      const localSeason = await AsyncStorage.getItem('season')
-      if (!localSeason) {
-        const season = await Get('/season')
-        return season
-      } else {
-        return localSeason
-      }
+      const season = await Get('/season')
+      return season.season
     } catch (e) {
       console.log('no season')
     }

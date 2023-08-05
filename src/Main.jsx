@@ -36,7 +36,7 @@ const Main = props => {
   }, [])
 
   React.useEffect(() => {
-    (async () => {
+    ;(async () => {
       const season = await league.GetSeason()
     })()
   }, [league])

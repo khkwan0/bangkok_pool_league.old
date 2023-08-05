@@ -91,9 +91,15 @@ const Calendar = props => {
 
   React.useEffect(() => {
     ;(async () => {
-      const res = await season.GetMatchesBySeason(9)
-      setMatches(res.matches)
-      setIsMounted(true)
+      try {
+        const _season = await season.getSeason()
+        const res = await season.GetMatchesBySeason(_season.season)
+        setMatches(res.matches)
+      } catch (e) {
+        console.log(e)
+      } finally {
+        setIsMounted(true)
+      }
     })()
   }, [])
 
