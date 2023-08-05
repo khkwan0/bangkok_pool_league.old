@@ -1,7 +1,7 @@
 import React from 'react'
 import {FlatList, StyleSheet, View} from 'react-native'
 import {ActivityIndicator, Text} from 'react-native-paper'
-import {useSeason} from '~/lib/hooks'
+import {useSeason, useLeague} from '~/lib/hooks'
 
 const winnerStyle = StyleSheet.create({
   fontWeight: 'bold',
@@ -86,14 +86,15 @@ const MatchGrouping = props => {
 
 const Calendar = props => {
   const season = useSeason()
+  const league = useLeague()
   const [matches, setMatches] = React.useState([])
   const [isMounted, setIsMounted] = React.useState(false)
 
   React.useEffect(() => {
     ;(async () => {
       try {
-        const _season = await season.getSeason()
-        const res = await season.GetMatchesBySeason(_season.season)
+        const _season = await league.GetSeason()
+        const res = await season.GetMatchesBySeason(_season)
         setMatches(res.matches)
       } catch (e) {
         console.log(e)
