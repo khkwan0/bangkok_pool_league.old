@@ -10,7 +10,7 @@ import {
   RadioButton,
   Text,
 } from 'react-native-paper'
-import Frame from '@components/Frame'
+import Frame from './components/Frame'
 import {useFocusEffect} from '@react-navigation/native'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useMatch, useTeams, useSeason, useNetwork} from '~/lib/hooks'

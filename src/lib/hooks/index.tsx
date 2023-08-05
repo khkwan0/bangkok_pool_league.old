@@ -114,6 +114,7 @@ export const useAccount = (): any => {
   async function UserLogin(email: string, password: string) {
     try {
       const res = await Post('/login', {email, password}, false)
+      console.log(res)
       /*
       const res = {
         email: 'khkwan0@gmail.com',
