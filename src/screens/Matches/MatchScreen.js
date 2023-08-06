@@ -11,11 +11,14 @@ import {
   Text,
 } from 'react-native-paper'
 import Frame from './components/Frame'
+import CompletedFrame from './components/CompletedFrame'
+import TeamsHeadline from './components/TeamsHeadline'
 import {useFocusEffect} from '@react-navigation/native'
 import {useAppSelector} from '~/lib/hooks/redux'
 import {useMatch, useTeams, useSeason, useNetwork} from '~/lib/hooks'
-import {socket} from '~/socket'
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
+
+import {socket} from '~/socket'
 
 const MatchScreen = props => {
   const insets = useSafeAreaInsets()
@@ -70,8 +73,6 @@ const MatchScreen = props => {
         console.log('rendering init frames')
         await RenderInitialFrames()
 
-        setIsMounted(true)
-
         console.log('update teams')
         await UpdateTeams()
 
@@ -82,47 +83,60 @@ const MatchScreen = props => {
         await UpdateMatchInfo()
 
         setIsLoading(false)
-        console.log('init socket')
-        socket.connect()
+        setIsMounted(true)
       } catch (e) {
         setError('Something is very wrong')
         console.log(e)
       }
     })()
-    return () => setIsMounted(false)
+    return () => {
+      console.log('unmounting')
+      socket.disconnect()
+      setIsMounted(false)
+    }
   }, [])
 
+  async function HandleAppStateChange(nextAppState) {
+    console.log('nextappstate', nextAppState)
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      ;(async () => {
+        try {
+          setIsLoading(true)
+          console.log('update teams')
+          await UpdateTeams()
+
+          console.log('Get frames')
+          await GetFrames()
+
+          console.log('updatematch info')
+          await UpdateMatchInfo()
+
+          setIsLoading(false)
+          setIsMounted(true)
+        } catch (e) {
+          console.log(e)
+        }
+      })()
+    } else {
+      socket.disconnect()
+    }
+    appState.current = nextAppState
+  }
+
   React.useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        ;(async () => {
-          try {
-            setIsLoading(true)
-            console.log('update teams')
-            await UpdateTeams()
-
-            console.log('Get frames')
-            await GetFrames()
-
-            console.log('updatematch info')
-            await UpdateMatchInfo()
-
-            setIsLoading(false)
-            console.log('init socket')
-            socket.connect()
-          } catch (e) {
-            console.log(e)
-          }
-        })()
-      }
-      appState.current = nextAppState
-      return () => {
-        subscription.remove()
-      }
-    })
+    const subscription = AppState.addEventListener(
+      'change',
+      HandleAppStateChange,
+    )
+    return () => {
+      console.log('removing subscription')
+      socket.disconnect()
+      socket.close()
+      subscription.remove()
+    }
   }, [])
 
   const framesRef = React.useRef([])
@@ -135,6 +149,7 @@ const MatchScreen = props => {
   }, [frames])
 
   React.useEffect(() => {
+    console.log('registering sockets')
     function UpdateFrameWin(frameIdx, winnerTeamId) {
       try {
         const _frames = framesRef.current
@@ -236,6 +251,9 @@ const MatchScreen = props => {
         }
       }
     })
+    return () => {
+      socket.close()
+    }
   }, [])
 
   /*
@@ -379,17 +397,26 @@ const MatchScreen = props => {
         ) {
           setFirstBreak(_matchInfo.firstBreak)
         }
+        let _finalizedHome = false
+        let _finalizeAway = false
         if (
-          typeof _matchInfo.finalize_home !== 'undefined' &&
+          typeof _matchInfo?.finalize_home !== 'undefined' &&
           _matchInfo.finalize_home.teamId
         ) {
-          setFinalizedHome(true)
+          _finalizedHome = true
         }
         if (
-          typeof _matchInfo.finalize_away !== 'undefined' &&
+          typeof _matchInfo?.finalize_away !== 'undefined' &&
           _matchInfo.finalize_away.teamId
         ) {
-          setFinalizedAway(true)
+          _finalizeAway = true
+        }
+        setFinalizedAway(_finalizeAway)
+        setFinalizedHome(_finalizedHome)
+        console.log('sc', socket.connected)
+        if ((!_finalizeAway || !_finalizedHome) && !socket.connected) {
+          console.log('socket connecting')
+          socket.connect()
         }
         matchInfo.meta = {..._matchInfo}
       }
@@ -526,7 +553,8 @@ const MatchScreen = props => {
   }
 
   function HandleFinalized(side) {
-    if (side === 'home' && side === userTeam) {
+    //    if (side === 'home' && side === userTeam) {
+    if (side === 'home') {
       setFinalizedHome(true)
       SocketSend('finalize', {
         teamId: matchInfo.home_team_id,
@@ -543,7 +571,6 @@ const MatchScreen = props => {
       })
     }
   }
-  console.log('finalizedhomne', finalizedHome)
 
   async function UpdateTeams() {
     const _teams = {}
@@ -601,183 +628,219 @@ const MatchScreen = props => {
           </Dialog>
         </Portal>
         <View style={{paddingBottom: insets.bottom}}>
-          <FlatList
-            ListHeaderComponent={
-              <View style={{backgroundColor: '#fff'}}>
-                {isLoading && (
-                  <View style={{flex: 1, justifyContent: 'center'}}>
-                    <ActivityIndicator />
-                  </View>
-                )}
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <View
-                    style={{
-                      flex: 2,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text variant="headlineSmall" style={{textAlign: 'center'}}>
-                      {matchInfo.home_team_short_name}
-                    </Text>
-                  </View>
-                  <View style={{flex: 1, alignItems: 'center'}}>
-                    <Text>VS</Text>
-                  </View>
-                  <View
-                    style={{
-                      flex: 2,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text variant="headlineSmall" style={{textAlign: 'center'}}>
-                      {matchInfo.away_team_short_name}
-                    </Text>
-                  </View>
+          {finalizedAway && finalizedHome && (
+            <FlatList
+              ListHeaderComponent={
+                <View style={{backgroundColor: '#fff'}}>
+                  <TeamsHeadline matchInfo={matchInfo} isLoading={isLoading} />
                 </View>
-                <RadioButton.Group
-                  onValueChange={newValue => HandleSetFirstBreak(newValue)}
-                  value={firstBreak}>
+              }
+              data={frames}
+              renderItem={({item, index}) => (
+                <CompletedFrame
+                  frame={item}
+                  side={userTeam}
+                  firstBreak={firstBreak}
+                  isLoading={isLoading}
+                  matchInfo={matchInfo}
+                  teams={teams}
+                  gameTypes={gameTypes}
+                  frameIdx={index}
+                />
+              )}
+            />
+          )}
+          {(!finalizedAway || !finalizedHome) && (
+            <FlatList
+              ListHeaderComponent={
+                <View style={{backgroundColor: '#fff'}}>
+                  {isLoading && (
+                    <View style={{flex: 1, justifyContent: 'center'}}>
+                      <ActivityIndicator />
+                    </View>
+                  )}
                   <View
                     style={{
                       flex: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
+                    <View
+                      style={{
+                        flex: 2,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        variant="headlineSmall"
+                        style={{textAlign: 'center'}}>
+                        {matchInfo.home_team_short_name}
+                      </Text>
+                    </View>
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                      <Text>VS</Text>
+                    </View>
+                    <View
+                      style={{
+                        flex: 2,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Text
+                        variant="headlineSmall"
+                        style={{textAlign: 'center'}}>
+                        {matchInfo.away_team_short_name}
+                      </Text>
+                    </View>
+                  </View>
+                  <RadioButton.Group
+                    onValueChange={newValue => HandleSetFirstBreak(newValue)}
+                    value={firstBreak}>
                     <View
                       style={{
                         flex: 1,
                         flexDirection: 'row',
                         alignItems: 'center',
-                        justifyContent: 'center',
                       }}>
-                      <RadioButton.Android
-                        disabled={isLoading || (finalizedAway && finalizedHome)}
-                        value={matchInfo.home_team_id}
-                      />
-                      <Text>First Break</Text>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <RadioButton.Android
+                          disabled={
+                            isLoading || (finalizedAway && finalizedHome)
+                          }
+                          value={matchInfo.home_team_id}
+                        />
+                        <Text>First Break</Text>
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <RadioButton.Android
+                          disabled={
+                            isLoading || (finalizedAway && finalizedHome)
+                          }
+                          value={matchInfo.away_team_id}
+                        />
+                        <Text>First Break</Text>
+                      </View>
+                    </View>
+                  </RadioButton.Group>
+                  <View style={{flexDirection: 'row'}}>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text variant="displaySmall">{homeScore}</Text>
                     </View>
                     <View
                       style={{
                         flex: 1,
-                        flexDirection: 'row',
-                        alignItems: 'center',
                         justifyContent: 'center',
+                        alignItems: 'center',
                       }}>
-                      <RadioButton.Android
-                        disabled={isLoading || (finalizedAway && finalizedHome)}
-                        value={matchInfo.away_team_id}
-                      />
-                      <Text>First Break</Text>
+                      <Text variant="displaySmall">{awayScore}</Text>
                     </View>
                   </View>
-                </RadioButton.Group>
-                <View style={{flexDirection: 'row'}}>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text variant="displaySmall">{homeScore}</Text>
+                </View>
+              }
+              ListFooterComponent={
+                <View style={{paddingBottom: 20}}>
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 1}}>
+                      {finalizedHome && (
+                        <Button
+                          disabled={
+                            (finalizedHome && finalizedAway) || isLoading
+                          }
+                          onPress={() => HandleFinalized('home')}
+                          mode="elevated">
+                          {finalizedHome && finalizedAway
+                            ? 'Submitted'
+                            : 'Unfinalize Home'}
+                        </Button>
+                      )}
+                      {!finalizedHome && (
+                        <Button
+                          disabled={isLoading}
+                          onPress={() => HandleFinalized('home')}
+                          mode="elevated">
+                          Finalize Home
+                        </Button>
+                      )}
+                    </View>
+                    <View style={{flex: 1}}>
+                      {finalizedAway && (
+                        <Button
+                          disabled={
+                            (finalizedAway && finalizedHome) || isLoading
+                          }
+                          onPress={() => HandleFinalized('away')}
+                          mode="elevated">
+                          {finalizedHome && finalizedAway
+                            ? 'Submitted'
+                            : 'Unfinalize Away'}
+                        </Button>
+                      )}
+                      {!finalizedAway && (
+                        <Button
+                          disabled={isLoading}
+                          onPress={() => HandleFinalized('away')}
+                          mode="elevated">
+                          Finalize Away
+                        </Button>
+                      )}
+                    </View>
                   </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text variant="displaySmall">{awayScore}</Text>
+                  <View style={{marginTop: 10}}>
+                    <Button
+                      disabled={isLoading}
+                      icon="dots-triangle"
+                      mode="contained"
+                      onPress={() =>
+                        props.navigation.navigate('Match Info', {matchInfo})
+                      }>
+                      More
+                    </Button>
                   </View>
                 </View>
-              </View>
-            }
-            ListFooterComponent={
-              <View style={{paddingBottom: 20}}>
-                <View style={{flexDirection: 'row'}}>
-                  <View style={{flex: 1}}>
-                    {finalizedHome && (
-                      <Button
-                        disabled={(finalizedHome && finalizedAway) || isLoading}
-                        onPress={() => HandleFinalized('home')}
-                        mode="elevated">
-                        {finalizedHome && finalizedAway
-                          ? 'Submitted'
-                          : 'Unfinalize Home'}
-                      </Button>
-                    )}
-                    {!finalizedHome && (
-                      <Button
-                        disabled={isLoading}
-                        onPress={() => HandleFinalized('home')}
-                        mode="elevated">
-                        Finalize Home
-                      </Button>
-                    )}
-                  </View>
-                  <View style={{flex: 1}}>
-                    {finalizedAway && (
-                      <Button
-                        disabled={(finalizedAway && finalizedHome) || isLoading}
-                        onPress={() => HandleFinalized('away')}
-                        mode="elevated">
-                        {finalizedHome && finalizedAway
-                          ? 'Submitted'
-                          : 'Unfinalize Away'}
-                      </Button>
-                    )}
-                    {!finalizedAway && (
-                      <Button
-                        disabled={isLoading}
-                        onPress={() => HandleFinalized('away')}
-                        mode="elevated">
-                        Finalize Away
-                      </Button>
-                    )}
-                  </View>
+              }
+              data={frames}
+              ItemSeparatorComponent={
+                <View style={{marginVertical: 5}}>
+                  <Divider bold />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Button
-                    disabled={isLoading}
-                    icon="dots-triangle"
-                    mode="contained"
-                    onPress={() =>
-                      props.navigation.navigate('Match Info', {matchInfo})
-                    }>
-                    More
-                  </Button>
-                </View>
-              </View>
-            }
-            data={frames}
-            ItemSeparatorComponent={
-              <View style={{marginVertical: 5}}>
-                <Divider bold />
-              </View>
-            }
-            stickyHeaderIndices={[0]}
-            renderItem={({item, index}) => (
-              <Frame
-                side={userTeam}
-                firstBreak={firstBreak}
-                isLoading={isLoading}
-                matchInfo={matchInfo}
-                teams={teams}
-                gameTypes={gameTypes}
-                frame={item}
-                choosePlayer={ChoosePlayer}
-                setWinner={HandleSetWinner}
-                frameIdx={index}
-                finalizedAway={finalizedAway}
-                finalizedHome={finalizedHome}
-              />
-            )}
-          />
+              }
+              stickyHeaderIndices={[0]}
+              renderItem={({item, index}) => (
+                <Frame
+                  side={userTeam}
+                  firstBreak={firstBreak}
+                  isLoading={isLoading}
+                  matchInfo={matchInfo}
+                  teams={teams}
+                  gameTypes={gameTypes}
+                  frameIdx={index}
+                  frame={item}
+                  choosePlayer={ChoosePlayer}
+                  setWinner={HandleSetWinner}
+                  finalizedAway={finalizedAway}
+                  finalizedHome={finalizedHome}
+                />
+              )}
+            />
+          )}
         </View>
       </>
     )
